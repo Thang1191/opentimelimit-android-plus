@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
 package io.timelimit.android.data.extensions
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import io.timelimit.android.data.model.User
 import io.timelimit.android.livedata.ignoreUnchanged
-import io.timelimit.android.livedata.map
 import java.util.*
 
 fun User?.getTimezone(): TimeZone {

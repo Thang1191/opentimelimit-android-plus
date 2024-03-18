@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import com.google.android.material.snackbar.Snackbar
 import io.timelimit.android.R
 import io.timelimit.android.data.model.Device
 import io.timelimit.android.data.model.HadManipulationFlag
 import io.timelimit.android.data.model.ManipulationFlag
 import io.timelimit.android.databinding.ManageDeviceManipulationViewBinding
-import io.timelimit.android.livedata.map
 import io.timelimit.android.sync.actions.IgnoreManipulationAction
 import io.timelimit.android.ui.main.ActivityViewModel
 

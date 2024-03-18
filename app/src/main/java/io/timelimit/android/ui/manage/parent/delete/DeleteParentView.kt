@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@ package io.timelimit.android.ui.manage.parent.delete
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.map
 import io.timelimit.android.R
 import io.timelimit.android.databinding.DeleteParentViewBinding
-import io.timelimit.android.livedata.map
 import io.timelimit.android.livedata.mergeLiveData
 
 object DeleteParentView {

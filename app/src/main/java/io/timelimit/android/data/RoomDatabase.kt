@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import io.timelimit.android.data.invalidation.Table
 import io.timelimit.android.data.invalidation.TableUtil
 import io.timelimit.android.data.model.*
 import java.lang.ref.WeakReference
+import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -144,10 +145,7 @@ abstract class RoomDatabase: RoomDatabase(), io.timelimit.android.data.Database 
         transactionCommitListeners.remove(listener)
     }
 
-    // the room compiler needs this
-    override fun <T> runInTransaction(block: () -> T): T {
-        return super.runInTransaction(block)
-    }
+    override fun <T> runInTransaction(block: () -> T): T = super.runInTransaction(Callable { block() })
 
     override fun <T> runInUnobservedTransaction(block: () -> T): T {
         openHelper.readableDatabase.beginTransaction()
@@ -196,8 +194,8 @@ abstract class RoomDatabase: RoomDatabase(), io.timelimit.android.data.Database 
             tableNames[index] = TableUtil.toName(table)
         }
 
-        invalidationTracker.addObserver(object: InvalidationTracker.Observer(tableNames) {
-            override fun onInvalidated(tables: MutableSet<String>) {
+        invalidationTracker.addObserver(object: InvalidationTracker.Observer(tableNames.requireNoNulls()) {
+            override fun onInvalidated(tables: Set<String>) {
                 val item = observer.get()
 
                 if (item != null) {

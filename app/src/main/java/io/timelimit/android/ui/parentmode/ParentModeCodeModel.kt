@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2021 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@ package io.timelimit.android.ui.parentmode
 import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import io.timelimit.android.barcode.BarcodeConstants
 import io.timelimit.android.barcode.BarcodeMask
 import io.timelimit.android.barcode.DataMatrix
@@ -25,8 +27,6 @@ import io.timelimit.android.crypto.Curve25519
 import io.timelimit.android.data.Database
 import io.timelimit.android.livedata.liveDataFromFunction
 import io.timelimit.android.livedata.liveDataFromNullableValue
-import io.timelimit.android.livedata.map
-import io.timelimit.android.livedata.switchMap
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 

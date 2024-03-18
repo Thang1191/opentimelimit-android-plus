@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,17 +18,15 @@ package io.timelimit.android.logic
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import io.timelimit.android.data.Database
 import io.timelimit.android.data.model.Device
-import io.timelimit.android.data.model.ExperimentalFlags
 import io.timelimit.android.data.model.User
 import io.timelimit.android.integration.platform.PlatformIntegration
 import io.timelimit.android.integration.time.TimeApi
 import io.timelimit.android.livedata.ignoreUnchanged
 import io.timelimit.android.livedata.liveDataFromNullableValue
-import io.timelimit.android.livedata.map
-import io.timelimit.android.livedata.switchMap
 import io.timelimit.android.ui.widget.TimesWidgetProvider
 
 class AppLogic(
@@ -42,7 +40,7 @@ class AppLogic(
 
     val deviceId = database.config().getOwnDeviceId()
 
-    val deviceEntry = Transformations.switchMap<String?, Device?> (deviceId) {
+    val deviceEntry = deviceId.switchMap<String?, Device?> {
         if (it == null) {
             liveDataFromNullableValue(null)
         } else {
@@ -58,7 +56,7 @@ class AppLogic(
         }
     }
 
-    val deviceUserId: LiveData<String> = Transformations.map(deviceEntry) { it?.currentUserId ?: "" }
+    val deviceUserId: LiveData<String> = deviceEntry.map { it?.currentUserId ?: "" }
 
     val deviceUserEntry = deviceUserId.switchMap {
         if (it == "") {

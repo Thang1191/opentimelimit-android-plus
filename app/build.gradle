@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  * Copyright <C> 2020 Marcel Voigt
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
     defaultConfig {
         applicationId "io.timelimit.android.open"
         minSdkVersion 19
@@ -74,11 +74,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    namespace 'io.timelimit.android'
 }
 
 dependencies {
     def nav_version = "2.5.2"
-    def room_version = "2.4.3"
+    def room_version = "2.6.1"
     def paging_version = "3.1.1"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

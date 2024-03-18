@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,13 @@ package io.timelimit.android.data.dao
 import android.content.ComponentName
 import android.util.Base64
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.room.*
 import io.timelimit.android.data.model.ConfigurationItem
 import io.timelimit.android.data.model.ConfigurationItemType
 import io.timelimit.android.data.model.ConfigurationItemTypeConverter
 import io.timelimit.android.data.model.ConfigurationItemTypeUtil
 import io.timelimit.android.livedata.ignoreUnchanged
-import io.timelimit.android.livedata.map
 
 @Dao
 @TypeConverters(ConfigurationItemTypeConverter::class)
@@ -39,7 +38,7 @@ abstract class ConfigDao {
     protected abstract fun getRowByKeyAsync(key: ConfigurationItemType): LiveData<ConfigurationItem?>
 
     private fun getValueOfKeyAsync(key: ConfigurationItemType): LiveData<String?> {
-        return Transformations.map(getRowByKeyAsync(key)) { it?.value }.ignoreUnchanged()
+        return getRowByKeyAsync(key).map { it?.value }.ignoreUnchanged()
     }
 
     @Query("SELECT * FROM config WHERE id = :key")

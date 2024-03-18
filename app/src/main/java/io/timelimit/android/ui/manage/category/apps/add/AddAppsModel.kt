@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ import io.timelimit.android.data.extensions.getCategoryWithParentCategories
 import io.timelimit.android.data.model.App
 import io.timelimit.android.data.model.derived.CategoryRelatedData
 import io.timelimit.android.livedata.*
-import io.timelimit.android.livedata.switchMap
 import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.logic.DummyApps
 import io.timelimit.android.ui.view.AppFilterView

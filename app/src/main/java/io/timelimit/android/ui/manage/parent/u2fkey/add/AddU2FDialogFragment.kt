@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.map
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.timelimit.android.R
 import io.timelimit.android.databinding.AddU2fDialogFragmentBinding
 import io.timelimit.android.extensions.showSafe
-import io.timelimit.android.livedata.map
 import io.timelimit.android.livedata.mergeLiveDataWaitForValues
 import io.timelimit.android.u2f.U2fManager
 import io.timelimit.android.u2f.nfc.NfcStatus

@@ -17,6 +17,7 @@ package io.timelimit.android.livedata
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.map
 
 fun LiveData<Boolean>.or(other: LiveData<Boolean>): LiveData<Boolean> {
     val l1 = this

@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2021 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import com.google.android.material.snackbar.Snackbar
 import io.timelimit.android.R
 import io.timelimit.android.async.Threads
@@ -32,7 +33,6 @@ import io.timelimit.android.data.model.Category
 import io.timelimit.android.data.model.HintsToShow
 import io.timelimit.android.data.model.withConfigCopiedToOtherDates
 import io.timelimit.android.databinding.FragmentBlockedTimeAreasBinding
-import io.timelimit.android.livedata.map
 import io.timelimit.android.livedata.waitForNonNullValue
 import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.sync.actions.UpdateCategoryBlockedTimesAction

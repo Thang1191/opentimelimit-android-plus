@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.map
 import androidx.navigation.Navigation
 import io.timelimit.android.R
 import io.timelimit.android.databinding.ManageParentU2fKeyFragmentBinding
 import io.timelimit.android.livedata.liveDataFromNonNullValue
-import io.timelimit.android.livedata.map
 import io.timelimit.android.ui.main.*
 import io.timelimit.android.ui.manage.parent.u2fkey.add.AddU2FDialogFragment
 import io.timelimit.android.ui.manage.parent.u2fkey.remove.RemoveU2FKeyDialogFragment

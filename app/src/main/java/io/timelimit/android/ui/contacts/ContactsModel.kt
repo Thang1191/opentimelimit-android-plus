@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +17,11 @@ package io.timelimit.android.ui.contacts
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import io.timelimit.android.async.Threads
 import io.timelimit.android.data.model.AllowedContact
 import io.timelimit.android.data.model.HintsToShow
-import io.timelimit.android.livedata.map
-import io.timelimit.android.livedata.switchMap
 import io.timelimit.android.logic.DefaultAppLogic
 
 class ContactsModel(application: Application): AndroidViewModel(application) {

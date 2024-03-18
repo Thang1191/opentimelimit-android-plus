@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import io.timelimit.android.R
 import io.timelimit.android.data.model.UserType
 import io.timelimit.android.extensions.showSafe
-import io.timelimit.android.livedata.map
-import io.timelimit.android.livedata.switchMap
 import io.timelimit.android.sync.actions.UpdateUserLimitLoginCategory
 import io.timelimit.android.ui.fragment.BottomSheetSelectionListDialog
 import io.timelimit.android.ui.main.ActivityViewModelHolder

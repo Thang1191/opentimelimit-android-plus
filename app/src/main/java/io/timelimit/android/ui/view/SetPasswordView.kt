@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import io.timelimit.android.databinding.ViewSetPasswordBinding
 import io.timelimit.android.livedata.and
 import io.timelimit.android.livedata.or
@@ -97,24 +98,24 @@ class SetPasswordView(context: Context, attributeSet: AttributeSet): FrameLayout
         }
     }
 
-    private val passwordQualityProblem: LiveData<String?> = Transformations.map(password) {
+    private val passwordQualityProblem: LiveData<String?> = password.map {
         if (it.isEmpty()) {
             null
         } else {
             PasswordValidator.validate(it, context)
         }
     }
-    private val passwordsNotEqualProblem: LiveData<Boolean> = Transformations.switchMap(password) {
+    private val passwordsNotEqualProblem: LiveData<Boolean> = password.switchMap {
         val passwordValue = it
 
-        Transformations.map(passwordRepeat) {
+        passwordRepeat.map {
             (passwordValue.isNotEmpty() && it.isNotEmpty()) && passwordValue != it
         }
     }
-    val passwordOk: LiveData<Boolean> = useEmptyPassword.or(Transformations.switchMap(password) {
+    val passwordOk: LiveData<Boolean> = useEmptyPassword.or(password.switchMap {
         val password1 = it
 
-        Transformations.map(passwordRepeat) {
+        passwordRepeat.map {
             val password2 = it
 
             password1.isNotEmpty() && password2.isNotEmpty() && (password1 == password2) &&

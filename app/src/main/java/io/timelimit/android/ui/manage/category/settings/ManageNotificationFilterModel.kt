@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2021 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ class ManageNotificationFilterModel(application: Application): AndroidViewModel(
 
     private val deviceEntry = logic.deviceEntry
 
-    val hasPermission = deviceEntry.map { it.currentNotificationAccessPermission == NewPermissionStatus.Granted }
+    val hasPermission = deviceEntry.map { it?.currentNotificationAccessPermission == NewPermissionStatus.Granted }
 
     val categoryEntry = childId.switchMap { childId ->
         categoryId.switchMap { categoryId ->
