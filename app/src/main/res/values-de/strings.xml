@@ -264,9 +264,7 @@
     <string name="category_time_limit_rules_about">
         Hier können Sie Zeitbegrenzungsregeln einstellen.
         Jede Regel entspricht einem Grenzwert.
-        Regeln, bei denen mehrere Tage gewählt wurden,
-        begrenzen die Gesamtnutzungsdauer in einer Woche an den gewählten Tagen.
-        Regeln, bei denen nur ein Tag gewählt wurde, begrenzen nur diesen Tag.
+        Zeiträume, für die es keine Regeln gibt, werden nicht eingeschränkt.
     </string>
     <string name="category_time_limit_rules_applied_to_extra_time">gilt auch für ggf. vorhandene Extra-Zeit</string>
     <string name="category_time_limit_rules_ignore_on_extra_time">gilt nicht bei ggf. vorhandener Extra-Zeit</string>

@@ -295,9 +295,7 @@
     <string name="category_time_limit_rules_about">
         Here you can configure time limit rules.
         Every rule describes one limit.
-        Rules at which multiple days are checked
-        limit the total usage duration during a week at all selected days.
-        Rules at which only one day is checked only limit the selected day.
+        Times without rules are unlimited.
     </string>
     <string name="category_time_limit_rules_applied_to_extra_time">is applied to extra time, too</string>
     <string name="category_time_limit_rules_ignore_on_extra_time">does not apply to extra time</string>
