@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2021 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import io.timelimit.android.R
 import io.timelimit.android.databinding.ParentModeFragmentBinding
+import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.ui.overview.about.AboutFragment
 
 class ParentModeFragment : Fragment() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        DefaultAppLogic.with(requireContext()).platformIntegration.disableDeviceAdmin()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ParentModeFragmentBinding.inflate(inflater, container, false)
 
