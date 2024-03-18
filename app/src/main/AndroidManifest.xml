@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+    Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-feature android:name="android.hardware.nfc" android:required="false" />
     <uses-feature android:name="android.hardware.usb.host" android:required="false" />
+
+    <meta-data android:name="isMonitoringTool" android:value="child_monitoring" />
 
     <application
         android:banner="@drawable/banner"
