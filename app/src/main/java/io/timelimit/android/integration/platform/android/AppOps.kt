@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,12 @@ object AppOps {
         }
     }
 
+    private val setMode by lazy { try {
+        AppOpsManager::class.java.getMethod("setMode", String::class.java, Int::class.java, String::class.java, Int::class.java)
+    } catch (ex: ReflectiveOperationException) {
+        null
+    } }
+
     fun getOpMode(op: String, appOpsManager: AppOpsManager, context: Context): Mode {
         try {
             val reflectionData = reflectionData ?: return Mode.Unknown
@@ -85,6 +91,28 @@ object AppOps {
         } catch (ex: InvocationTargetException) {
             if (ex.cause is SecurityException) return Mode.Unknown
             else throw ex
+        }
+    }
+
+    fun setMode(op: String, appOpsManager: AppOpsManager, context: Context, mode: Mode) {
+        val setMode = setMode
+
+        if (setMode == null) throw SecurityException("blocked by the OS")
+
+        val realMode = when (mode) {
+            Mode.Allowed -> AppOpsManager.MODE_ALLOWED
+            Mode.Default -> AppOpsManager.MODE_DEFAULT
+            Mode.Ignored -> AppOpsManager.MODE_IGNORED
+            Mode.Blocked -> AppOpsManager.MODE_ERRORED
+            else -> return
+        }
+
+        try {
+            setMode.invoke(appOpsManager, op, Process.myUid(), context.packageName, realMode)
+        } catch (ex: InvocationTargetException) {
+            ex.cause?.let { throw it }
+
+            throw ex
         }
     }
 
