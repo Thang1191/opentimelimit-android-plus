@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+  TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation version 3 of the License.
@@ -19,6 +19,10 @@
     <data>
         <variable
             name="title"
+            type="String" />
+
+        <variable
+            name="deviceName"
             type="String" />
 
         <variable
@@ -62,6 +66,15 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="?colorAccent"
+                    tools:text="AVD 1"
+                    android:text="@{deviceName}"
+                    android:visibility="@{TextUtils.isEmpty(deviceName) ? View.GONE : View.VISIBLE}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
                     android:textAppearance="?android:textAppearanceSmall"
                     tools:text="com.android.settings"
                     android:text="@{subtitle}"
@@ -69,13 +82,15 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <ImageView
+            <ImageButton
+                android:id="@+id/delete_button"
                 android:tint="?colorAccent"
-                android:layout_margin="8dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="16dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_delete_black_24dp"
-                android:layout_width="24dp"
-                android:layout_height="24dp" />
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

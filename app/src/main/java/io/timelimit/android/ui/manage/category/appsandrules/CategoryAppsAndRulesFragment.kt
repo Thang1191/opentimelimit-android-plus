@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,6 +134,10 @@ abstract class CategoryAppsAndRulesFragment: Fragment(), Handlers, EditTimeLimit
     }
 
     override fun onAppClicked(app: AppAndRuleItem.AppEntry) {
+        AppClickedDialogFragment.newInstance().show(childFragmentManager)
+    }
+
+    override fun onRemoveAppClicked(app: AppAndRuleItem.AppEntry) {
         if (auth.tryDispatchParentAction(
                         RemoveCategoryAppsAction(
                                 categoryId = categoryId,
@@ -154,14 +158,15 @@ abstract class CategoryAppsAndRulesFragment: Fragment(), Handlers, EditTimeLimit
     }
 
     override fun onAppLongClicked(app: AppAndRuleItem.AppEntry): Boolean {
-        return if (auth.requestAuthenticationOrReturnTrue()) {
+        if (auth.requestAuthenticationOrReturnTrue()) {
             AssignAppCategoryDialogFragment.newInstance(
-                    childId = childId,
-                    appPackageName = app.specifier.encode()
+                childId = childId,
+                appPackageName = app.specifier.encode()
             ).show(parentFragmentManager)
+        }
 
-            true
-        } else false
+        // consume the click in any case
+        return true
     }
 
     override fun onAddAppsClicked() {

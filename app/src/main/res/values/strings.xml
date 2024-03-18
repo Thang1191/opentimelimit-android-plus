@@ -1250,4 +1250,8 @@
 
     <string name="u2f_login_error_unknown">unknown key</string>
     <string name="u2f_login_error_invalid">invalid key</string>
+
+    <string name="app_clicked_dialog_message">Tap the trash icon to remove the App from the category.
+        To move it to another category, hold the App item.
+    </string>
 </resources>

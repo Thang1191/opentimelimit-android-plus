@@ -1196,4 +1196,8 @@
 
     <string name="u2f_login_error_unknown">unbekannter Schlüssel</string>
     <string name="u2f_login_error_invalid">ungültiger Schlüssel</string>
+
+    <string name="app_clicked_dialog_message">Tippen Sie zum Entfernen der App aus der Kategorie auf das Mülleimer-Symbol.
+        Um die Kategorie zu wechseln, müssen Sie lange auf die App tippen.
+    </string>
 </resources>

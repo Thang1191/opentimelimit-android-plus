@@ -141,6 +141,7 @@ class AppAndRuleAdapter: RecyclerView.Adapter<AppAndRuleAdapter.Holder>() {
                 binding.subtitle = item.specifier.encode()
                 binding.card.setOnClickListener { handlers?.onAppClicked(item) }
                 binding.card.setOnLongClickListener { handlers?.onAppLongClicked(item) ?: false }
+                binding.deleteButton.setOnClickListener { handlers?.onRemoveAppClicked(item) }
                 binding.executePendingBindings()
 
                 binding.icon.setImageDrawable(
