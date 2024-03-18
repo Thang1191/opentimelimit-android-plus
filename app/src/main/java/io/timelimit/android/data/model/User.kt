@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  * Copyright <C> 2020 Marcel Voigt
  *
  * This program is free software: you can redistribute it and/or modify
@@ -170,10 +170,10 @@ object UserTypeJson {
 
 class UserTypeConverter {
     @TypeConverter
-    fun toUserType(value: String) = UserTypeJson.parse(value)
+    fun toUserType(value: String?) = value?.let { UserTypeJson.parse(it) }
 
     @TypeConverter
-    fun toString(value: UserType) = UserTypeJson.serialize(value)
+    fun toString(value: UserType?) = value?.let { UserTypeJson.serialize(it) }
 }
 
 object UserFlags {
