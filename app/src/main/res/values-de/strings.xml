@@ -1025,6 +1025,7 @@
         um dort die Einstellungen von TimeLimit zu entsperren. Am anderen Gerät kann auch jederzeit ein Passwort verwendet werden.
     </string>
     <string name="setup_select_mode_parent_progress">Erstelle Schlüssel</string>
+    <string name="setup_select_mode_parent_error_owner">TimeLimit ist Gerätebesitzer und kann nicht als Schlüssel eingerichtet werden.</string>
 
     <string name="setup_select_mode_uninstall_title">TimeLimit entfernen</string>
     <string name="setup_select_mode_uninstall_text">

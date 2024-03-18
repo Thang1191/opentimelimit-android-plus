@@ -1056,6 +1056,7 @@
         a password to unlock the settings).
     </string>
     <string name="setup_select_mode_parent_progress">Creating key</string>
+    <string name="setup_select_mode_parent_error_owner">TimeLimit is device owner and can not be configured as a key.</string>
 
     <string name="setup_select_mode_uninstall_title">uninstall TimeLimit</string>
     <string name="setup_select_mode_uninstall_text">

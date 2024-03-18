@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,9 @@ import io.timelimit.android.coroutines.executeAndWait
 import io.timelimit.android.coroutines.runAsync
 import io.timelimit.android.databinding.FragmentSetupSelectModeBinding
 import io.timelimit.android.extensions.safeNavigate
+import io.timelimit.android.integration.platform.ProtectionLevel
 import io.timelimit.android.logic.DefaultAppLogic
+import io.timelimit.android.ui.setup.parentmode.SetupParentModeDeviceOwnerDialogFragment
 import io.timelimit.android.ui.setup.parentmode.SetupParentmodeDialogFragment
 
 class SetupSelectModeFragment : Fragment() {
@@ -56,6 +58,9 @@ class SetupSelectModeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val context = requireContext().applicationContext
+        val logic = DefaultAppLogic.with(requireContext())
+
         navigation = Navigation.findNavController(view)
 
         binding.btnChildMode.setOnClickListener {
@@ -66,15 +71,16 @@ class SetupSelectModeFragment : Fragment() {
         }
 
         binding.btnParentMode.setOnClickListener {
-            SetupParentmodeDialogFragment().apply {
-                setTargetFragment(this@SetupSelectModeFragment, REQUEST_SETUP_PARENT_MODE)
-            }.show(parentFragmentManager)
+            if (logic.platformIntegration.getCurrentProtectionLevel() == ProtectionLevel.DeviceOwner) {
+                SetupParentModeDeviceOwnerDialogFragment.newInstance().show(childFragmentManager)
+            } else {
+                SetupParentmodeDialogFragment().apply {
+                    setTargetFragment(this@SetupSelectModeFragment, REQUEST_SETUP_PARENT_MODE)
+                }.show(parentFragmentManager)
+            }
         }
 
         binding.btnUninstall.setOnClickListener {
-            val context = requireContext().applicationContext
-            val logic = DefaultAppLogic.with(requireContext())
-
             runAsync {
                 try {
                     Threads.database.executeAndWait { SetupUnprovisionedCheck.checkSync(logic.database) }
