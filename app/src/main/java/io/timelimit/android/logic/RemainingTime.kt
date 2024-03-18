@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019- 2020 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019- 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,31 +88,39 @@ data class RemainingTime(val includingExtraTime: Long, val default: Long) {
 
         private fun getRemainingTime(usedTimes: List<UsedTimeItem>, relatedRules: List<TimeLimitRule>, assumeMaximalExtraTime: Boolean, firstDayOfWeekAsEpochDay: Int, dayOfWeek: Int): Long? {
             return relatedRules.filter { (!assumeMaximalExtraTime) || it.applyToExtraTimeUsage }.map { rule ->
-                var usedTime = 0L
-
-                usedTimes.forEach { usedTimeItem ->
-                    val doesWeekMatch = usedTimeItem.dayOfEpoch >= firstDayOfWeekAsEpochDay && usedTimeItem.dayOfEpoch <= firstDayOfWeekAsEpochDay + 6
-
-                    if (doesWeekMatch) {
-                        val usedTimeItemDayOfWeek = usedTimeItem.dayOfEpoch - firstDayOfWeekAsEpochDay
-                        val doesDayMaskMatch = (rule.dayMask.toInt() and (1 shl usedTimeItemDayOfWeek)) != 0
-                        val doesCurrentDayMatch = dayOfWeek == usedTimeItemDayOfWeek
-
-                        val usedTimeItemMatching = if (rule.perDay) doesCurrentDayMatch else doesDayMaskMatch
-
-                        if (usedTimeItemMatching) {
-                            if (rule.startMinuteOfDay == usedTimeItem.startTimeOfDay && rule.endMinuteOfDay == usedTimeItem.endTimeOfDay) {
-                                usedTime += usedTimeItem.usedMillis
-                            }
-                        }
-                    }
-                }
+                val usedTime = getUsedTime(
+                    usedTimes = usedTimes,
+                    rule = rule,
+                    firstDayOfWeekAsEpochDay = firstDayOfWeekAsEpochDay,
+                    dayOfWeekForDailyRule = if (rule.perDay) dayOfWeek else null
+                )
 
                 val maxTime = rule.maximumTimeInMillis
-                val remaining = Math.max(0, maxTime - usedTime)
 
-                remaining
+                (maxTime - usedTime).coerceAtLeast(0)
             }.minOrNull()
+        }
+
+        fun getUsedTime(usedTimes: List<UsedTimeItem>, rule: TimeLimitRule, firstDayOfWeekAsEpochDay: Int, dayOfWeekForDailyRule: Int?): Long {
+            val usedTimeByDay = longArrayOf(0, 0, 0, 0, 0, 0, 0)
+
+            usedTimes.forEach { usedTimeItem ->
+                val doesWeekMatch = usedTimeItem.dayOfEpoch >= firstDayOfWeekAsEpochDay && usedTimeItem.dayOfEpoch <= firstDayOfWeekAsEpochDay + 6
+
+                if (doesWeekMatch) {
+                    val usedTimeItemDayOfWeek = usedTimeItem.dayOfEpoch - firstDayOfWeekAsEpochDay
+                    val doesDayMaskMatch = (rule.dayMask.toInt() and (1 shl usedTimeItemDayOfWeek)) != 0
+
+                    val dayMatch = rule.perDay or doesDayMaskMatch
+                    val hourMatch = rule.startMinuteOfDay <= usedTimeItem.startTimeOfDay && rule.endMinuteOfDay >= usedTimeItem.endTimeOfDay
+
+                    if (dayMatch && hourMatch)
+                        usedTimeByDay[usedTimeItemDayOfWeek] = usedTimeByDay[usedTimeItemDayOfWeek].coerceAtLeast(usedTimeItem.usedMillis)
+                }
+            }
+
+            return if (dayOfWeekForDailyRule == null) usedTimeByDay.sum()
+            else usedTimeByDay[dayOfWeekForDailyRule]
         }
     }
 }

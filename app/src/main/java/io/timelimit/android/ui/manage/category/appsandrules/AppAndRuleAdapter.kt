@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import io.timelimit.android.date.DateInTimezone
 import io.timelimit.android.extensions.MinuteOfDay
 import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.logic.DummyApps
+import io.timelimit.android.logic.RemainingTime
 import io.timelimit.android.ui.manage.category.timelimit_rules.TimeLimitRulesHandlers
 import io.timelimit.android.util.DayNameUtil
 import io.timelimit.android.util.TimeTextUtil
@@ -155,20 +156,12 @@ class AppAndRuleAdapter: RecyclerView.Adapter<AppAndRuleAdapter.Holder>() {
                 val binding = holder.itemView.tag as FragmentCategoryTimeLimitRuleItemBinding
                 val context = binding.root.context
                 val usedTime = date?.let { date ->
-                    usedTimes.filter { usedTime ->
-                        val usedTimeDayOfWeek = usedTime.dayOfEpoch - date.firstDayOfWeekAsEpochDay
-                        val matchingWeek = usedTimeDayOfWeek in 0..6
-
-                        if (matchingWeek) {
-                            val matchingSlot = usedTime.startTimeOfDay == rule.startMinuteOfDay && usedTime.endTimeOfDay == rule.endMinuteOfDay
-                            val maskToCheck = if (rule.perDay && rule.appliesToMultipleDays) {
-                                rule.dayMask.takeHighestOneBit().toInt().coerceAtMost(1 shl date.dayOfWeek)
-                            } else rule.dayMask.toInt()
-                            val matchingMask = (maskToCheck and (1 shl usedTimeDayOfWeek) != 0)
-
-                            matchingSlot && matchingMask
-                        } else false
-                    }.map { it.usedMillis }.sum().toInt()
+                    RemainingTime.getUsedTime(
+                        usedTimes = usedTimes,
+                        rule = rule,
+                        firstDayOfWeekAsEpochDay = date.firstDayOfWeekAsEpochDay,
+                        dayOfWeekForDailyRule = if (rule.perDay) date.dayOfWeek else null
+                    ).toInt()
                 } ?: 0
 
                 binding.maxTimeString = rule.maximumTimeInMillis.let { time ->

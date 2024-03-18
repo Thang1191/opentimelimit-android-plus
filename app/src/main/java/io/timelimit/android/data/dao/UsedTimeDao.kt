@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,9 @@ abstract class UsedTimeDao {
 
     @Query("SELECT * FROM used_time WHERE category_id = :categoryId AND day_of_epoch = :dayOfEpoch AND start_time_of_day = :start AND end_time_of_day = :end")
     abstract fun getUsedTimeItemSync(categoryId: String, dayOfEpoch: Int, start: Int, end: Int): UsedTimeItem?
+
+    @Query("SELECT * FROM used_time WHERE category_id = :categoryId AND day_of_epoch = :dayOfEpoch AND start_time_of_day >= :start AND end_time_of_day <= :end")
+    abstract fun getUsedTimeItemsSyncIncludingSmaller(categoryId: String, dayOfEpoch: Int, start: Int, end: Int): List<UsedTimeItem>
 
     @Query("DELETE FROM used_time WHERE category_id = :categoryId")
     abstract fun deleteUsedTimeItems(categoryId: String)

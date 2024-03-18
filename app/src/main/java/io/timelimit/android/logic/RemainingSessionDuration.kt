@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019- 2020 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019- 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,15 +43,15 @@ object RemainingSessionDuration {
                     rule.dayMask.toInt() and (1 shl dayOfWeek) != 0 &&
                     rule.startMinuteOfDay <= minuteOfDay && rule.endMinuteOfDay >= minuteOfDay
             ) {
-                val remaining = durationsOfCategory.find {
-                    it.startMinuteOfDay == rule.startMinuteOfDay &&
-                            it.endMinuteOfDay == rule.endMinuteOfDay &&
-                            it.maxSessionDuration == rule.sessionDurationMilliseconds &&
-                            it.sessionPauseDuration == rule.sessionPauseMilliseconds &&
-                            it.lastUsage + it.sessionPauseDuration > timestamp
-                }?.let { durationItem ->
+                val remaining = durationsOfCategory.filter {
+                    it.startMinuteOfDay >= rule.startMinuteOfDay &&
+                            it.endMinuteOfDay <= rule.endMinuteOfDay &&
+                            it.maxSessionDuration >= rule.sessionDurationMilliseconds &&
+                            it.sessionPauseDuration <= rule.sessionPauseMilliseconds &&
+                            it.lastUsage + rule.sessionPauseMilliseconds > timestamp
+                }.map { durationItem ->
                     (durationItem.maxSessionDuration - durationItem.lastSessionDuration).coerceAtLeast(0)
-                } ?: rule.sessionDurationMilliseconds.toLong()
+                }.minOrNull() ?: rule.sessionDurationMilliseconds.toLong()
 
                 result = min(result, remaining)
             }

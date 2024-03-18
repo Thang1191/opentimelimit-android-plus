@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@ interface SessionDurationDao {
 
     @Query("SELECT * FROM session_duration WHERE category_id = :categoryId")
     fun getSessionDurationItemsByCategoryIdSync(categoryId: String): List<SessionDuration>
+
+    @Query("SELECT * FROM session_duration WHERE category_id = :categoryId AND start_minute_of_day >= :startMinuteOfDay AND end_minute_of_day <= :endMinuteOfDay AND max_session_duration >= :maxSessionDuration AND session_pause_duration <= :sessionPauseDuration")
+    fun getFittingSessionDurationItemsSync(categoryId: String, startMinuteOfDay: Int, endMinuteOfDay: Int, maxSessionDuration: Int, sessionPauseDuration: Int): List<SessionDuration>
 
     @Insert
     fun insertSessionDurationItemSync(item: SessionDuration)
