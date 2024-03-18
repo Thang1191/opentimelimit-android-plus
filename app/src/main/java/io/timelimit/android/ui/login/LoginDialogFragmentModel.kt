@@ -191,7 +191,7 @@ class LoginDialogFragmentModel(application: Application): AndroidViewModel(appli
                     }
                 }
 
-                if (isLoginDone.value == false) {
+                if (isLoginDone.value == false && !hasParentKeys.waitForNonNullValue()) {
                     allUsers.singleOrNull { it.password.isNotEmpty() }?.let { user ->
                         selectedUserId.value = user.id
                     }
