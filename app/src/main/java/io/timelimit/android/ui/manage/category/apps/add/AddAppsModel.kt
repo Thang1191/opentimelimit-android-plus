@@ -79,6 +79,7 @@ class AddAppsModel(application: Application): AndroidViewModel(application) {
                         defaultCategory != null && parentCategories.contains(defaultCategory.category.id)
                     val packageNameToCategoryId =
                         userRelatedData.categoryApps
+                            .filter { it.appSpecifier.activityName == null }
                             .associateBy { it.appSpecifier.packageName }
 
                     installedApps.filter { app ->
