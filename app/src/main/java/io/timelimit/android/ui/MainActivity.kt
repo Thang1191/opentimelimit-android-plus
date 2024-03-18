@@ -45,6 +45,7 @@ import io.timelimit.android.ui.main.ActivityViewModel
 import io.timelimit.android.ui.main.ActivityViewModelHolder
 import io.timelimit.android.ui.main.AuthenticatedUser
 import io.timelimit.android.ui.main.FragmentWithCustomTitle
+import java.lang.IllegalArgumentException
 import java.security.SecureRandom
 
 class MainActivity : AppCompatActivity(), ActivityViewModelHolder, U2fManager.DeviceFoundListener {
@@ -163,25 +164,33 @@ class MainActivity : AppCompatActivity(), ActivityViewModelHolder, U2fManager.De
         val hasDeviceId = getActivityViewModel().logic.deviceId.map { it != null }.ignoreUnchanged()
         val hasParentKey = getActivityViewModel().logic.database.config().getParentModeKeyLive().map { it != null }.ignoreUnchanged()
 
+        fun hasBackStackEntry(id: Int) = try {
+            getNavController().getBackStackEntry(id)
+
+            true
+        } catch (ex: IllegalArgumentException) {
+            false
+        }
+
         hasDeviceId.observe(this) {
-            val rootDestination = getNavController().backQueue.getOrNull(1)?.destination?.id
+            val hasOverviewFragment = hasBackStackEntry(R.id.overviewFragment)
 
             if (!it) getActivityViewModel().logOut()
 
             if (
-                it && rootDestination != R.id.overviewFragment ||
-                !it && rootDestination == R.id.overviewFragment
+                it && !hasOverviewFragment ||
+                !it && hasOverviewFragment
             ) {
                 restartContent()
             }
         }
 
         hasParentKey.observe(this) {
-            val rootDestination = getNavController().backQueue.getOrNull(1)?.destination?.id
+            val hasParentModeFragment = hasBackStackEntry(R.id.parentModeFragment)
 
             if (
-                it && rootDestination != R.id.parentModeFragment ||
-                !it && rootDestination == R.id.parentModeFragment
+                it && !hasParentModeFragment ||
+                !it && hasParentModeFragment
             ) {
                 restartContent()
             }
