@@ -745,11 +745,8 @@
 
     <string name="manage_device_troubleshooting_title">Why is this device not limited?</string>
     <string name="manage_device_troubleshooting_text_no_child">There is no child assigned to this device. Only children are limited.</string>
-    <string name="manage_device_troubleshooting_text_battery_optimization">Most likely,
-        this devices manufacturer added some battery optimizations
-        which were not disabled and cause trouble. You can find details for
-        some common manufacturers at <a href="https://dontkillmyapp.com/">https://dontkillmyapp.com/</a>
-        \nIf that does not solve your issue, get in touch with the support of TimeLimit.
+    <string name="manage_device_troubleshooting_text_battery_optimization">You assigned a child user to this device already.
+        If it still does not work, then you can find details about other possible causes at <a href="https://timelimit.io/en/#limits-dont-work">https://timelimit.io/en/#limits-dont-work</a>.
     </string>
 
     <string name="manage_device_card_user_title">User</string>

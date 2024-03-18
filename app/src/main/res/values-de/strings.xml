@@ -708,12 +708,9 @@
 
     <string name="manage_device_troubleshooting_title">Warum wird dieses Gerät nicht eingeschränkt?</string>
     <string name="manage_device_troubleshooting_text_no_child">Es wurde kein Kind-Benutzer für dieses Gerät gewählt. Nur Kind-Benutzer werden eingeschränkt.</string>
-    <string name="manage_device_troubleshooting_text_battery_optimization">Wahrscheinlich hat
-        der Hersteller dieses Gerätes Energiesparfunktionen
-        eingebaut, die nicht abgeschaltet wurden und Probleme verursachen.
-        Sie finden die Details zu den Energiesparfunktionen einiger Hersteller und deren Abschaltung
-        auf der englischen Seite <a href="https://dontkillmyapp.com/">https://dontkillmyapp.com/</a>
-        \nWenden Sie sich an den Support von TimeLimit, wenn das nicht Ihr Problem behebt.
+    <string name="manage_device_troubleshooting_text_battery_optimization">Dem Gerät wurde zumindest schon
+        einmal ein Kind-Benutzer zugeordnet. Wenn es noch nicht funktioniert, dann finden Sie weitere mögliche Problemursachen unter
+        <a href="https://timelimit.io/de/#limits-dont-work">https://timelimit.io/de/#limits-dont-work</a>.
     </string>
 
     <string name="manage_device_card_user_title">Benutzer</string>
