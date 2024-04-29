@@ -148,8 +148,6 @@ abstract class RoomDatabase: RoomDatabase(), io.timelimit.android.data.Database 
         transactionCommitListeners.remove(listener)
     }
 
-    override fun <T> runInTransaction(block: () -> T): T = super.runInTransaction(Callable { block() })
-
     override fun <T> runInUnobservedTransaction(block: () -> T): T {
         openHelper.readableDatabase.beginTransaction()
         try {
@@ -163,6 +161,10 @@ abstract class RoomDatabase: RoomDatabase(), io.timelimit.android.data.Database 
         }
     }
 
+    @Deprecated(
+        "endTransaction() is deprecated",
+        replaceWith = ReplaceWith("runInTransaction(Runnable)")
+    )
     @SuppressLint("RestrictedApi")
     override fun endTransaction() {
         openHelper.writableDatabase.endTransaction()

@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ import io.timelimit.android.data.dao.*
 import io.timelimit.android.data.invalidation.Observer
 import io.timelimit.android.data.invalidation.Table
 import java.lang.ref.WeakReference
+import java.util.concurrent.Callable
 
 interface Database {
     fun app(): AppDao
@@ -43,7 +44,7 @@ interface Database {
     fun widgetCategory(): WidgetCategoryDao
     fun widgetConfig(): WidgetConfigDao
 
-    fun <T> runInTransaction(block: () -> T): T
+    fun <T> runInTransaction(body: Callable<T>): T
     fun <T> runInUnobservedTransaction(block: () -> T): T
     fun registerWeakObserver(tables: Array<Table>, observer: WeakReference<Observer>)
     fun registerTransactionCommitListener(listener: () -> Unit)
