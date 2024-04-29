@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,8 @@ class DefaultCategories private constructor(private val context: Context) {
                         endMinuteOfDay = TimeLimitRule.MAX_END_MINUTE,
                         sessionPauseMilliseconds = 0,
                         sessionDurationMilliseconds = 0,
-                        perDay = true
+                        perDay = true,
+                        expiresAt = null
                 )
         )
 
@@ -69,7 +70,8 @@ class DefaultCategories private constructor(private val context: Context) {
                         endMinuteOfDay = TimeLimitRule.MAX_END_MINUTE,
                         sessionPauseMilliseconds = 0,
                         sessionDurationMilliseconds = 0,
-                        perDay = true
+                        perDay = true,
+                        expiresAt = null
                 )
         )
 
@@ -85,7 +87,8 @@ class DefaultCategories private constructor(private val context: Context) {
                         endMinuteOfDay = TimeLimitRule.MAX_END_MINUTE,
                         sessionPauseMilliseconds = 0,
                         sessionDurationMilliseconds = 0,
-                        perDay = false
+                        perDay = false,
+                        expiresAt = null
                 )
         )
 
@@ -101,7 +104,8 @@ class DefaultCategories private constructor(private val context: Context) {
                         endMinuteOfDay = 6 * 60 - 1,
                         sessionPauseMilliseconds = 0,
                         sessionDurationMilliseconds = 0,
-                        perDay = false
+                        perDay = false,
+                        expiresAt = null
                 )
         )
 
@@ -116,7 +120,8 @@ class DefaultCategories private constructor(private val context: Context) {
                         endMinuteOfDay = MinuteOfDay.MAX,
                         sessionPauseMilliseconds = 0,
                         sessionDurationMilliseconds = 0,
-                        perDay = false
+                        perDay = false,
+                        expiresAt = null
                 )
         )
 
@@ -132,7 +137,8 @@ class DefaultCategories private constructor(private val context: Context) {
                         endMinuteOfDay = 9 * 60 - 1,
                         sessionPauseMilliseconds = 0,
                         sessionDurationMilliseconds = 0,
-                        perDay = false
+                        perDay = false,
+                        expiresAt = null
                 )
         )
 
@@ -147,7 +153,8 @@ class DefaultCategories private constructor(private val context: Context) {
                         endMinuteOfDay = MinuteOfDay.MAX,
                         sessionPauseMilliseconds = 0,
                         sessionDurationMilliseconds = 0,
-                        perDay = false
+                        perDay = false,
+                        expiresAt = null
                 )
         )
 

@@ -56,7 +56,9 @@ data class TimeLimitRule(
         @ColumnInfo(name = "session_pause_milliseconds")
         val sessionPauseMilliseconds: Int,
         @ColumnInfo(name = "per_day")
-        val perDay: Boolean
+        val perDay: Boolean,
+        @ColumnInfo(name = "expires_at")
+        val expiresAt: Long?
 ): Parcelable, JsonSerializable {
     companion object {
         private const val RULE_ID = "ruleId"
@@ -69,6 +71,7 @@ data class TimeLimitRule(
         private const val SESSION_DURATION_MILLISECONDS = "dur"
         private const val SESSION_PAUSE_MILLISECONDS = "pause"
         private const val PER_DAY = "perDay"
+        private const val EXPIRES_AT = "e"
 
         const val MIN_START_MINUTE = MinuteOfDay.MIN
         const val MAX_END_MINUTE = MinuteOfDay.MAX
@@ -84,6 +87,7 @@ data class TimeLimitRule(
             var sessionDurationMilliseconds = 0
             var sessionPauseMilliseconds = 0
             var perDay = false
+            var expiresAt: Long? = null
 
             reader.beginObject()
 
@@ -99,6 +103,7 @@ data class TimeLimitRule(
                     SESSION_DURATION_MILLISECONDS -> sessionDurationMilliseconds = reader.nextInt()
                     SESSION_PAUSE_MILLISECONDS -> sessionPauseMilliseconds = reader.nextInt()
                     PER_DAY -> perDay = reader.nextBoolean()
+                    EXPIRES_AT -> expiresAt = reader.nextLong()
                     else -> reader.skipValue()
                 }
             }
@@ -115,7 +120,8 @@ data class TimeLimitRule(
                     endMinuteOfDay = endMinuteOfDay,
                     sessionDurationMilliseconds = sessionDurationMilliseconds,
                     sessionPauseMilliseconds = sessionPauseMilliseconds,
-                    perDay = perDay
+                    perDay = perDay,
+                    expiresAt = expiresAt
             )
         }
     }
@@ -137,6 +143,10 @@ data class TimeLimitRule(
         }
 
         if (sessionDurationMilliseconds < 0 || sessionPauseMilliseconds < 0) {
+            throw IllegalArgumentException()
+        }
+
+        if (expiresAt != null && expiresAt <= 0) {
             throw IllegalArgumentException()
         }
     }
@@ -170,6 +180,7 @@ data class TimeLimitRule(
         }
 
         writer.name(PER_DAY).value(perDay)
+        if (expiresAt != null) writer.name(EXPIRES_AT).value(expiresAt)
 
         writer.endObject()
     }
@@ -185,7 +196,8 @@ data class TimeLimitRule(
                         this.sessionDurationMilliseconds <= other.sessionDurationMilliseconds &&
                                 this.sessionPauseMilliseconds >= other.sessionPauseMilliseconds
                         )) &&
-                (!this.perDay || other.perDay || other.dayMask.countOneBits() <= 1)
+                (!this.perDay || other.perDay || other.dayMask.countOneBits() <= 1) &&
+                (this.expiresAt == null || (other.expiresAt != null && this.expiresAt >= other.expiresAt))
 }
 
 fun List<TimeLimitRule>.getSlotSwitchMinutes(): Set<Int> {

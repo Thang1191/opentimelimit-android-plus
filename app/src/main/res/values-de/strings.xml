@@ -283,6 +283,9 @@
     <string name="category_time_limit_rules_session_limit_pause">Pausendauer</string>
     <string name="category_time_limit_rules_per_day">täglich</string>
     <string name="category_time_limit_rules_per_week">wöchentlich</string>
+    <string name="category_time_limit_rules_enable_expires">Regel ablaufen lassen</string>
+    <string name="category_time_limit_rules_expires_at">Wird ungültig am</string>
+    <string name="category_time_limit_rules_expires_at_short">Läuft ab am %s</string>
 
     <string name="category_time_limit_rules_snackbar_created">Regel wurde erstellt</string>
     <string name="category_time_limit_rules_snackbar_updated">Regel wurde geändert</string>

@@ -17,6 +17,7 @@ package io.timelimit.android.data
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.InvalidationTracker
 import androidx.room.Room
@@ -54,7 +55,9 @@ import java.util.concurrent.TimeUnit
     UserU2FKey::class,
     WidgetCategory::class,
     WidgetConfig::class
-], version = 29)
+], version = 30, autoMigrations = [
+    AutoMigration(from = 29, to = 30)
+])
 abstract class RoomDatabase: RoomDatabase(), io.timelimit.android.data.Database {
     companion object {
         private val lock = Object()

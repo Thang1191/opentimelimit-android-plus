@@ -29,6 +29,7 @@ import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.logic.DummyApps
 import io.timelimit.android.logic.RemainingTime
 import io.timelimit.android.ui.manage.category.timelimit_rules.TimeLimitRulesHandlers
+import io.timelimit.android.ui.util.DateUtil
 import io.timelimit.android.util.DayNameUtil
 import io.timelimit.android.util.TimeTextUtil
 import kotlin.properties.Delegates
@@ -190,6 +191,12 @@ class AppAndRuleAdapter: RecyclerView.Adapter<AppAndRuleAdapter.Holder>() {
                             MinuteOfDay.format(rule.startMinuteOfDay),
                             MinuteOfDay.format(rule.endMinuteOfDay)
                     )
+                binding.expiresAtString = rule.expiresAt?.let {
+                    context.getString(
+                        R.string.category_time_limit_rules_expires_at_short,
+                        DateUtil.formatAbsoluteDate(context, it)
+                    )
+                }
                 binding.appliesToExtraTime = rule.applyToExtraTimeUsage && !rule.likeBlockedTimeArea
                 binding.ignoredOnExtraTime = rule.maximumTimeInMillis == 0 && !rule.applyToExtraTimeUsage
                 binding.sessionLimitString = if (rule.sessionDurationLimitEnabled)

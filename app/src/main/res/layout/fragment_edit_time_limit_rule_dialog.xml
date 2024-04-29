@@ -1,5 +1,5 @@
 <!--
-  TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+  TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation version 3 of the License.
@@ -72,6 +72,14 @@
 
         <variable
             name="sessionBreakText"
+            type="String" />
+
+        <variable
+            name="expireEnabled"
+            type="boolean" />
+
+        <variable
+            name="expireDateText"
             type="String" />
 
         <import type="android.view.View" />
@@ -247,6 +255,35 @@
                     android:layout_height="wrap_content" />
 
             </androidx.gridlayout.widget.GridLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:onClick="@{() -> handlers.updateExpireEnabled(!safeUnbox(expireEnabled))}"
+                android:checked="@{expireEnabled}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/category_time_limit_rules_enable_expires" />
+
+            <LinearLayout
+                android:visibility="@{expireEnabled ? View.VISIBLE : View.GONE}"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="@string/category_time_limit_rules_expires_at"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:layout_marginStart="16dp"
+                    android:onClick="@{() -> handlers.updateExpireDate()}"
+                    style="?materialButtonOutlinedStyle"
+                    tools:text="01.01.2025 13:00 am"
+                    android:text="@{expireDateText}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <TextView
                 android:visibility="@{safeUnbox(applyToWholeDay) ? View.GONE : View.VISIBLE}"

@@ -86,8 +86,15 @@ class ManageChildCategoriesModel(application: Application): AndroidViewModel(app
                 val firstDayOfWeek = childDate.dayOfEpoch - childDate.dayOfWeek
 
                 userRelatedData.sortedCategories().map { (level, category) ->
-                    val rules = category.rules
                     val usedTimeItemsForCategory = category.usedTimes
+
+                    val nonExpiredRules = category.rules.filter { it.expiresAt == null || it.expiresAt > timeInMillis }
+
+                    for (rule in nonExpiredRules) {
+                        if (rule.expiresAt == null) continue
+
+                        validForDuration = validForDuration.coerceAtMost(rule.expiresAt - timeInMillis)
+                    }
 
                     CategoryItem(
                             category = category.category,
@@ -95,7 +102,7 @@ class ManageChildCategoriesModel(application: Application): AndroidViewModel(app
                             remainingTimeToday = RemainingTime.getRemainingTime(
                                     dayOfWeek = childDate.dayOfWeek,
                                     usedTimes = usedTimeItemsForCategory,
-                                    rules = rules.filterNot { it.likeBlockedTimeArea } /* ignore "blocked" rules for this calculation */,
+                                    rules = nonExpiredRules.filterNot { it.likeBlockedTimeArea } /* ignore "blocked" rules for this calculation */,
                                     extraTime = category.category.getExtraTime(dayOfEpoch = childDate.dayOfEpoch),
                                     minuteOfDay = childMinuteOfWeek % MinuteOfDay.LENGTH,
                                     firstDayOfWeekAsEpochDay = firstDayOfWeek
@@ -111,11 +118,11 @@ class ManageChildCategoriesModel(application: Application): AndroidViewModel(app
                                 if (it.temporarilyBlocked && it.temporarilyBlockedEndTime == 0L) {
                                     CategorySpecialMode.TemporarilyBlocked(endTime = null)
                                 } else if (it.temporarilyBlocked && it.temporarilyBlockedEndTime != 0L && it.temporarilyBlockedEndTime >= timeInMillis) {
-                                    validForDuration = it.temporarilyBlockedEndTime + 1 - timeInMillis
+                                    validForDuration = validForDuration.coerceAtMost(it.temporarilyBlockedEndTime + 1 - timeInMillis)
 
                                     CategorySpecialMode.TemporarilyBlocked(endTime = it.temporarilyBlockedEndTime)
                                 } else if (it.disableLimitsUntil != 0L && it.disableLimitsUntil >= timeInMillis) {
-                                    validForDuration = it.disableLimitsUntil + 1 - timeInMillis
+                                    validForDuration = validForDuration.coerceAtMost(it.disableLimitsUntil + 1 - timeInMillis)
 
                                     CategorySpecialMode.TemporarilyAllowed(endTime = it.disableLimitsUntil)
                                 } else CategorySpecialMode.None

@@ -314,6 +314,9 @@
     <string name="category_time_limit_rules_session_limit_pause">Break duration after session</string>
     <string name="category_time_limit_rules_per_day">daily</string>
     <string name="category_time_limit_rules_per_week">weekly</string>
+    <string name="category_time_limit_rules_enable_expires">Let this rule expire</string>
+    <string name="category_time_limit_rules_expires_at">Invalidate rule at</string>
+    <string name="category_time_limit_rules_expires_at_short">Expires at %s</string>
 
     <string name="category_time_limit_rules_snackbar_created">Rule was created</string>
     <string name="category_time_limit_rules_snackbar_updated">Rule was modified</string>

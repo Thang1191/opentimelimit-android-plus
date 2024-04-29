@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -461,7 +461,7 @@ data class CreateTimeLimitRuleAction(val rule: TimeLimitRule): ParentAction()
 data class UpdateTimeLimitRuleAction(
         val ruleId: String, val dayMask: Byte, val maximumTimeInMillis: Int, val applyToExtraTimeUsage: Boolean,
         val start: Int, val end: Int, val sessionDurationMilliseconds: Int, val sessionPauseMilliseconds: Int,
-        val perDay: Boolean
+        val perDay: Boolean, val expiresAt: Long?
 ): ParentAction() {
     init {
         IdGenerator.assertIdValid(ruleId)
@@ -479,6 +479,10 @@ data class UpdateTimeLimitRuleAction(
         }
 
         if (sessionDurationMilliseconds < 0 || sessionPauseMilliseconds < 0) {
+            throw IllegalArgumentException()
+        }
+
+        if (expiresAt != null && expiresAt <= 0) {
             throw IllegalArgumentException()
         }
     }
