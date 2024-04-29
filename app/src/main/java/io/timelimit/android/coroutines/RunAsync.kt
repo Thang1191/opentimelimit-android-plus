@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@ package io.timelimit.android.coroutines
 import io.timelimit.android.async.Threads
 import kotlinx.coroutines.*
 
+@OptIn(DelicateCoroutinesApi::class)
 fun <T> runAsync(block: suspend CoroutineScope.() -> T) {
     GlobalScope.launch (Dispatchers.Main) {
         block()
