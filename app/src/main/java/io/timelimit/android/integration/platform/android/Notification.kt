@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ object NotificationIds {
     const val NOTIFICATION_BLOCKED = 2
     const val REVOKE_TEMPORARILY_ALLOWED_APPS = 3
     const val TIME_WARNING = 4
+    const val EXTRA_TIME_STARTED = 5
 }
 
 object NotificationChannels {
@@ -35,6 +36,7 @@ object NotificationChannels {
     const val BLOCKED_NOTIFICATIONS_NOTIFICATION = "notification blocked notification"
     const val TIME_WARNING = "time warning"
     const val TEMP_ALLOWED_APP = "temporarily allowed App"
+    const val EXTRA_TIME_STARTED = "extra time started"
 
     private fun createAppStatusChannel(notificationManager: NotificationManager, context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -102,11 +104,26 @@ object NotificationChannels {
         }
     }
 
+    private fun createExtraTimeStartedNotificationChannel(notificationManager: NotificationManager, context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    EXTRA_TIME_STARTED,
+                    context.getString(R.string.notification_channel_extra_time_started_title),
+                    NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    description = context.getString(R.string.notification_channel_extra_time_started_description)
+                }
+            )
+        }
+    }
+
     fun createNotificationChannels(notificationManager: NotificationManager, context: Context) {
         createAppStatusChannel(notificationManager, context)
         createBlockedNotificationChannel(notificationManager, context)
         createTimeWarningsNotificationChannel(notificationManager, context)
         createTempAllowedAppChannel(notificationManager, context)
+        createExtraTimeStartedNotificationChannel(notificationManager, context)
     }
 }
 

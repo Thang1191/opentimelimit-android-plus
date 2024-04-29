@@ -902,8 +902,13 @@
     <string name="notification_channel_apps_temporarily_allowed_title">vorübergehend erlaubte Apps</string>
     <string name="notification_channel_apps_temporarily_allowed_text">Zeigt an, wenn Apps vorübergehend erlaubt wurden, und bietet die Option, dies rückgängig zu machen</string>
 
+    <string name="notification_channel_extra_time_started_title">Extrazeit beginnt</string>
+    <string name="notification_channel_extra_time_started_description">Informiert, wenn des reguläre Zeitkontingent verbraucht ist und nun Extrazeit verwendet wird</string>
+
     <string name="notification_filter_not_blocked_title">TimeLimit hat eine Benachrichtigung blockiert</string>
     <string name="notification_filter_blocking_failed_title">TimeLimit konnte eine Benachrichtigung nicht blockieren</string>
+
+    <string name="notification_extra_time_started">Extrazeit beginnt</string>
 
     <string name="obsolete_message">Sie verwenden TimeLimit auf einer älteren Android-Version.
         Das kann funktionieren, aber es wird nicht empfohlen.

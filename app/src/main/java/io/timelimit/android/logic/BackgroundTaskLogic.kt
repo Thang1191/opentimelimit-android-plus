@@ -386,6 +386,9 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
                         val oldRemainingTime = nowRemaining.includingExtraTime - timeToSubtractForCategory
                         val newRemainingTime = oldRemainingTime - timeToSubtract
 
+                        val oldRemainingNonExtraTime = nowRemaining.default - timeToSubtractForCategory
+                        val newRemainingNonExtraTime = oldRemainingNonExtraTime - timeToSubtract
+
                         val oldSessionDuration = handling.remainingSessionDuration?.let { it - timeToSubtractForCategory }
 
                         // trigger time warnings
@@ -423,6 +426,10 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
                                 notificationTitleStringResource = R.string.time_warning_not_title,
                                 roundedNewTimeInMilliseconds = ((newRemainingTime / (1000 * 60)) + 1) * 1000 * 60
                             )
+                        }
+
+                        if (oldRemainingNonExtraTime > 0 && newRemainingNonExtraTime <= 0) {
+                            appLogic.platformIntegration.showExtraTimeStartedNotification(categoryId, category.title)
                         }
 
                         if (oldSessionDuration != null) {

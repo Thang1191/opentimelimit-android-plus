@@ -937,8 +937,13 @@
     <string name="notification_channel_apps_temporarily_allowed_title">Temporarily allowed Apps</string>
     <string name="notification_channel_apps_temporarily_allowed_text">Shows that some Apps were temporarily allowed and provides the option to revoke that</string>
 
+    <string name="notification_channel_extra_time_started_title">Extra time starts</string>
+    <string name="notification_channel_extra_time_started_description">Informs when the regular time contingent was consumed and the extra time starts</string>
+
     <string name="notification_filter_not_blocked_title">TimeLimit has blocked a notification</string>
     <string name="notification_filter_blocking_failed_title">TimeLimit could not block a notification</string>
+
+    <string name="notification_extra_time_started">Extra time starts</string>
 
     <string name="obsolete_message">You are using TimeLimit at a obsolete Android version.
         Although this can work, it is not recommend.

@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ abstract class PlatformIntegration(
     abstract fun isScreenOn(): Boolean
     abstract fun setShowNotificationToRevokeTemporarilyAllowedApps(show: Boolean)
     abstract fun showTimeWarningNotification(title: String, text: String)
+    abstract fun showExtraTimeStartedNotification(categoryId: String, categoryTitle: String)
     // returns package names for which it was set
     abstract fun setSuspendedApps(packageNames: List<String>, suspend: Boolean): List<String>
     abstract fun stopSuspendingForAllApps()

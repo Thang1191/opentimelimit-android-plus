@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -410,6 +410,26 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
                         .setOngoing(false)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .build()
+        )
+    }
+
+    override fun showExtraTimeStartedNotification(categoryId: String, categoryTitle: String) {
+        NotificationChannels.createNotificationChannels(notificationManager, context)
+
+        notificationManager.notify(
+            categoryId,
+            NotificationIds.EXTRA_TIME_STARTED,
+            NotificationCompat.Builder(context, NotificationChannels.EXTRA_TIME_STARTED)
+                .setSmallIcon(R.drawable.ic_stat_timelapse)
+                .setContentTitle(context.getString(R.string.notification_extra_time_started))
+                .setContentText(categoryTitle)
+                .setWhen(System.currentTimeMillis())
+                .setShowWhen(true)
+                .setLocalOnly(true)
+                .setAutoCancel(false)
+                .setOngoing(false)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build()
         )
     }
 
