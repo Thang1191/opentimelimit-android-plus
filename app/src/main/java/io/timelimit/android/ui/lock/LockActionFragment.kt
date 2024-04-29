@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ class LockActionFragment : Fragment() {
             }
 
             override fun requestLocationPermission() {
-                RequestWifiPermission.doRequest(this@LockActionFragment, LOCATION_REQUEST_CODE)
+                RequestWifiPermission.doRequest(this@LockActionFragment, LOCATION_REQUEST_CODE, auth.logic.platformIntegration)
             }
 
             override fun disableLimitsTemporarily() {

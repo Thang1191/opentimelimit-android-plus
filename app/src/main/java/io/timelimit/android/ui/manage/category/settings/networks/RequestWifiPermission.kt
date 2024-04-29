@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import io.timelimit.android.R
+import io.timelimit.android.integration.platform.PlatformIntegration
 
 object RequestWifiPermission {
     private fun isLocationEnabled(context: Context): Boolean = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
@@ -36,8 +37,10 @@ object RequestWifiPermission {
         locationManager.isLocationEnabled
     }
 
-    fun doRequest(fragment: Fragment, permissionRequestCode: Int) {
+    fun doRequest(fragment: Fragment, permissionRequestCode: Int, platformIntegration: PlatformIntegration) {
         if (ContextCompat.checkSelfPermission(fragment.requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (platformIntegration.deviceOwner.grantLocationAccess()) return
+
             fragment.requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), permissionRequestCode)
         } else if (!isLocationEnabled(fragment.requireContext())) {
             Toast.makeText(fragment.requireContext(), R.string.category_networks_toast_enable_location_service, Toast.LENGTH_SHORT).show()

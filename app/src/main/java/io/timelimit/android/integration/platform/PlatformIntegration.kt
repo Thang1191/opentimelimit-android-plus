@@ -92,6 +92,8 @@ abstract class PlatformIntegration(
 
     abstract fun getExitLog(length: Int): List<ExitLogItem>
 
+    abstract val deviceOwner: DeviceOwnerApi
+
     var installedAppsChangeListener: Runnable? = null
     var systemClockChangeListener: Runnable? = null
 }

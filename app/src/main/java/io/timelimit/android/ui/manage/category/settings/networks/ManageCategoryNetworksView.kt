@@ -119,7 +119,7 @@ object ManageCategoryNetworksView {
         }
 
         view.grantPermissionButton.setOnClickListener {
-            RequestWifiPermission.doRequest(fragment, permissionRequestCode)
+            RequestWifiPermission.doRequest(fragment, permissionRequestCode, auth.logic.platformIntegration)
         }
 
         view.addNetworkButton.setOnClickListener {

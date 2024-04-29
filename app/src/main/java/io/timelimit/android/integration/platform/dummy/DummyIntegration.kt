@@ -191,4 +191,8 @@ class DummyIntegration(
     ): Boolean = false
 
     override fun getExitLog(length: Int): List<ExitLogItem> = emptyList()
+
+    override val deviceOwner: DeviceOwnerApi = object: DeviceOwnerApi {
+        override fun grantLocationAccess(): Boolean = false
+    }
 }

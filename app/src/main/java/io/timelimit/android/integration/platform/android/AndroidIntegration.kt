@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.integration.platform.android
 
+import android.Manifest
 import android.annotation.TargetApi
 import android.app.ActivityManager
 import android.app.Application
@@ -40,6 +41,7 @@ import android.widget.Toast
 import androidx.collection.LruCache
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import io.timelimit.android.BuildConfig
@@ -480,6 +482,44 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     policyManager.addUserRestriction(deviceAdmin, UserManager.DISALLOW_SAFE_BOOT)
+
+                    policyManager.getPermissionGrantState(
+                        deviceAdmin,
+                        context.packageName,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                    ).let {
+                        if (it == DevicePolicyManager.PERMISSION_GRANT_STATE_DEFAULT) {
+                            policyManager.setPermissionGrantState(
+                                deviceAdmin,
+                                context.packageName,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                if (ContextCompat.checkSelfPermission(
+                                        context,
+                                        Manifest.permission.ACCESS_FINE_LOCATION
+                                    ) == PackageManager.PERMISSION_GRANTED
+                                )
+                                    DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED
+                                else
+                                    DevicePolicyManager.PERMISSION_GRANT_STATE_DENIED
+                            )
+                        }
+                    }
+
+                    policyManager.setPermissionGrantState(
+                        deviceAdmin,
+                        context.packageName,
+                        Manifest.permission.CALL_PHONE,
+                        DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED
+                    )
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    policyManager.setPermissionGrantState(
+                        deviceAdmin,
+                        context.packageName,
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        DevicePolicyManager.PERMISSION_GRANT_STATE_GRANTED
+                    )
                 }
             } else /* disable lockdown */ {
                 // enable problematic features
@@ -488,6 +528,29 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     policyManager.clearUserRestriction(deviceAdmin, UserManager.DISALLOW_SAFE_BOOT)
+
+                    policyManager.setPermissionGrantState(
+                        deviceAdmin,
+                        context.packageName,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        DevicePolicyManager.PERMISSION_GRANT_STATE_DEFAULT
+                    )
+
+                    policyManager.setPermissionGrantState(
+                        deviceAdmin,
+                        context.packageName,
+                        Manifest.permission.CALL_PHONE,
+                        DevicePolicyManager.PERMISSION_GRANT_STATE_DEFAULT
+                    )
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    policyManager.setPermissionGrantState(
+                        deviceAdmin,
+                        context.packageName,
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        DevicePolicyManager.PERMISSION_GRANT_STATE_DEFAULT
+                    )
                 }
 
                 enableSystemApps()
@@ -816,4 +879,6 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
                 .map { ExitLogItem.fromApplicationExitInfo(it) }
         } else emptyList()
     }
+
+    override val deviceOwner: DeviceOwnerApi = AndroidDeviceOwnerApi(deviceAdmin, policyManager)
 }
