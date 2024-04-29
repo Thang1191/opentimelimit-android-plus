@@ -1,3 +1,2 @@
-- improvements of the UI
-- bugfixes
-- updated dependencies
+- add support for time limit rules that expire
+- notification when the extra time starts
