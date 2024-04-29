@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ data class ChildTask(
         @PrimaryKey
         @ColumnInfo(name = "task_id")
         val taskId: String,
-        @ColumnInfo(name = "category_id")
+        @ColumnInfo(name = "category_id", index = true)
         val categoryId: String,
         @ColumnInfo(name = "task_title")
         val taskTitle: String,
