@@ -154,6 +154,12 @@
     <string name="background_logic_opening_lockscreen">Opening lock screen</string>
     <string name="background_logic_permission_sanction_title">Missing permission</string>
     <string name="background_logic_permission_sanction_text">assuming that everything is used</string>
+    <string name="background_logic_errpr_detailed_instanceid_sorting">There is an issue with
+        the data in the usage stats database of your device.
+        Due to that, TimeLimit can not reliable detect the running Apps.
+        You can do nothing to solve this except waiting for four days or doing a reset of the whole device.
+        Reinstalling TimeLimit does NOT help.
+    </string>
 
     <string name="background_logic_temporarily_allowed_title">Apps are temporarily allowed</string>
     <string name="background_logic_temporarily_allowed_text">Tap here or turn screen off to undo</string>

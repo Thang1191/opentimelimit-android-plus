@@ -123,6 +123,12 @@
     <string name="background_logic_opening_lockscreen">Sperrbildschirm wird geöffnet</string>
     <string name="background_logic_permission_sanction_title">Berechtigung fehlt</string>
     <string name="background_logic_permission_sanction_text">nehme an, dass alles verwendet wird</string>
+    <string name="background_logic_errpr_detailed_instanceid_sorting">Es gibt ein Problem mit der
+        Nutzungsstatisitkdatenbank Ihres Gerätes.
+        Deshalb kann TimeLimit nicht zuverlässig erkennen, welche App verwendet wird.
+        Dieses Problem kann nur behoben werden durch vier Tagen Geduld oder das Zurücksetzen des Gerätes.
+        Eine Neuinstallation von TimeLimit hilft NICHT.
+    </string>
 
     <string name="background_logic_temporarily_allowed_title">Apps wurden vorübergehend erlaubt</string>
     <string name="background_logic_temporarily_allowed_text">Zum Rückgängig machen hier tippen oder Bildschirm ausschalten</string>

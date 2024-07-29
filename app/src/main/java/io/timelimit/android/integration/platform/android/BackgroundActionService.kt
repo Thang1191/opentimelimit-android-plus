@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.sync.actions.SignOutAtDeviceAction
 import io.timelimit.android.sync.actions.apply.ApplyActionUtil
 import io.timelimit.android.ui.MainActivity
+import io.timelimit.android.ui.diagnose.exception.DiagnoseExceptionActivity
 
 class BackgroundActionService: Service() {
     companion object {
@@ -36,7 +37,7 @@ class BackgroundActionService: Service() {
         fun prepareRevokeTemporarilyAllowed(context: Context) = Intent(context, BackgroundActionService::class.java)
                 .putExtra(ACTION, ACTION_REVOKE_TEMPORARILY_ALLOWED_APPS)
 
-        fun getSwitchToDefaultUserIntent(context: Context) = PendingIntent.getService(
+        fun getSwitchToDefaultUserIntent(context: Context): PendingIntent = PendingIntent.getService(
             context,
             PendingIntentIds.SWITCH_TO_DEFAULT_USER,
             Intent(context, BackgroundActionService::class.java)
@@ -44,11 +45,21 @@ class BackgroundActionService: Service() {
             PendingIntentIds.PENDING_INTENT_FLAGS
         )
 
-        fun getOpenAppIntent(context: Context) = PendingIntent.getActivity(
+        fun getOpenAppIntent(context: Context): PendingIntent = PendingIntent.getActivity(
                 context,
                 PendingIntentIds.OPEN_MAIN_APP,
                 Intent(context, MainActivity::class.java),
                 PendingIntentIds.PENDING_INTENT_FLAGS
+        )
+
+        fun getOpenAppWithErrorIntent(context: Context): PendingIntent = PendingIntent.getActivities(
+            context,
+            PendingIntentIds.OPEN_MAIN_APP_WITH_ERROR,
+            arrayOf(
+                Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                Intent(context, DiagnoseExceptionActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            ),
+            PendingIntentIds.PENDING_INTENT_FLAGS
         )
     }
 

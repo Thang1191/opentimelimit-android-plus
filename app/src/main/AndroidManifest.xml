@@ -122,6 +122,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.diagnose.exception.DiagnoseExceptionActivity"
+            android:theme="@style/AppTheme.Translucent"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=":exception"
+            android:launchMode="singleTop" />
+
         <!-- system integration -->
 
         <receiver android:name=".integration.platform.android.receiver.BootReceiver" android:exported="false">

@@ -1,5 +1,5 @@
 /*
- * TimeLimit Copyright <C> 2019 Jonas Lochmann
+ * TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,12 +13,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package io.timelimit.android.ui.diagnose
+package io.timelimit.android.ui.diagnose.exception
 
 import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -26,35 +27,26 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import io.timelimit.android.R
 import io.timelimit.android.extensions.showSafe
-import java.io.PrintWriter
-import java.io.StringWriter
 
 class DiagnoseExceptionDialogFragment: DialogFragment() {
     companion object {
         private const val DIALOG_TAG = "DiagnoseExceptionDialogFragment"
         private const val EXCEPTION = "ex"
+        private const val FINISH_ON_DISMISS = "finish"
 
-        fun newInstance(exception: Exception) = DiagnoseExceptionDialogFragment().apply {
+        fun newInstance(exception: Exception, finishOnDismiss: Boolean = false) = DiagnoseExceptionDialogFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(EXCEPTION, exception)
+                putBoolean(FINISH_ON_DISMISS, finishOnDismiss)
             }
-        }
-
-        fun getStackTraceString(tr: Throwable): String = StringWriter().let { sw ->
-            PrintWriter(sw).let { pw ->
-                tr.printStackTrace(pw)
-                pw.flush()
-            }
-
-            sw.toString()
         }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val message = getStackTraceString(arguments!!.getSerializable(EXCEPTION) as Exception)
-        val clipboard = context!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val message = ExceptionUtil.formatInterpreted(requireContext(), requireArguments().getSerializable(EXCEPTION) as Exception)
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        return AlertDialog.Builder(context!!, theme)
+        return AlertDialog.Builder(requireContext(), theme)
                 .setMessage(message)
                 .setNeutralButton(R.string.diagnose_copy_to_clipboard) { _, _ ->
                     clipboard.setPrimaryClip(ClipData.newPlainText("TimeLimit", message))
@@ -63,6 +55,14 @@ class DiagnoseExceptionDialogFragment: DialogFragment() {
                 }
                 .setPositiveButton(R.string.generic_ok, null)
                 .create()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+
+        if (requireArguments().getBoolean(FINISH_ON_DISMISS) && isResumed) {
+            requireActivity().finish()
+        }
     }
 
     fun show(fragmentManager: FragmentManager) = showSafe(fragmentManager, DIALOG_TAG)

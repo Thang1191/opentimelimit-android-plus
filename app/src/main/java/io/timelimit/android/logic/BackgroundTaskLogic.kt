@@ -777,7 +777,8 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
                 appLogic.platformIntegration.setAppStatusMessage(AppStatusMessage(
                         appLogic.context.getString(R.string.background_logic_error),
                         appLogic.context.getString(R.string.background_logic_error_internal),
-                        showSwitchToDefaultUserOption = deviceRelatedData.canSwitchToDefaultUser
+                        showSwitchToDefaultUserOption = deviceRelatedData.canSwitchToDefaultUser,
+                        showErrorMessage = true
                 ))
                 appLogic.platformIntegration.setShowBlockingOverlay(false)
             }

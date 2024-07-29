@@ -220,7 +220,8 @@ data class AppStatusMessage(
         val title: String,
         val text: String,
         val subtext: String? = null,
-        val showSwitchToDefaultUserOption: Boolean = false
+        val showSwitchToDefaultUserOption: Boolean = false,
+        val showErrorMessage: Boolean = false
 ): Parcelable
 
 data class BatteryStatus(

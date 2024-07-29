@@ -84,7 +84,12 @@ class BackgroundService: Service() {
             .setContentTitle(appStatusMessage.title)
             .setContentText(appStatusMessage.text)
             .setSubText(appStatusMessage.subtext)
-            .setContentIntent(BackgroundActionService.getOpenAppIntent(context))
+            .setContentIntent(
+                if (appStatusMessage.showErrorMessage)
+                    BackgroundActionService.getOpenAppWithErrorIntent(context)
+                else
+                    BackgroundActionService.getOpenAppIntent(context)
+            )
             .setWhen(0)
             .setShowWhen(false)
             .setSound(null)
