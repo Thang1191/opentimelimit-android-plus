@@ -23,7 +23,7 @@
     </data>
 
     <TextView
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
         android:gravity="center_horizontal"
         android:padding="8dp"
         tools:text="Header"

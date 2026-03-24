@@ -43,12 +43,12 @@
 
             <TextView
                 tools:ignore="UnusedAttribute"
-                android:drawableTint="?colorOnSurface"
+                android:drawableTint="?attr/colorOnSurface"
                 android:id="@+id/title_view"
                 android:background="?selectableItemBackground"
                 android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                 android:text="@string/manage_disable_time_limits_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -57,7 +57,7 @@
                 android:visibility="@{TextUtils.isEmpty(disabledUntilString) ? View.GONE : View.VISIBLE}"
                 android:text="@{disabledUntilString}"
                 tools:text="@string/manage_disable_time_limits_info_enabled"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

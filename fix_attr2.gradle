@@ -1,0 +1,15 @@
+tasks.register("fixAttr2") {
+    doLast {
+        def layoutsDir = file("app/src/main/res/layout")
+        layoutsDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".xml")) {
+                def content = f.text
+                if (content.contains('=""?attr')) {
+                    content = content.replaceAll('=""\\?attr', '="?attr')
+                    f.text = content
+                    println "Fixed \${f.name}"
+                }
+            }
+        }
+    }
+}

@@ -30,13 +30,13 @@
         <TextView
             tools:text="@string/add_used_time_title_with_category_title"
             android:text="@{@string/add_used_time_title_with_category_title(categoryTitle)}"
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
             android:text="@string/add_used_time_description"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

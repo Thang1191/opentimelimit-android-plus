@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.category.timelimit_rules.edit
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -84,7 +85,7 @@ class DurationPickerDialogFragment: DialogFragment() {
             }
         }
 
-        return AlertDialog.Builder(requireContext(), theme)
+        return MaterialAlertDialogBuilder(requireContext(), theme)
                 .setTitle(titleRes)
                 .setView(binding.root)
                 .setPositiveButton(R.string.generic_ok) { _, _ ->

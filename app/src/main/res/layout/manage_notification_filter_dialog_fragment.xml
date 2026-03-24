@@ -43,15 +43,15 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:text="@string/category_notification_filter_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:visibility="@{showMissingPermissionText ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/orange_text"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorError"
                 android:text="@string/category_notification_filter_missing_permission"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:text="@string/category_notification_filter_delay_intro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_gravity="center_vertical"
                     android:text="@string/category_notification_filter_delay_prefix"
                     android:layout_width="wrap_content"
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_gravity="center_vertical"
                     android:text="@string/category_notification_filter_delay_suffix"
                     android:layout_width="wrap_content"

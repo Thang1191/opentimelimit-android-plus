@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.child.category
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -47,7 +48,7 @@ class ConfirmEnableLimitsAgainDialogFragment: DialogFragment() {
         auth.authenticatedUserOrChild.observe(this)
         { if (it?.id != childId) dismissAllowingStateLoss() }
 
-        return AlertDialog.Builder(requireContext(), theme)
+        return MaterialAlertDialogBuilder(requireContext(), theme)
             .setTitle(R.string.manage_child_confirm_enable_limits_again_title)
             .setMessage(getString(R.string.manage_child_confirm_enable_limits_again_text, ""))
             .setNegativeButton(R.string.generic_cancel, null)

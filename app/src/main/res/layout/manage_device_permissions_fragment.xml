@@ -68,7 +68,7 @@
 
                 <TextView
                     android:text="@string/setup_device_permissions_text"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -83,35 +83,35 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_permission_device_admin_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
                             android:visibility="@{protectionLevel == ProtectionLevel.None ? View.VISIBLE : View.GONE}"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_device_admin_text_disabled"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
                             android:visibility="@{protectionLevel == ProtectionLevel.SimpleDeviceAdmin ? View.VISIBLE : View.GONE}"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_device_admin_text_simple"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
                             android:visibility="@{protectionLevel == ProtectionLevel.PasswordDeviceAdmin ? View.VISIBLE : View.GONE}"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_device_admin_text_password"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
                             android:visibility="@{protectionLevel == ProtectionLevel.DeviceOwner ? View.VISIBLE : View.GONE}"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_device_admin_text_owner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -148,11 +148,11 @@
                             android:nextFocusUp="@id/device_admin_btn"
                             android:nextFocusDown="@id/usage_stats_access_btn"
                             tools:ignore="UnusedAttribute"
-                            android:drawableTint="?colorOnSurface"
+                            android:drawableTint="?attr/colorOnSurface"
                             android:background="?selectableItemBackground"
                             android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                             android:onClick="@{() -> handlers.helpUsageStatsAccess()}"
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_permissions_usagestats_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -161,8 +161,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{usageStatsAccess == RuntimePermissionStatus.Granted ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_green"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_granted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -171,8 +171,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{usageStatsAccess == RuntimePermissionStatus.NotGranted ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_red"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorError"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_not_granted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -181,8 +181,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{usageStatsAccess == RuntimePermissionStatus.NotRequired ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_green"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_not_required"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -219,11 +219,11 @@
                             android:nextFocusUp="@id/usage_stats_access_btn"
                             android:nextFocusDown="@id/notification_access_button"
                             tools:ignore="UnusedAttribute"
-                            android:drawableTint="?colorOnSurface"
+                            android:drawableTint="?attr/colorOnSurface"
                             android:background="?selectableItemBackground"
                             android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                             android:onClick="@{() -> handlers.helpNotificationAccess()}"
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_permission_notification_access_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -232,8 +232,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{notificationAccessPermission == NewPermissionStatus.Granted ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_green"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_granted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -242,8 +242,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{notificationAccessPermission == NewPermissionStatus.NotGranted ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_red"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorError"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_not_granted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -252,8 +252,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{notificationAccessPermission == NewPermissionStatus.NotSupported ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_red"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorError"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_not_supported"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -290,11 +290,11 @@
                             android:nextFocusUp="@id/notification_access_button"
                             android:nextFocusDown="@id/overlay_btn"
                             tools:ignore="UnusedAttribute"
-                            android:drawableTint="?colorOnSurface"
+                            android:drawableTint="?attr/colorOnSurface"
                             android:background="?selectableItemBackground"
                             android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                             android:onClick="@{() -> handlers.helpDrawOverOtherApps()}"
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_permissions_overlay_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -303,8 +303,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{overlayPermission == RuntimePermissionStatus.Granted ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_green"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_granted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -313,8 +313,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{overlayPermission == RuntimePermissionStatus.NotGranted ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_red"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorError"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_not_granted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -323,8 +323,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{overlayPermission == RuntimePermissionStatus.NotRequired ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_green"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_not_required"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -361,11 +361,11 @@
                             android:nextFocusUp="@id/overlay_btn"
                             android:nextFocusDown="@id/accessibility_btn"
                             tools:ignore="UnusedAttribute"
-                            android:drawableTint="?colorOnSurface"
+                            android:drawableTint="?attr/colorOnSurface"
                             android:background="?selectableItemBackground"
                             android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                             android:onClick="@{() -> handlers.helpAccesibility()}"
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_permission_accessibility_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -374,8 +374,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{accessibilityServiceEnabled == true ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_green"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_granted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -384,8 +384,8 @@
                             android:paddingTop="8dp"
                             android:gravity="center_horizontal"
                             android:visibility="@{accessibilityServiceEnabled == false ? View.VISIBLE : View.GONE}"
-                            android:textColor="@color/text_red"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorError"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_permission_status_not_granted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />

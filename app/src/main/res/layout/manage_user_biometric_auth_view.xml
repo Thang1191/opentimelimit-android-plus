@@ -46,24 +46,24 @@
             <TextView
                 android:id="@+id/title_view"
                 android:text="@string/biometric_manage_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:background="?selectableItemBackground"
                 app:drawableEndCompat="@drawable/ic_info_outline_black_24dp"
-                app:drawableTint="?colorOnSurface"
+                app:drawableTint="?attr/colorOnSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:text="@{biometricAuthEnabled ? @string/biometric_manage_description_enabled(userName) : @string/biometric_manage_description_disabled(userName)}"
                 tools:text="@string/biometric_manage_description_disabled"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:visibility="@{errorText == null || errorText.isEmpty() ? View.VISIBLE : View.GONE}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:text="@{errorText}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:visibility="@{errorText == null || errorText.isEmpty() ? View.GONE : View.VISIBLE}"
                 app:drawableStartCompat="@android:drawable/ic_dialog_alert"
                 app:drawableTint="?android:attr/textColorSecondary"

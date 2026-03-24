@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/add_user_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -70,14 +70,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                            <RadioButton
+                            <com.google.android.material.radiobutton.MaterialRadioButton
                                 android:checked="true"
                                 android:id="@+id/radio_type_parent"
                                 android:text="@string/add_user_type_parent"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
 
-                            <RadioButton
+                            <com.google.android.material.radiobutton.MaterialRadioButton
                                 android:id="@+id/radio_type_child"
                                 android:text="@string/add_user_type_child"
                                 android:layout_width="match_parent"
@@ -87,7 +87,7 @@
 
                         <TextView
                             android:visibility="@{isCreatingChildUser ? View.VISIBLE : View.GONE}"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/add_user_child_password_info"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />

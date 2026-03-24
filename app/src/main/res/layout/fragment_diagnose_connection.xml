@@ -45,14 +45,14 @@
 
                     <TextView
                         android:text="@string/diagnose_connection_network_id"
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         tools:text="ABCDEF"
                         android:text="@{networkId}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 

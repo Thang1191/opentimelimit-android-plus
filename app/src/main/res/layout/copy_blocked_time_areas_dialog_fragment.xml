@@ -34,7 +34,7 @@
 
         <TextView
             android:padding="8dp"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             tools:text="@string/blocked_time_areas_copy_from"
             android:text="@{TextUtils.isEmpty(sourceDayName) ? @string/blocked_time_areas_copy_from : @string/blocked_time_areas_copy_to(sourceDayName)}"
             android:layout_width="match_parent"
@@ -61,43 +61,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_monday"
                     android:text="@string/day_of_week_monday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_tuesday"
                     android:text="@string/day_of_week_tuesday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_wednesday"
                     android:text="@string/day_of_week_wednesday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_thursday"
                     android:text="@string/day_of_week_thursday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_friday"
                     android:text="@string/day_of_week_friday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_saturday"
                     android:text="@string/day_of_week_saturday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_sunday"
                     android:text="@string/day_of_week_sunday"
                     android:layout_width="match_parent"

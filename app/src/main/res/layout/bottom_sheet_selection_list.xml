@@ -42,7 +42,7 @@
 
             <TextView
                 android:visibility="@{TextUtils.isEmpty(title) ? View.GONE : View.VISIBLE}"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:padding="8dp"
                 android:text="@{title}"
                 tools:text="Systemeinstellungen"
@@ -62,7 +62,7 @@
             <TextView
                 android:visibility="@{someOptionsDisabledDueToChildAuthentication ? View.VISIBLE : View.GONE}"
                 android:drawablePadding="8dp"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:padding="8dp"
                 android:text="@string/child_self_limit_add_caused_missing_options_hint"
                 android:layout_width="match_parent"

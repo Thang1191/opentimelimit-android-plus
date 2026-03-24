@@ -16,6 +16,7 @@
 
 package io.timelimit.android.ui.manage.child.tasks
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -52,7 +53,7 @@ class ConfirmTaskDialogFragment: DialogFragment() {
         val messagePrefix = if (fromManageScreen) getString(R.string.lock_task_confirm_dialog_from_manage_screen) + " " else ""
         val message = messagePrefix + getString(R.string.lock_task_confirm_dialog)
 
-        return AlertDialog.Builder(requireContext(), theme)
+        return MaterialAlertDialogBuilder(requireContext(), theme)
                 .setTitle(taskTitle)
                 .setMessage(message)
                 .setNegativeButton(R.string.generic_no, null)

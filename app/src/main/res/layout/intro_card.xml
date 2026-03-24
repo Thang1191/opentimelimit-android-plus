@@ -46,14 +46,14 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:text="@{title}"
                 tools:text="@string/manage_child_categories_intro_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@{text}"
                 tools:text="@string/manage_child_categories_intro_text"
                 android:layout_width="match_parent"
@@ -61,7 +61,7 @@
 
             <TextView
                 android:visibility="@{noSwipe ? View.GONE : View.VISIBLE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:text="@string/generic_swipe_to_dismiss"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

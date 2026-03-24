@@ -52,7 +52,7 @@
                 android:visibility="@{TextUtils.isEmpty(blockedElement) ? View.GONE : View.VISIBLE}"
                 android:layout_marginTop="16dp"
                 android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -60,7 +60,7 @@
                 android:layout_marginTop="16dp"
                 android:visibility="@{showWarningMessage ? View.VISIBLE : View.GONE}"
                 android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@string/lock_overlay_warning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -70,7 +70,7 @@
         <TextView
             android:layout_margin="8dp"
             android:gravity="center_horizontal"
-            android:textAppearance="?android:textAppearanceSmall"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:text="@string/app_name"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"

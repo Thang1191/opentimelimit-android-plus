@@ -50,14 +50,14 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 tools:text="vom Benutzer beendet"
                 android:text="@{summaryString}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 tools:text="er will keine Begrenzungen"
                 android:text="@{detailString}"
                 android:visibility="@{TextUtils.isEmpty(detailString) ? View.GONE : View.VISIBLE}"
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 tools:text="vor fünf Minuten"
                 android:text="@{timeString}"
                 android:layout_width="match_parent"

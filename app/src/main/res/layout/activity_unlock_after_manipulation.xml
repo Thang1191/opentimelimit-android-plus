@@ -34,7 +34,7 @@
 
             <TextView
                 android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@string/manipulation_activity_intro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

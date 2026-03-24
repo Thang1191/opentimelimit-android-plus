@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:text="@string/blocked_time_areas_checkbox_detailed"
                 android:id="@+id/detailed_mode"
                 android:layout_width="match_parent"

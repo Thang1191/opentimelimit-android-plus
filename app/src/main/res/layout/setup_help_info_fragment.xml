@@ -26,7 +26,7 @@
 
             <TextView
                 android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:text="@string/setup_help_look_for_this_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -40,7 +40,7 @@
             <TextView
                 android:layout_marginBottom="8dp"
                 android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@string/setup_help_there_is_help_like_at_example"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -53,7 +53,7 @@
                 android:autoLink="web"
                 android:id="@+id/text_with_links"
                 android:text="@string/setup_help_info_about_support_and_documentation"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

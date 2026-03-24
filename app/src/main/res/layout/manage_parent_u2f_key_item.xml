@@ -39,14 +39,14 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:text="@{id}"
                 tools:text="12345678"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@{@string/manage_device_added_at(addedAt)}"
                 tools:text="@string/manage_device_added_at"
                 android:layout_width="match_parent"

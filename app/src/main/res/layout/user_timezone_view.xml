@@ -35,12 +35,12 @@
 
             <TextView
                 android:text="@string/manage_child_timezone_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 tools:text="GMT"
                 android:text="@{timezone}"
                 android:layout_width="match_parent"

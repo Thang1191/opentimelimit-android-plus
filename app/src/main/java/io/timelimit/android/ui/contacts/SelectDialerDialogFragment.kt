@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.contacts
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
@@ -43,7 +44,7 @@ class SelectDialerDialogFragment: DialogFragment() {
 
         val resolveInfo = context!!.packageManager.queryIntentActivities(preparedIntent, 0)
 
-        return AlertDialog.Builder(context!!, theme)
+        return MaterialAlertDialogBuilder(context!!, theme)
                 .setItems(resolveInfo.map { it.activityInfo.loadLabel(context!!.packageManager) }.toTypedArray()) { _, which ->
                     val selection = resolveInfo[which]
 

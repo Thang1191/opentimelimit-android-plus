@@ -38,7 +38,7 @@
         <TextView
             android:padding="8dp"
             android:gravity="center_horizontal"
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             android:text="@{@string/parent_mode_key_id(keyId)}"
             tools:text="@string/parent_mode_key_id"
             android:layout_width="match_parent"

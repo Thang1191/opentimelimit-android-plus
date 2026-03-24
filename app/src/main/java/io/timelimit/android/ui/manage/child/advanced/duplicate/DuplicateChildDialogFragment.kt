@@ -16,6 +16,7 @@
 
 package io.timelimit.android.ui.manage.child.advanced.duplicate
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import android.widget.Toast
@@ -67,7 +68,7 @@ class DuplicateChildDialogFragment: DialogFragment() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
             .setMessage(R.string.duplicate_child_message)
             .setNegativeButton(R.string.generic_no, null)
             .setPositiveButton(R.string.generic_yes, null)

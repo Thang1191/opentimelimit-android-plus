@@ -28,12 +28,12 @@
 
             <TextView
                 tools:ignore="UnusedAttribute"
-                android:drawableTint="?colorOnSurface"
+                android:drawableTint="?attr/colorOnSurface"
                 android:id="@+id/title_view"
                 android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                 android:background="?selectableItemBackground"
                 android:text="@string/time_warning_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

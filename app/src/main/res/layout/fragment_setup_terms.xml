@@ -31,14 +31,14 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:text="@string/setup_terms_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/terms_text"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/terms_text" />

@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <CheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:layout_gravity="center_vertical"
             android:enabled="@{enabled}"
             android:text="@{label}"

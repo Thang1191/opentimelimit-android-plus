@@ -77,19 +77,19 @@
             <TextView
                 android:text="@{maxTimeString}"
                 tools:text="höchstens 5 Minuten"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@{daysString}"
                 tools:text="Montag und Dienstag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@{timeAreaString}"
                 tools:text="von 12:00 bis 18:00"
                 android:visibility="@{TextUtils.isEmpty(timeAreaString) ? View.GONE : View.VISIBLE}"
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@{sessionLimitString}"
                 tools:text="10 Minuten Pause nach 5 Minuten Nutzung"
                 android:visibility="@{TextUtils.isEmpty(sessionLimitString) ? View.GONE : View.VISIBLE}"
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@{expiresAtString}"
                 tools:text="@string/category_time_limit_rules_expires_at_short"
                 android:visibility="@{TextUtils.isEmpty(expiresAtString) ? View.GONE : View.VISIBLE}"
@@ -114,14 +114,14 @@
 
             <TextView
                 android:visibility="@{safeUnbox(appliesToExtraTime) ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:text="@string/category_time_limit_rules_applied_to_extra_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:visibility="@{ignoredOnExtraTime ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:text="@string/category_time_limit_rules_ignore_on_extra_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -137,7 +137,7 @@
             <TextView
                 android:visibility="@{TextUtils.isEmpty(usageAsText) ? View.GONE : View.VISIBLE}"
                 android:text="@{usageAsText}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 tools:text="2 Minuten verbraucht"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

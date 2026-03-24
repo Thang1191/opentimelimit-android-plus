@@ -26,18 +26,18 @@
 
         <TextView
             android:text="@string/contacts_title_long"
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             android:text="@string/contacts_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:textAppearance="?android:textAppearanceSmall"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:text="@string/generic_swipe_to_dismiss"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

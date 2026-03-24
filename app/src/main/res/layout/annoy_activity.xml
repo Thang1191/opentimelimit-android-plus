@@ -1,122 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation version 3 of the License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
--->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="reasonText"
-            type="String" />
-
-        <variable
-            name="countdownText"
-            type="String" />
-
-        <variable
-            name="canRequestUnlock"
-            type="boolean" />
-
+        <variable name="reasonText" type="String" />
+        <variable name="countdownText" type="String" />
+        <variable name="canRequestUnlock" type="boolean" />
         <import type="android.text.TextUtils" />
         <import type="android.view.View" />
     </data>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="24dp"
         tools:context="io.timelimit.android.ui.manipulation.AnnoyActivity">
 
+        <ImageView
+            android:id="@+id/warning_icon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_warning_black_24dp"
+            app:tint="?attr/colorError"
+            app:layout_constraintBottom_toTopOf="@id/annoy_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
         <TextView
+            android:id="@+id/annoy_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
-            android:layout_margin="16dp"
-            android:textAppearance="?android:textAppearanceLarge"
             android:text="@string/annoy_info"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="?attr/colorError"
+            app:layout_constraintBottom_toTopOf="@id/annoy_reason"
+            app:layout_constraintTop_toBottomOf="@id/warning_icon" />
+
+        <TextView
+            android:id="@+id/annoy_reason"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@{reasonText}"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:visibility="@{TextUtils.isEmpty(reasonText) ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/unlock_temporarily_button"
+            app:layout_constraintTop_toBottomOf="@id/annoy_title"
+            tools:text="@string/annoy_reason" />
 
-        <RelativeLayout
-            android:layout_weight="1"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/unlock_temporarily_button"
             android:layout_width="match_parent"
-            android:layout_height="0dp">
-            <LinearLayout
-                android:layout_margin="8dp"
-                android:orientation="vertical"
-                android:layout_centerVertical="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:enabled="@{canRequestUnlock}"
+            android:text="@string/annoy_unlock_temp_button"
+            app:layout_constraintBottom_toTopOf="@id/parent_unlock_button"
+            app:layout_constraintTop_toBottomOf="@id/annoy_reason" />
 
-                <TextView
-                    android:layout_margin="4dp"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:gravity="center"
-                    android:id="@+id/annoy_reason"
-                    tools:text="@string/annoy_reason"
-                    android:text="@{reasonText}"
-                    android:visibility="@{TextUtils.isEmpty(reasonText) ? View.GONE : View.VISIBLE}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/parent_unlock_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/annoy_unlock_parent_button"
+            app:layout_constraintBottom_toTopOf="@id/annoy_timer"
+            app:layout_constraintTop_toBottomOf="@id/unlock_temporarily_button" />
 
-                <LinearLayout
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        <TextView
+            android:id="@+id/annoy_timer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@{countdownText}"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:visibility="@{canRequestUnlock ? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/use_backdoor_button"
+            app:layout_constraintTop_toBottomOf="@id/parent_unlock_button"
+            tools:text="@string/annoy_timer" />
 
-                    <Button
-                        android:enabled="@{canRequestUnlock}"
-                        android:id="@+id/unlock_temporarily_button"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@string/annoy_unlock_temp_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <Button
-                        style="?materialButtonOutlinedStyle"
-                        android:id="@+id/parent_unlock_button"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@string/annoy_unlock_parent_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_margin="4dp"
-                    android:textAppearance="?android:textAppearanceSmall"
-                    android:gravity="center"
-                    android:id="@+id/annoy_timer"
-                    tools:text="@string/annoy_timer"
-                    android:text="@{countdownText}"
-                    android:visibility="@{canRequestUnlock ? View.INVISIBLE : View.VISIBLE}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-        </RelativeLayout>
-
-        <Button
-            style="?materialButtonOutlinedStyle"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_gravity="center_horizontal"
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/use_backdoor_button"
-            android:text="@string/backdoor_start_btn"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/backdoor_start_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/annoy_timer" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

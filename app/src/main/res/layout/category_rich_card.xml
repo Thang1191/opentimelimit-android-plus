@@ -81,14 +81,14 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
                         android:text="@{title}"
                         tools:text="Erlaubte Apps"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:visibility="@{usedForAppsWithoutCategory ? View.VISIBLE : View.GONE}"
                         android:text="@string/manage_child_category_for_unassigned_apps"
                         android:layout_width="match_parent"
@@ -98,7 +98,7 @@
                         android:visibility="@{TextUtils.isEmpty(usedTimeToday) ? View.GONE : View.VISIBLE}"
                         android:text="@{usedTimeToday}"
                         tools:text="2 Minuten benutzt"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -106,24 +106,24 @@
                         android:visibility="@{TextUtils.isEmpty(remainingTimeToday) ? View.GONE : View.VISIBLE}"
                         android:text="@{remainingTimeToday}"
                         tools:text="5 Minuten verbleibend"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         android:visibility="@{TextUtils.isEmpty(remainingTimeToday) ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:text="@string/manage_child_category_no_time_limits"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
+                        android:drawableTint="?attr/colorOnSurface"
                         android:drawablePadding="8dp"
                         android:drawableStart="@drawable/ic_lock_outline_black_24dp"
                         android:visibility="@{isTemporarilyBlocked ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
                         tools:text="@string/overview_user_item_temporarily_blocked"
                         android:text="@{TextUtils.isEmpty(temporarilyBlockedUntil) ? @string/overview_user_item_temporarily_blocked : @string/overview_user_item_temporarily_blocked_until(temporarilyBlockedUntil)}"
                         android:layout_width="match_parent"
@@ -131,11 +131,11 @@
 
                     <TextView
                         tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
+                        android:drawableTint="?attr/colorOnSurface"
                         android:drawablePadding="8dp"
                         android:drawableStart="@drawable/ic_alarm_off_black_24dp"
                         android:visibility="@{TextUtils.isEmpty(limitsDisabledUntil) ? View.GONE : View.VISIBLE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
                         tools:text="@string/overview_user_item_temporarily_disabled_until"
                         android:text="@{@string/overview_user_item_temporarily_disabled_until(limitsDisabledUntil)}"
                         android:layout_width="match_parent"

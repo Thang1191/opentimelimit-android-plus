@@ -54,7 +54,7 @@
 
             <TextView
                 android:padding="16dp"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@{emptyViewText}"
                 android:visibility="@{TextUtils.isEmpty(emptyViewText) ? View.GONE : View.VISIBLE}"
                 tools:text="@string/category_apps_add_activity_empty_unfiltered"
@@ -72,7 +72,7 @@
 
         <TextView
             android:padding="8dp"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             tools:text="2 entries are hidden"
             android:visibility="@{TextUtils.isEmpty(hiddenEntries) ? View.GONE : View.VISIBLE}"
             android:text="@{hiddenEntries}"
@@ -82,7 +82,7 @@
         <TextView
             android:visibility="@{someOptionsDisabledDueToChildAuthentication ? View.VISIBLE : View.GONE}"
             android:drawablePadding="8dp"
-            android:textAppearance="?android:textAppearanceSmall"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:padding="8dp"
             android:text="@string/child_self_limit_add_caused_missing_options_hint"
             android:layout_width="match_parent"

@@ -53,14 +53,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{title}"
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             tools:text="@string/biometric_manage_enable_dialog_title" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{text}"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             tools:text="@string/biometric_manage_enable_dialog_text" />
 
         <LinearLayout

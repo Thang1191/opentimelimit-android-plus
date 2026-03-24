@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.mustread
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -46,7 +47,7 @@ class MustReadFragment: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val model = ViewModelProvider(this).get(MustReadModel::class.java)
 
-        val alert = AlertDialog.Builder(requireContext(), theme)
+        val alert = MaterialAlertDialogBuilder(requireContext(), theme)
                 .setMessage(requireArguments().getInt(MESSAGE))
                 .setPositiveButton(R.string.generic_ok) { _, _ -> dismiss() }
                 .create()

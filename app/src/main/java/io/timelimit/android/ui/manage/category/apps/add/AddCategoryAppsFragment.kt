@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.category.apps.add
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -190,7 +191,7 @@ class AddCategoryAppsFragment : DialogFragment() {
             }
         }
 
-        return AlertDialog.Builder(requireContext(), R.style.AppTheme)
+        return MaterialAlertDialogBuilder(requireContext(), R.style.AppTheme)
             .setView(binding.root)
             .create()
     }

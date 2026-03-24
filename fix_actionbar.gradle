@@ -1,0 +1,20 @@
+tasks.register("fixActionBar") {
+    doLast {
+        def f = file("app/src/main/res/values/styles.xml")
+        def content = f.text
+        if (!content.contains("AppActionBar")) {
+            content = content.replace("</resources>", """
+    <style name="AppActionBar" parent="Widget.Material3.ActionBar.Solid">
+        <item name="background">?attr/colorSurface</item>
+        <item name="titleTextStyle">@style/AppActionBarTitle</item>
+    </style>
+
+    <style name="AppActionBarTitle" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+</resources>""")
+            content = content.replace('<style name="AppTheme" parent="Theme.Material3.DayNight">', '<style name="AppTheme" parent="Theme.Material3.DayNight">\n        <item name="actionBarStyle">@style/AppActionBar</item>')
+            f.text = content
+        }
+    }
+}

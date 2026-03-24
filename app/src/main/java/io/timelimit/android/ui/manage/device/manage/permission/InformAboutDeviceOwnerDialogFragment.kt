@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.device.manage.permission
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
@@ -38,7 +39,7 @@ class InformAboutDeviceOwnerDialogFragment: DialogFragment() {
         val shouldShow = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
             .setTitle(R.string.inform_about_device_owner_title)
             .setMessage(R.string.inform_about_device_owner_text)
             .setPositiveButton(R.string.inform_about_device_owner_continue) { _, _ ->

@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
-            android:background="@color/orange_background"
+            android:background="?attr/colorErrorContainer"
             android:orientation="vertical"
             android:padding="8dp"
             android:layout_width="match_parent"
@@ -49,12 +49,12 @@
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_warning_white_24dp"
                 android:text="@string/manage_device_manipulation_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@string/manage_device_manipulation_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -62,7 +62,7 @@
             <TextView
                 android:visibility="@{hasCurrentlyManipulation ? View.VISIBLE : View.GONE}"
                 android:text="@string/manage_device_manipulation_type_current"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -75,7 +75,7 @@
             <TextView
                 android:visibility="@{hadManipulationInPast ? View.VISIBLE : View.GONE}"
                 android:text="@string/manage_device_manipulation_type_past"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -87,7 +87,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="?borderlessButtonStyle"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnErrorContainer"
                 android:background="?selectableItemBackground"
                 android:id="@+id/ignore_warnings_btn"
                 android:layout_gravity="end"

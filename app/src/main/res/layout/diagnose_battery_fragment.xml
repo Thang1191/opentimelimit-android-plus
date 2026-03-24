@@ -41,21 +41,21 @@
 
             <TextView
                 android:text="@string/diagnose_bat_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 tools:text="@string/diagnose_bat_status"
                 android:text="@{@string/diagnose_bat_status(charging ? @string/diagnose_bat_status_charging : @string/diagnose_bat_status_mobile)}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 tools:text="@string/diagnose_bat_level"
                 android:text="@{@string/diagnose_bat_level(level)}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.child.advanced.timezone
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
@@ -117,7 +118,7 @@ class SetUserTimezoneDialogFragment : DialogFragment() {
             adapter.timezones = it
         })
 
-        return AlertDialog.Builder(context!!, R.style.FullscreenDialogTheme)
+        return MaterialAlertDialogBuilder(context!!, R.style.FullscreenDialogTheme)
                 .setView(binding.root)
                 .setNegativeButton(R.string.generic_cancel, null)
                 .create()

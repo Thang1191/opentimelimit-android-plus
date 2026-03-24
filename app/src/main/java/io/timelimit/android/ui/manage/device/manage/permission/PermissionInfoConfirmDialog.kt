@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.device.manage.permission
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -42,7 +43,7 @@ class PermissionInfoConfirmDialog: DialogFragment() {
         val permission = requireArguments().getSerializable(EXTRA_PERMISSION) as SystemPermission
         val strings = PermissionInfoStrings.getFor(permission)
 
-        return AlertDialog.Builder(requireContext(), theme)
+        return MaterialAlertDialogBuilder(requireContext(), theme)
             .setTitle(strings.title)
             .setMessage(strings.text)
             .setNegativeButton(R.string.generic_cancel, null)

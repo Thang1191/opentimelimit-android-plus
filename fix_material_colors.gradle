@@ -1,0 +1,36 @@
+tasks.register("fixMaterialColors") {
+    doLast {
+        def layoutsDir = file("app/src/main/res/layout")
+        layoutsDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".xml")) {
+                def content = f.text
+                def newContent = content
+
+                newContent = newContent.replaceAll("@color/text_red", "?attr/colorError")
+                newContent = newContent.replaceAll("@color/orange_text", "?attr/colorError")
+                
+                // For orange background elements, usually cards or containers alerting the user
+                newContent = newContent.replaceAll("@color/orange_background", "?attr/colorErrorContainer")
+                newContent = newContent.replaceAll("@color/background_red", "?attr/colorErrorContainer")
+                
+                // Some text might have explicit white, let's keep them if they are on a red background. But if they are on colorErrorContainer, they should probably be colorOnErrorContainer.
+                // Replace hardcoded white text on these elements to colorOnErrorContainer.
+                // It's safer to just replace any specific occurrences.
+                newContent = newContent.replaceAll('android:textColor="@color/white"', 'android:textColor="?attr/colorOnErrorContainer"')
+                
+                // Replace drawableTint for these alert colors
+                newContent = newContent.replaceAll('android:drawableTint="@color/white"', 'android:drawableTint="?attr/colorOnErrorContainer"')
+                newContent = newContent.replaceAll('android:drawableTint="@color/orange_text"', 'android:drawableTint="?attr/colorError"')
+                newContent = newContent.replaceAll('android:tint="@color/gray"', 'android:tint="?attr/colorOutline"')
+                
+                // Replace text_green with a standard primary or tertiary color
+                newContent = newContent.replaceAll("@color/text_green", "?attr/colorPrimary")
+
+                if (content != newContent) {
+                    f.text = newContent
+                    println "Updated ${f.name}"
+                }
+            }
+        }
+    }
+}

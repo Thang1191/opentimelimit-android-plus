@@ -40,7 +40,7 @@
                         android:padding="8dp">
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/diagnose_exf_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />

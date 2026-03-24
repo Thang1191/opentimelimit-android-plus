@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.setup.parentmode
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -30,7 +31,7 @@ class SetupParentModeDeviceOwnerDialogFragment: DialogFragment() {
         fun newInstance() = SetupParentModeDeviceOwnerDialogFragment()
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
         .setMessage(R.string.setup_select_mode_parent_error_owner)
         .setPositiveButton(R.string.generic_ok, null)
         .create()

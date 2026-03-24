@@ -30,16 +30,16 @@
 
             <TextView
                 tools:ignore="UnusedAttribute"
-                android:drawableTint="?colorOnSurface"
+                android:drawableTint="?attr/colorOnSurface"
                 android:id="@+id/title_view"
                 android:background="?selectableItemBackground"
                 android:drawableEnd="@drawable/ic_info_outline_black_24dp"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:text="@string/manage_device_reboot_manipulation_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/checkbox"
                 android:text="@string/manage_device_reboot_manipulation_checkbox"
                 android:layout_width="match_parent"

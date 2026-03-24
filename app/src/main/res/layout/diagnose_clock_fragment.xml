@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
                     android:text="@string/diagnose_clock_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -72,49 +72,49 @@
                 <TextView
                     android:text="@{@string/diagnose_clock_epoch_seconds(epochalSeconds)}"
                     tools:text="@string/diagnose_clock_epoch_seconds"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:text="@{@string/diagnose_clock_timezone(timeZone)}"
                     tools:text="@string/diagnose_clock_timezone"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:text="@{@string/diagnose_clock_time_of_day(timeOfDay)}"
                     tools:text="@string/diagnose_clock_time_of_day"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:text="@{@string/diagnose_clock_date(dateString)}"
                     tools:text="@string/diagnose_clock_date"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:text="@{@string/diagnose_clock_day_of_week(dayOfWeek)}"
                     tools:text="@string/diagnose_clock_day_of_week"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:text="@{@string/diagnose_clock_day_of_epoch(dayOfEpoch)}"
                     tools:text="@string/diagnose_clock_day_of_epoch"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:text="@{@string/diagnose_clock_minute_of_week(minuteOfWeek)}"
                     tools:text="@string/diagnose_clock_minute_of_week"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

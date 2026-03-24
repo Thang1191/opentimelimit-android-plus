@@ -34,7 +34,7 @@
 
         <TextView
             android:padding="8dp"
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             tools:text="Erlaubte Spiele"
             android:text="@{title}"
             android:layout_width="match_parent"
@@ -79,7 +79,7 @@
 
                 <TextView
                     android:visibility="@{isAddLimitMode ? View.VISIBLE : View.GONE}"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:padding="8dp"
                     android:text="@string/manage_disable_time_limits_toast_time_not_increased_but_child_mode"
                     android:layout_width="match_parent"

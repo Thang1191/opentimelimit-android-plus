@@ -22,7 +22,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
-        android:background="@color/orange_background"
+        android:background="?attr/colorErrorContainer"
         android:orientation="vertical"
         android:padding="8dp"
         android:layout_width="match_parent"
@@ -32,12 +32,12 @@
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_warning_white_24dp"
             android:text="@string/manage_child_manipulation_title"
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             android:text="@string/manage_child_manipulation_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

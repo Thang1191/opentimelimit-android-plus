@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.parent.key
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
@@ -30,7 +31,7 @@ class ParentKeyWrongUserDialogFragment: DialogFragment() {
         fun newInstance() = ParentKeyWrongUserDialogFragment()
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
         .setMessage(R.string.manage_user_key_wrong_user)
         .setPositiveButton(R.string.generic_ok, null)
         .create()

@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
                 <TextView
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/backdoor_intro_text" />
@@ -73,27 +73,27 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@string/backdoor_instruction_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:textColor="?attr/colorSecondary"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 tools:text="abcdefghijklmnopqrstuvwxyz"
                 android:text="@{nonce}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@string/backdoor_instruction_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 tools:text="012345-6789A-BCDEF"
                 android:textColor="?attr/colorSecondary"
                 android:singleLine="true"

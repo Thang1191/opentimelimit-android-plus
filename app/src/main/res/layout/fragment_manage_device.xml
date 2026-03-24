@@ -91,7 +91,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             tools:text="Samsung Galaxy S3"
                             android:text="@{modelString}"
                             android:layout_width="match_parent"
@@ -99,14 +99,14 @@
 
                         <TextView
                             android:text="@{addedAtString}"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             tools:text="Added two days ago"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
                             android:visibility="@{safeUnbox(isThisDevice) ? View.VISIBLE : View.GONE}"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_is_this_device"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -120,22 +120,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <LinearLayout
-                        android:background="@color/background_red"
+                        android:background="?attr/colorErrorContainer"
                         android:orientation="vertical"
                         android:padding="8dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:textColor="@color/white"
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textColor="?attr/colorOnErrorContainer"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_downgrade_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
-                            android:textColor="@color/white"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textColor="?attr/colorOnErrorContainer"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_downgrade_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -156,13 +156,13 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_card_user_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@{userCardText}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -183,13 +183,13 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_card_permission_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@{permissionCardText}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -210,13 +210,13 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_card_feature_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@{featureCardText}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
@@ -237,13 +237,13 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
                             android:text="@string/manage_device_card_manage_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
                             android:text="@string/manage_device_card_manage_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />

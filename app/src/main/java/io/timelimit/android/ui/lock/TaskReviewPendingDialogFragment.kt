@@ -16,6 +16,7 @@
 
 package io.timelimit.android.ui.lock
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -31,7 +32,7 @@ class TaskReviewPendingDialogFragment: DialogFragment() {
         fun newInstance() = TaskReviewPendingDialogFragment()
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
             .setMessage(R.string.lock_task_review_pending_dialog)
             .setPositiveButton(R.string.generic_ok, null)
             .create()

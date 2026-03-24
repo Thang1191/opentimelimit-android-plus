@@ -40,14 +40,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <RadioButton
+                    <com.google.android.material.radiobutton.MaterialRadioButton
                         android:checked="true"
                         android:id="@+id/sort_by_category"
                         android:text="@string/child_apps_sort_by_category"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <RadioButton
+                    <com.google.android.material.radiobutton.MaterialRadioButton
                         android:id="@+id/sort_by_title"
                         android:text="@string/child_apps_sort_by_title"
                         android:layout_width="wrap_content"

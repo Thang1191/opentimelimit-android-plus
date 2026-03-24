@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.category.apps.add
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -28,7 +29,7 @@ class AddAlreadyAssignedAppsInfoDialog: DialogFragment() {
         private const val DIALOG_TAG = "AddAlreadyAssignedAppsInfoDialog"
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(context!!, theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(context!!, theme)
             .setMessage(R.string.must_read_add_already_assigned_apps)
             .setPositiveButton(R.string.generic_ok, null)
             .create()

@@ -35,13 +35,13 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:text="@string/reset_hidden_hints_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@string/reset_hidden_hints_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -49,7 +49,7 @@
             <TextView
                 android:gravity="end"
                 android:visibility="@{canReshowHints == Boolean.FALSE ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@string/reset_hidden_hints_not_possible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

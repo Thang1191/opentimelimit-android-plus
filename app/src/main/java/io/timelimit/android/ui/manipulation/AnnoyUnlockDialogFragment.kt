@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manipulation
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -42,7 +43,7 @@ class AnnoyUnlockDialogFragment: DialogFragment() {
         val activity = requireActivity() as ActivityViewModelHolder
         val logic = DefaultAppLogic.with(requireContext())
 
-        return AlertDialog.Builder(requireContext(), theme)
+        return MaterialAlertDialogBuilder(requireContext(), theme)
             .setMessage(R.string.annoy_unlock_dialog_text)
             .setNegativeButton(R.string.generic_cancel, null)
             .setPositiveButton(R.string.annoy_unlock_dialog_action) { _, _ ->

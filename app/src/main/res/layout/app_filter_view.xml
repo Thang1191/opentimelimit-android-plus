@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <CheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/show_system_apps"
             android:text="@string/category_apps_add_dialog_show_sys_apps"
             android:layout_width="match_parent"

@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.child.advanced.managedisabletimelimits
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import android.widget.TimePicker
@@ -95,7 +96,7 @@ class DisableTimelimitsUntilTimeDialogFragment: DialogFragment() {
             }
         }
 
-        return AlertDialog.Builder(context!!, theme)
+        return MaterialAlertDialogBuilder(context!!, theme)
                 .setTitle(R.string.manage_disable_time_limits_dialog_until)
                 .setView(view)
                 .setPositiveButton(R.string.generic_ok) {

@@ -57,18 +57,18 @@
 
             <TextView
                 tools:ignore="UnusedAttribute"
-                android:drawableTint="?colorOnSurface"
+                android:drawableTint="?attr/colorOnSurface"
                 android:id="@+id/title_view"
                 android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                 android:background="?selectableItemBackground"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:text="@string/manage_device_default_user_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:visibility="@{hasDefaultUser ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 tools:text="@string/manage_device_default_user_status"
                 android:text="@{@string/manage_device_default_user_status(defaultUserTitle)}"
                 android:layout_width="match_parent"
@@ -91,28 +91,28 @@
 
             <TextView
                 android:visibility="@{hasDefaultUser ? View.GONE : View.VISIBLE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:text="@string/manage_device_default_user_switch_reason_unset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:visibility="@{isCurrentDevice ? View.GONE : View.VISIBLE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:text="@string/manage_device_default_user_switch_reason_remote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:visibility="@{isAlreadyUsingDefaultUser ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:text="@string/manage_device_default_user_switch_reason_already_done"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:visibility="@{hasDefaultUser ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@{defaultUserSwitchText}"
                 tools:text="@string/manage_device_default_user_timeout_off"
                 android:layout_width="match_parent"

@@ -37,7 +37,7 @@
 
         <TextView
             android:ellipsize="end"
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:padding="8dp"

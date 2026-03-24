@@ -27,7 +27,7 @@
 
     <TextView
         android:gravity="center_horizontal"
-        android:textAppearance="?android:textAppearanceMedium"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
         android:padding="8dp"
         tools:text="@string/login_category_blocked"
         android:text="@{@string/login_category_blocked(categoryTitle, reason)}"

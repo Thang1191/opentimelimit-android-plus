@@ -19,7 +19,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:textAppearance="?android:textAppearanceLarge"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
         android:padding="16dp"
         android:text="@string/parent_mode_help_text"
         android:layout_width="match_parent"

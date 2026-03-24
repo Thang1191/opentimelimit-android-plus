@@ -38,7 +38,7 @@
             <TextView
                 tools:text="@string/manage_child_tasks_edit"
                 android:text="@{isNewTask ? @string/manage_child_tasks_add : @string/manage_child_tasks_edit}"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -57,7 +57,7 @@
                 tools:text="@string/manage_child_tasks_select_category"
                 style="?borderlessButtonStyle"
                 android:drawableEnd="@drawable/ic_baseline_expand_more_24"
-                android:drawableTint="?colorOnSurface"
+                android:drawableTint="?attr/colorOnSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -84,7 +84,7 @@
                     android:visibility="@{isNewTask ? View.GONE : View.VISIBLE}"
                     android:id="@+id/delete_button"
                     style="?borderlessButtonStyle"
-                    android:textColor="@color/text_red"
+                    android:textColor="?attr/colorError"
                     android:text="@string/generic_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />

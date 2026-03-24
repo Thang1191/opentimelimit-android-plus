@@ -34,7 +34,7 @@
         <TextView
             android:gravity="center_horizontal"
             android:padding="8dp"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             android:text="@{text}"
             tools:text="Are you sure that you want to delete?"
             android:layout_width="match_parent"

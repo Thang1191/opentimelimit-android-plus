@@ -1,0 +1,19 @@
+tasks.register("fixCheckboxes") {
+    doLast {
+        def layoutsDir = file("app/src/main/res/layout")
+        layoutsDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".xml")) {
+                def content = f.text
+                def newContent = content
+
+                newContent = newContent.replaceAll("<CheckBox", "<com.google.android.material.checkbox.MaterialCheckBox")
+                newContent = newContent.replaceAll("</CheckBox>", "</com.google.android.material.checkbox.MaterialCheckBox>")
+
+                if (content != newContent) {
+                    f.text = newContent
+                    println "Updated \${f.name}"
+                }
+            }
+        }
+    }
+}

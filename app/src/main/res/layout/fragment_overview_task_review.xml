@@ -1,44 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation version 3 of the License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
--->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="childName"
-            type="String" />
-
-        <variable
-            name="taskTitle"
-            type="String" />
-
-        <variable
-            name="categoryTitle"
-            type="String" />
-
-        <variable
-            name="duration"
-            type="String" />
-
-        <variable
-            name="lastGrant"
-            type="String" />
-
+        <variable name="childName" type="String" />
+        <variable name="taskTitle" type="String" />
+        <variable name="categoryTitle" type="String" />
+        <variable name="duration" type="String" />
+        <variable name="lastGrant" type="String" />
         <import type="android.text.TextUtils" />
         <import type="android.view.View" />
     </data>
@@ -47,33 +17,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <com.google.android.material.card.MaterialCardView
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
             android:foreground="?selectableItemBackground"
-            app:cardUseCompatPadding="true"
+            app:cardCornerRadius="16dp"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
-                android:padding="8dp"
+                android:padding="20dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:text="@string/task_review_title"
-                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    android:layout_marginBottom="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     tools:text="@string/task_review_text"
                     android:text="@{@string/task_review_text(childName, taskTitle)}"
+                    android:layout_marginBottom="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     tools:text="@string/task_review_category"
                     android:text="@{@string/task_review_category(duration, categoryTitle)}"
                     android:layout_width="match_parent"
@@ -81,21 +56,23 @@
 
                 <TextView
                     android:visibility="@{TextUtils.isEmpty(lastGrant) ? View.GONE : View.VISIBLE}"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     tools:text="@string/task_review_last_grant"
                     android:text="@{@string/task_review_last_grant(lastGrant)}"
+                    android:layout_marginTop="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
-                    android:layout_marginEnd="4dp"
                     android:layout_marginTop="16dp"
+                    android:gravity="end"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/skip_button"
-                        style="?borderlessButtonStyle"
+                        style="?attr/borderlessButtonStyle"
                         android:text="@string/generic_skip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -105,17 +82,17 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/no_button"
                         android:layout_marginEnd="8dp"
-                        style="?materialButtonOutlinedStyle"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:text="@string/generic_no"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/yes_button"
-                        style="?materialButtonOutlinedStyle"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:text="@string/generic_yes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />

@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
-            android:background="@color/orange_background"
+            android:background="?attr/colorErrorContainer"
             android:padding="8dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -45,14 +45,14 @@
             <TextView
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/ic_warning_white_24dp"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 tools:text="@string/usage_stats_permission_required_and_missing_title"
                 android:text="@{title}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:text="@string/usage_stats_permission_required_and_missing_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

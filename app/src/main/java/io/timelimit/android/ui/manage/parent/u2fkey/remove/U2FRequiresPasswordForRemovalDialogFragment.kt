@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.parent.u2fkey.remove
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
@@ -30,7 +31,7 @@ class U2FRequiresPasswordForRemovalDialogFragment: DialogFragment() {
         fun newInstance() = U2FRequiresPasswordForRemovalDialogFragment()
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
         .setMessage(R.string.manage_parent_u2f_remove_key_requires_password)
         .setPositiveButton(R.string.generic_ok, null)
         .create()

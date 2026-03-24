@@ -50,21 +50,21 @@
 
             <TextView
                 android:text="@string/manage_parent_remove_user_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 tools:text="@string/manage_parent_remove_user_text"
                 android:text="@{@string/manage_parent_remove_user_text(userName)}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 tools:text="@string/manage_parent_remove_user_status_ready"
                 android:text="@{currentStatus}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

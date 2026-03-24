@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.category.apps.addactivity
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -114,7 +115,7 @@ class AddAppActivitiesDialogFragment: DialogFragment() {
             dismissAllowingStateLoss()
         }
 
-        return AlertDialog.Builder(requireContext(), R.style.AppTheme)
+        return MaterialAlertDialogBuilder(requireContext(), R.style.AppTheme)
             .setView(binding.root)
             .create()
     }

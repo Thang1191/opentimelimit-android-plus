@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.category.appsandrules
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -30,7 +31,7 @@ class AppClickedDialogFragment: DialogFragment() {
         fun newInstance() = AppClickedDialogFragment()
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
         .setMessage(R.string.app_clicked_dialog_message)
         .setPositiveButton(R.string.generic_ok, null)
         .create()

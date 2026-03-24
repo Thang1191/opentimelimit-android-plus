@@ -1,0 +1,30 @@
+tasks.register("fixLayouts") {
+    doLast {
+        def layoutsDir = file("app/src/main/res/layout")
+        layoutsDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".xml")) {
+                def content = f.text
+                def newContent = content
+
+                // Fix typography
+                newContent = newContent.replaceAll("\\?android:textAppearanceLarge", "?attr/textAppearanceTitleLarge")
+                newContent = newContent.replaceAll("\\?android:textAppearanceMedium", "?attr/textAppearanceBodyLarge")
+                newContent = newContent.replaceAll("\\?android:textAppearanceSmall", "?attr/textAppearanceBodyMedium")
+                newContent = newContent.replaceAll("\\?android:textAppearanceListItem", "?attr/textAppearanceBodyLarge")
+
+                // Update common layouts to look better inside Material Cards
+                // Simple hack: if there is a LinearLayout padding="8dp" we might want to make it 16dp
+                // but let's be safe and do a regex specifically for card children if we could, 
+                // or just leave it. The typography makes a huge difference.
+
+                // Also update android:textColor="?colorOnSurface" to "?attr/colorOnSurface" (just in case they missed attr)
+                newContent = newContent.replaceAll('"?colorOnSurface"', '"?attr/colorOnSurface"')
+
+                if (content != newContent) {
+                    f.text = newContent
+                    println "Updated \${f.name}"
+                }
+            }
+        }
+    }
+}

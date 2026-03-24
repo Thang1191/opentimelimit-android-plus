@@ -57,7 +57,7 @@
                     <include android:id="@+id/filter"
                         layout="@layout/app_filter_view" />
 
-                    <CheckBox
+                    <com.google.android.material.checkbox.MaterialCheckBox
                         android:checked="true"
                         android:id="@+id/show_other_categories_apps"
                         android:text="@string/category_apps_add_dialog_show_assigned_to_other_category"
@@ -70,7 +70,7 @@
             <!-- this gets a custom behavior for the correct align -->
             <TextView
                 android:id="@+id/empty_view"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:padding="16dp"
                 android:gravity="center"
                 tools:text="Es gab einen schlimmen Fehler, daher ist diese Liste jetzt leer"
@@ -89,7 +89,7 @@
 
         <TextView
             android:padding="8dp"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             tools:text="2 entries are hidden"
             android:visibility="@{TextUtils.isEmpty(hiddenEntries) ? View.GONE : View.VISIBLE}"
             android:text="@{hiddenEntries}"
@@ -99,7 +99,7 @@
         <TextView
             android:visibility="@{someOptionsDisabledDueToChildAuthentication ? View.VISIBLE : View.GONE}"
             android:drawablePadding="8dp"
-            android:textAppearance="?android:textAppearanceSmall"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:padding="8dp"
             android:text="@string/child_self_limit_add_caused_missing_options_hint"
             android:layout_width="match_parent"

@@ -96,7 +96,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 tools:text="@string/category_time_limit_rule_dialog_new"
                 android:text="@{safeUnbox(isNewRule) ? @string/category_time_limit_rule_dialog_new : @string/category_time_limit_rule_dialog_edit}"
                 android:layout_width="match_parent"
@@ -152,7 +152,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:paddingStart="0dp"
                     android:paddingEnd="8dp"
                     android:text="@string/category_time_limit_rules_apply_to_part_day_1"
@@ -168,7 +168,7 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:padding="8dp"
                     android:text="@string/category_time_limit_rules_apply_to_part_day_2"
                     android:layout_width="wrap_content"
@@ -183,7 +183,7 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:padding="8dp"
                     android:text="@string/category_time_limit_rules_apply_to_part_day_3"
                     android:layout_width="wrap_content"
@@ -210,7 +210,7 @@
                     android:paddingStart="0dp"
                     app:layout_row="1"
                     app:layout_column="1"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:text="@string/category_time_limit_rules_session_limit_duration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
@@ -234,7 +234,7 @@
                     android:gravity="center_vertical"
                     android:paddingEnd="8dp"
                     android:paddingStart="0dp"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     app:layout_row="2"
                     app:layout_column="1"
                     android:text="@string/category_time_limit_rules_session_limit_pause"
@@ -287,7 +287,7 @@
 
             <TextView
                 android:visibility="@{safeUnbox(applyToWholeDay) ? View.GONE : View.VISIBLE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:text="@string/category_time_limit_rules_warning_day_part"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -296,8 +296,8 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 android:visibility="@{applyToZeroDays ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textColor="@color/orange_text"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorError"
                 android:text="@string/category_time_limit_rules_warning_zero_day_part"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -306,8 +306,8 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 android:visibility="@{blockCurrentSelfLimitationParams ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textColor="@color/text_red"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorError"
                 android:text="@string/category_time_limit_rules_error_self_limit_only_more_strict"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -327,7 +327,7 @@
                     style="?borderlessButtonStyle"
                     android:onClick="@{() -> handlers.onDeleteRule()}"
                     android:visibility="@{safeUnbox(isNewRule) || isSelfLimitMode ? View.GONE : View.VISIBLE}"
-                    android:textColor="@color/text_red"
+                    android:textColor="?attr/colorError"
                     android:text="@string/generic_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />

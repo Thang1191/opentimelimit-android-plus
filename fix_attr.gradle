@@ -1,0 +1,14 @@
+tasks.register("fixAttr") {
+    doLast {
+        def layoutsDir = file("app/src/main/res/layout")
+        layoutsDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".xml")) {
+                def content = f.text
+                if (content.contains('?"?attr/colorOnSurface"')) {
+                    content = content.replaceAll('\\?"\\?attr/colorOnSurface"', '"?attr/colorOnSurface"')
+                    f.text = content
+                }
+            }
+        }
+    }
+}

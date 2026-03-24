@@ -22,7 +22,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
             android:text="@string/time_warning_custom_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -41,7 +41,7 @@
             <TextView
                 android:paddingStart="8dp"
                 android:paddingEnd="0dp"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:layout_gravity="center_vertical"
                 android:text="@string/select_time_span_view_minutes"
                 android:layout_width="wrap_content"
