@@ -16,11 +16,12 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="24dp">
 
     <TextView
-        android:textAppearance="?android:textAppearanceLarge"
-        android:padding="16dp"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurface"
         android:text="@string/parent_mode_help_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

@@ -20,6 +20,8 @@
 
     <ScrollView
         android:id="@+id/scroll"
+        android:clipToPadding="false"
+        android:paddingVertical="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -46,41 +48,48 @@
                 layout="@layout/allow_child_self_limit_add_view" />
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp">
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/generic_manage_card"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" />
 
                     <Button
-                        style="?materialButtonOutlinedStyle"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:id="@+id/rename_child_button"
                         android:text="@string/rename_child_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <Button
-                        style="?materialButtonOutlinedStyle"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:id="@+id/duplicate_child_button"
                         android:text="@string/duplicate_child_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" />
 
                     <Button
-                        style="?materialButtonOutlinedStyle"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:id="@+id/delete_user_button"
                         android:text="@string/delete_child_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

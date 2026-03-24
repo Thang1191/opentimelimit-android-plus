@@ -176,7 +176,7 @@ class NewLoginFragment: DialogFragment() {
                     val start = Math.max(password.selectionStart, 0)
                     val end = Math.max(password.selectionEnd, 0)
 
-                    password.text.replace(Math.min(start, end), Math.max(start, end), content, 0, content.length)
+                    password.text?.replace(Math.min(start, end), Math.max(start, end), content, 0, content.length)
                 }
 
                 override fun onGoClicked() {

@@ -15,6 +15,7 @@
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="io.timelimit.android.ui.manage.category.blocked_times.CopyBlockedTimeAreasDialogFragment">
 
     <data>
@@ -26,15 +27,16 @@
     </data>
 
     <LinearLayout
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="16dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:padding="8dp"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:paddingBottom="16dp"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="?attr/colorOnSurface"
             tools:text="@string/blocked_time_areas_copy_from"
             android:text="@{TextUtils.isEmpty(sourceDayName) ? @string/blocked_time_areas_copy_from : @string/blocked_time_areas_copy_to(sourceDayName)}"
             android:layout_width="match_parent"
@@ -61,50 +63,65 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_monday"
                     android:text="@string/day_of_week_monday"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_tuesday"
                     android:text="@string/day_of_week_tuesday"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_wednesday"
                     android:text="@string/day_of_week_wednesday"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_thursday"
                     android:text="@string/day_of_week_thursday"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_friday"
                     android:text="@string/day_of_week_friday"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_saturday"
                     android:text="@string/day_of_week_saturday"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/to_sunday"
                     android:text="@string/day_of_week_sunday"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <Button
-                    android:layout_margin="8dp"
+                    android:layout_marginTop="16dp"
+                    style="?attr/materialButtonStyle"
                     android:id="@+id/save_button"
                     android:layout_gravity="end"
                     android:text="@string/generic_save"

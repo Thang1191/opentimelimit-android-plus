@@ -42,37 +42,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <com.google.android.material.card.MaterialCardView
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            style="?attr/materialCardViewElevatedStyle"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
+            app:cardCornerRadius="16dp"
             android:id="@+id/card"
             android:foreground="?selectableItemBackground"
-            app:cardUseCompatPadding="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
-                android:padding="8dp"
+                android:padding="20dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     tools:ignore="UnusedAttribute"
-                    android:drawableTint="?colorOnSurface"
-                    android:drawablePadding="8dp"
+                    android:drawableTint="?attr/colorOnSurface"
+                    android:drawablePadding="16dp"
                     android:drawableStart="@drawable/ic_smartphone_black_24dp"
+                    android:gravity="center_vertical"
                     tools:text="Galaxy S8"
-                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface"
                     android:text="@{deviceTitle}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     tools:ignore="UnusedAttribute"
-                    android:drawableTint="?colorOnSurface"
-                    android:drawablePadding="8dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableTint="?attr/colorOnSurfaceVariant"
+                    android:drawablePadding="16dp"
                     android:drawableStart="@drawable/ic_account_circle_black_24dp"
+                    android:gravity="center_vertical"
                     android:visibility="@{currentDeviceUserTitle == null ? View.GONE : View.VISIBLE}"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     tools:text="Max Mustermann"
                     android:text="@{currentDeviceUserTitle}"
                     android:layout_width="match_parent"
@@ -80,10 +86,12 @@
 
                 <TextView
                     tools:ignore="UnusedAttribute"
+                    android:layout_marginTop="16dp"
                     android:drawableTint="@color/orange_text"
                     android:textColor="@color/orange_text"
-                    android:drawablePadding="8dp"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:visibility="@{safeUnbox(hasManipulation) ? View.VISIBLE : View.GONE}"
                     android:drawableStart="@drawable/ic_warning_black_24dp"
                     android:text="@string/overview_device_item_manipulation"
@@ -92,10 +100,12 @@
 
                 <TextView
                     tools:ignore="UnusedAttribute"
+                    android:layout_marginTop="16dp"
                     android:drawableTint="@color/orange_text"
                     android:textColor="@color/orange_text"
-                    android:drawablePadding="8dp"
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:visibility="@{safeUnbox(isMissingRequiredPermission) ? View.VISIBLE : View.GONE}"
                     android:drawableStart="@drawable/ic_warning_black_24dp"
                     android:text="@string/overview_device_item_missing_permission"

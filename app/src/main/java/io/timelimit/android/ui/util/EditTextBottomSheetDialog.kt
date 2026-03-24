@@ -48,7 +48,7 @@ abstract class EditTextBottomSheetDialog: DialogFragment() {
 
     fun didInitField() {
         if (isAdded) {
-            binding.editText.setSelection(binding.editText.text.length)
+            binding.editText.text?.length?.let { binding.editText.setSelection(it) }
             binding.editText.requestFocus()
             inputMethodManager.showSoftInput(binding.editText, 0)
         }

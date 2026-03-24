@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TimeLimit Copyright <C> 2019 - 2021 Jonas Lochmann
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation version 3 of the License.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <https://www.gnu.org/licenses/>.
+  TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -51,253 +40,265 @@
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="88dp">
 
         <LinearLayout
-            android:padding="8dp"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <TextView
-                android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:text="@string/lock_header_blocked"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="16dp" />
-
-            <TextView
-                android:gravity="center_horizontal"
-                android:padding="4dp"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:text="@string/lock_header_what"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorPrimary"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1" />
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                app:cardCornerRadius="16dp"
+                app:strokeWidth="0dp">
+
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="20dp"
+                    android:gravity="center_vertical">
 
                     <ImageView
                         android:id="@+id/app_icon"
-                        tools:src="@mipmap/ic_launcher"
-                        android:layout_margin="8dp"
-                        android:layout_gravity="center_vertical"
                         android:layout_width="48dp"
-                        android:layout_height="48dp" />
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="16dp"
+                        tools:src="@mipmap/ic_launcher"
+                        android:importantForAccessibility="no" />
 
                     <LinearLayout
-                        android:layout_gravity="center_vertical"
-                        android:padding="8dp"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
                         <TextView
-                            android:textAppearance="?android:textAppearanceMedium"
-                            tools:text="Evil App"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="@{appTitle}"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            android:textColor="?attr/colorOnSurface"
+                            tools:text="Evil App" />
 
                         <TextView
-                            tools:text="verbotene Apps"
-                            android:visibility="@{TextUtils.isEmpty(appCategoryTitle) ? View.GONE : View.VISIBLE}"
-                            android:textAppearance="?android:textAppearanceMedium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
                             android:text="@{appCategoryTitle}"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="@{TextUtils.isEmpty(appCategoryTitle) ? View.GONE : View.VISIBLE}"
+                            tools:text="verbotene Apps" />
 
                         <TextView
-                            tools:text="com.evil.app"
-                            android:textAppearance="?android:textAppearanceSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
                             android:text="@{packageName}"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            tools:text="com.evil.app" />
 
                         <TextView
-                            tools:text=".EvilActivity"
-                            android:textAppearance="?android:textAppearanceSmall"
-                            android:text="@{activityName}"
-                            android:visibility="@{TextUtils.isEmpty(activityName) ? View.GONE : View.VISIBLE}"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="@{activityName}"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:visibility="@{TextUtils.isEmpty(activityName) ? View.GONE : View.VISIBLE}"
+                            tools:text=".EvilActivity" />
 
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:gravity="center_horizontal"
-                android:padding="4dp"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:text="@string/lock_header_why"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/lock_header_why"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorPrimary"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1" />
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:strokeWidth="0dp">
+
                 <LinearLayout
-                    android:padding="8dp"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_add_circle_outline_black_24dp"
-                        android:visibility="@{reason == BlockingReason.NotPartOfAnCategory ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
                         android:text="@string/lock_reason_no_category"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.NotPartOfAnCategory ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute" />
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_block_black_24dp"
-                        android:visibility="@{reason == BlockingReason.TemporarilyBlocked ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
                         android:text="@{@string/lock_reason_temporarily_blocked(blockedKindLabel)}"
-                        tools:text="@string/lock_reason_temporarily_blocked"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.TemporarilyBlocked ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="@string/lock_reason_temporarily_blocked" />
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_time_white_24dp"
-                        android:visibility="@{reason == BlockingReason.BlockedAtThisTime ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
                         android:text="@{@string/lock_reason_blocked_time(blockedKindLabel)}"
-                        tools:text="@string/lock_reason_blocked_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.BlockedAtThisTime ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="@string/lock_reason_blocked_time" />
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_timer_black_24dp"
-                        android:visibility="@{reason == BlockingReason.TimeOver ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
                         android:text="@{@string/lock_reason_time_over(blockedKindLabel)}"
-                        tools:text="@string/lock_reason_time_over"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.TimeOver ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="@string/lock_reason_time_over" />
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_timer_black_24dp"
-                        android:visibility="@{reason == BlockingReason.TimeOverExtraTimeCanBeUsedLater ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
                         android:text="@{@string/lock_reason_time_over_etra_time_can_be_used_later(blockedKindLabel)}"
-                        tools:text="@string/lock_reason_time_over_etra_time_can_be_used_later"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.TimeOverExtraTimeCanBeUsedLater ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="@string/lock_reason_time_over_etra_time_can_be_used_later" />
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_battery_alert_black_24dp"
-                        android:visibility="@{reason == BlockingReason.BatteryLimit ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
                         android:text="@{@string/lock_reason_battery_limit(blockedKindLabel)}"
-                        tools:text="@string/lock_reason_battery_limit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.BatteryLimit ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="@string/lock_reason_battery_limit" />
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_pause_circle_outline_black_24dp"
-                        android:visibility="@{reason == BlockingReason.SessionDurationLimit ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
                         android:text="@{@string/lock_reason_session_duration(blockedKindLabel)}"
-                        tools:text="@string/lock_reason_session_duration"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.SessionDurationLimit ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="@string/lock_reason_session_duration" />
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_baseline_wifi_lock_24"
-                        android:visibility="@{reason == BlockingReason.MissingRequiredNetwork ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
                         android:text="@{@string/lock_reason_missing_required_network(blockedKindLabel)}"
-                        tools:text="@string/lock_reason_missing_required_network"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.MissingRequiredNetwork ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="@string/lock_reason_missing_required_network" />
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_baseline_wifi_lock_24"
-                        android:visibility="@{reason == BlockingReason.MissingNetworkCheckPermission ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
                         android:text="@{@string/lock_reason_missing_network_check_permission(blockedKindLabel)}"
-                        tools:text="@string/lock_reason_missing_network_check_permission"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.MissingNetworkCheckPermission ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="@string/lock_reason_missing_network_check_permission" />
 
                     <TextView
-                        android:paddingStart="8dp"
-                        android:paddingEnd="0dp"
-                        tools:ignore="UnusedAttribute"
-                        android:drawablePadding="16dp"
-                        android:drawableTint="?colorOnSurface"
-                        android:drawableStart="@drawable/ic_baseline_wifi_lock_24"
-                        android:visibility="@{reason == BlockingReason.ForbiddenNetwork ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:text="@{@string/lock_reason_forbidden_network(blockedKindLabel)}"
-                        tools:text="@string/lock_reason_forbidden_network"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_baseline_wifi_lock_24"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
+                        android:text="@{@string/lock_reason_forbidden_network(blockedKindLabel)}"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        android:visibility="@{reason == BlockingReason.ForbiddenNetwork ? View.VISIBLE : View.GONE}"
+                        app:drawableTint="?attr/colorOnSurfaceVariant"
+                        tools:ignore="UnusedAttribute"
+                        tools:text="@string/lock_reason_forbidden_network" />
 
-                    <ProgressBar
-                        android:visibility="@{reason == null ? View.VISIBLE : View.GONE}"
-                        android:padding="8dp"
-                        android:layout_gravity="center_horizontal"
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:indeterminate="true"
+                        android:visibility="@{reason == null ? View.VISIBLE : View.GONE}"
+                        app:indicatorSize="48dp"
+                        app:trackThickness="4dp" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation version 3 of the License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
+    TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
@@ -25,89 +14,98 @@
     </data>
 
     <ViewFlipper
+        android:id="@+id/flipper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/flipper">
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            android:padding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="24dp">
 
             <TextView
-                tools:text="@string/manage_child_tasks_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@{isNewTask ? @string/manage_child_tasks_add : @string/manage_child_tasks_edit}"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="Edit Task" />
 
-            <EditText
-                android:id="@+id/task_title"
-                tools:text="Zimmer aufräumen"
-                android:hint="@string/manage_child_tasks_title_hint"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:imeOptions="actionDone"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/task_title_layout"
+                style="?attr/textInputOutlinedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:hint="@string/manage_child_tasks_title_hint"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/task_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    tools:text="Clean up room" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/category_dropdown"
-                tools:text="@string/manage_child_tasks_select_category"
-                style="?borderlessButtonStyle"
-                android:drawableEnd="@drawable/ic_baseline_expand_more_24"
-                android:drawableTint="?colorOnSurface"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:icon="@drawable/ic_baseline_expand_more_24"
+                app:iconGravity="end"
+                tools:text="@string/manage_child_tasks_select_category" />
 
             <io.timelimit.android.ui.view.SelectTimeSpanView
                 android:id="@+id/timespan"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
 
             <LinearLayout
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <View
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="1px" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:gravity="end"
+                android:orientation="horizontal">
 
                 <Button
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:visibility="@{isNewTask ? View.GONE : View.VISIBLE}"
                     android:id="@+id/delete_button"
-                    style="?borderlessButtonStyle"
-                    android:textColor="@color/text_red"
-                    android:text="@string/generic_delete"
+                    style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/generic_delete"
+                    android:textColor="?attr/colorError"
+                    android:visibility="@{isNewTask ? View.GONE : View.VISIBLE}" />
 
                 <Button
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
                     android:id="@+id/confirm_button"
-                    android:text="@string/generic_save"
+                    style="?attr/materialButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/generic_save" />
 
             </LinearLayout>
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ProgressBar
-                style="?android:progressBarStyleLarge"
-                android:layout_centerInParent="true"
+            android:layout_height="match_parent">
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                app:indicatorSize="48dp"
+                app:trackThickness="4dp" />
         </RelativeLayout>
     </ViewFlipper>
 </layout>

@@ -23,6 +23,8 @@
     <androidx.recyclerview.widget.RecyclerView
         tools:listitem="@layout/fragment_category_apps_item"
         android:id="@+id/recycler"
+        android:clipToPadding="false"
+        android:paddingVertical="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

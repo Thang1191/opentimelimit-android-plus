@@ -44,7 +44,7 @@
         android:onClick="@{() -> handlers.onMinuteTileClick(item)}"
         android:foreground="?selectableItemBackground"
         android:padding="8dp"
-        android:textAppearance="?android:textAppearanceSmall"
+        android:textAppearance="?attr/textAppearanceBodySmall"
         android:textColor="@color/white"
         android:gravity="center"
         tools:text="10:15"

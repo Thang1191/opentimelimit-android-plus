@@ -29,56 +29,69 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="20dp">
 
             <TextView
                 tools:ignore="UnusedAttribute"
-                android:drawableTint="?colorOnSurface"
+                android:drawableTint="?attr/colorOnSurface"
                 android:id="@+id/title_view"
                 android:background="?selectableItemBackground"
                 android:drawableEnd="@drawable/ic_info_outline_black_24dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:text="@string/category_settings_battery_limit_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@{@string/category_settings_battery_limit_charging(minLevelCharging)}"
                 tools:text="@string/category_settings_battery_limit_charging"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <SeekBar
                 android:max="10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:id="@+id/seekbar_charging" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@{@string/category_settings_battery_limit_mobile(minLevelMobile)}"
                 tools:text="@string/category_settings_battery_limit_mobile"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <SeekBar
                 android:nextFocusDown="@id/confirm_btn"
                 android:max="10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:id="@+id/seekbar_mobile" />
 
             <com.google.android.material.button.MaterialButton
                 android:visibility="gone"
                 tools:visibility="visible"
+                style="?attr/materialButtonStyle"
                 app:icon="@drawable/ic_check_black_24dp"
                 android:text="@string/generic_save"
                 android:id="@+id/confirm_btn"

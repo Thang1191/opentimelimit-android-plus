@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation version 3 of the License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
+    TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -36,35 +24,49 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        app:cardUseCompatPadding="true"
+        style="?attr/materialCardViewFilledStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="24dp"
+        app:strokeWidth="0dp">
+
         <LinearLayout
-            android:padding="8dp"
+            android:padding="24dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
+                android:id="@+id/intro_title"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnSurface"
                 android:text="@{title}"
-                tools:text="@string/manage_child_categories_intro_title"
+                tools:text="Introduction Title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:id="@+id/intro_text"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@{text}"
-                tools:text="@string/manage_child_categories_intro_text"
+                tools:text="This is a descriptive text for the introduction card that explains something useful to the user."
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:visibility="@{noSwipe ? View.GONE : View.VISIBLE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorPrimary"
                 android:text="@string/generic_swipe_to_dismiss"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

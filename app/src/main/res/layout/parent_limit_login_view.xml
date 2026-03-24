@@ -38,52 +38,63 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        app:cardUseCompatPadding="true"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="20dp">
 
             <TextView
                 android:text="@string/parent_limit_login_title"
                 tools:ignore="UnusedAttribute"
-                android:drawableTint="?colorOnSurface"
+                android:drawableTint="?attr/colorOnSurface"
                 android:id="@+id/title_view"
                 android:background="?selectableItemBackground"
                 android:drawableEnd="@drawable/ic_info_outline_black_24dp"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 tools:text="@string/parent_limit_login_status_needs_other_user"
                 android:text="@{status}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <Button
                 android:enabled="@{canConfigure}"
                 android:id="@+id/change_button"
                 android:text="@string/parent_limit_login_select_button"
-                style="?materialButtonOutlinedStyle"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:visibility="@{showPreBlock ? View.VISIBLE : View.GONE}"
                 tools:text="@string/parent_limit_login_pre_block_disabled"
                 android:text="@{preBlockStatus}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
 
             <Button
                 android:visibility="@{showPreBlock ? View.VISIBLE : View.GONE}"
-                style="?materialButtonOutlinedStyle"
+                style="?attr/materialButtonOutlinedStyle"
                 android:id="@+id/pre_block_button"
                 android:text="@string/parent_limit_login_pre_block_button"
                 android:layout_width="match_parent"

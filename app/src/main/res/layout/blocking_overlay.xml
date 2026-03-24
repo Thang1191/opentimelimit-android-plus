@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation version 3 of the License.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <https://www.gnu.org/licenses/>.
+  TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="showWarningMessage"
@@ -27,54 +18,74 @@
         <import type="android.text.TextUtils" />
     </data>
 
-    <RelativeLayout
-        android:background="?colorSurface"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface"
+        android:padding="32dp">
 
         <LinearLayout
-            android:padding="16dp"
-            android:layout_centerInParent="true"
-            android:orientation="vertical"
+            android:id="@+id/content_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/footer_app_name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed">
 
             <ImageView
-                android:layout_gravity="center_horizontal"
+                android:id="@+id/app_logo"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:src="@mipmap/ic_launcher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:importantForAccessibility="no" />
 
             <TextView
-                tools:text="@string/lock_overlay_text"
-                android:text="@{@string/lock_overlay_text(blockedElement)}"
-                android:visibility="@{TextUtils.isEmpty(blockedElement) ? View.GONE : View.VISIBLE}"
-                android:layout_marginTop="16dp"
-                android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:id="@+id/blocked_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:text="@{@string/lock_overlay_text(blockedElement)}"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="?attr/colorOnSurface"
+                android:visibility="@{TextUtils.isEmpty(blockedElement) ? View.GONE : View.VISIBLE}"
+                tools:text="Open TimeLimit has blocked this app." />
 
-            <TextView
-                android:layout_marginTop="16dp"
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:visibility="@{showWarningMessage ? View.VISIBLE : View.GONE}"
-                android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:text="@string/lock_overlay_warning"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                app:cardBackgroundColor="?attr/colorErrorContainer"
+                app:cardCornerRadius="16dp"
+                app:strokeWidth="0dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:gravity="center"
+                    android:text="@string/lock_overlay_warning"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnErrorContainer" />
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
         <TextView
-            android:layout_margin="8dp"
-            android:gravity="center_horizontal"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:text="@string/app_name"
-            android:layout_alignParentBottom="true"
+            android:id="@+id/footer_app_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOutline"
+            android:letterSpacing="0.2"
+            android:textAllCaps="true"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

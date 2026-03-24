@@ -63,13 +63,16 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:id="@+id/card"
-        app:cardUseCompatPadding="true"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp"
         android:foreground="?selectableItemBackground"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
         <LinearLayout
-            android:padding="8dp"
+            android:padding="20dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -77,54 +80,68 @@
             <TextView
                 android:text="@{maxTimeString}"
                 tools:text="höchstens 5 Minuten"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@{daysString}"
                 tools:text="Montag und Dienstag"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@{timeAreaString}"
                 tools:text="von 12:00 bis 18:00"
                 android:visibility="@{TextUtils.isEmpty(timeAreaString) ? View.GONE : View.VISIBLE}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@{sessionLimitString}"
                 tools:text="10 Minuten Pause nach 5 Minuten Nutzung"
                 android:visibility="@{TextUtils.isEmpty(sessionLimitString) ? View.GONE : View.VISIBLE}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@{expiresAtString}"
                 tools:text="@string/category_time_limit_rules_expires_at_short"
                 android:visibility="@{TextUtils.isEmpty(expiresAtString) ? View.GONE : View.VISIBLE}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp" />
 
             <TextView
                 android:visibility="@{safeUnbox(appliesToExtraTime) ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/category_time_limit_rules_applied_to_extra_time"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
             <TextView
                 android:visibility="@{ignoredOnExtraTime ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/category_time_limit_rules_ignore_on_extra_time"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
             <ProgressBar
                 android:visibility="@{usageProgressInPercent == null ? View.GONE : View.VISIBLE}"
@@ -132,15 +149,18 @@
                 tools:progress="50"
                 style="?android:progressBarStyleHorizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
 
             <TextView
                 android:visibility="@{TextUtils.isEmpty(usageAsText) ? View.GONE : View.VISIBLE}"
                 android:text="@{usageAsText}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 tools:text="2 Minuten verbraucht"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

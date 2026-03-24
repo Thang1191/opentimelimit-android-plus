@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation version 3 of the License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
+    TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,65 +20,103 @@
         android:layout_width="match_parent"
         android:id="@+id/flipper"
         android:layout_height="match_parent">
+
         <ScrollView
             android:id="@+id/scroll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="24dp">
+
             <LinearLayout
                 android:orientation="vertical"
-                android:padding="8dp"
+                android:padding="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.card.MaterialCardView
-                    app:cardUseCompatPadding="true"
+                    style="?attr/materialCardViewElevatedStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="24dp">
+
                     <LinearLayout
-                        android:padding="8dp"
+                        android:padding="24dp"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
+                            android:textAppearance="?attr/textAppearanceHeadlineSmall"
                             android:text="@string/add_user_title"
+                            android:textColor="?attr/colorOnSurface"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="24dp" />
 
-                        <EditText
-                            android:inputType="textPersonName"
-                            android:id="@+id/name"
-                            android:hint="@string/add_user_hint_name"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/name_layout"
+                            style="?attr/textInputOutlinedStyle"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:hint="@string/add_user_hint_name"
+                            android:layout_marginBottom="16dp"
+                            app:startIconDrawable="@drawable/ic_account_circle_black_24dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textPersonName" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:textAppearance="?attr/textAppearanceLabelLarge"
+                            android:text="User Type"
+                            android:textColor="?attr/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp" />
 
                         <RadioGroup
                             android:id="@+id/radio_group_type"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp">
 
-                            <RadioButton
-                                android:checked="true"
+                            <com.google.android.material.radiobutton.MaterialRadioButton
                                 android:id="@+id/radio_type_parent"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:text="@string/add_user_type_parent"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:checked="true" />
 
-                            <RadioButton
+                            <com.google.android.material.radiobutton.MaterialRadioButton
                                 android:id="@+id/radio_type_child"
-                                android:text="@string/add_user_type_child"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="@string/add_user_type_child" />
 
                         </RadioGroup>
 
-                        <TextView
-                            android:visibility="@{isCreatingChildUser ? View.VISIBLE : View.GONE}"
-                            android:textAppearance="?android:textAppearanceMedium"
-                            android:text="@string/add_user_child_password_info"
+                        <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:visibility="@{isCreatingChildUser ? View.VISIBLE : View.GONE}"
+                            app:cardBackgroundColor="?attr/colorSecondaryContainer"
+                            app:cardCornerRadius="12dp"
+                            app:strokeWidth="0dp"
+                            android:layout_marginBottom="16dp">
+
+                            <TextView
+                                android:padding="12dp"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:text="@string/add_user_child_password_info"
+                                android:textColor="?attr/colorOnSecondaryContainer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </com.google.android.material.card.MaterialCardView>
 
                         <io.timelimit.android.ui.view.SetPasswordView
                             android:id="@+id/password"
@@ -98,13 +124,13 @@
                             android:layout_height="wrap_content" />
 
                         <Button
-                            android:layout_marginTop="8dp"
-                            android:layout_marginEnd="8dp"
                             android:id="@+id/create_btn"
-                            android:layout_gravity="end"
-                            android:text="@string/generic_create"
+                            style="?attr/materialButtonStyle"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="24dp"
+                            android:text="@string/generic_create" />
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>

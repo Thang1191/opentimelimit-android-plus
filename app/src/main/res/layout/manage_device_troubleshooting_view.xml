@@ -30,24 +30,30 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        app:cardUseCompatPadding="true"
+        style="?attr/materialCardViewElevatedStyle"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
-            android:padding="8dp"
+            android:padding="20dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:text="@string/manage_device_troubleshooting_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:visibility="@{showNoChildUser ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/manage_device_troubleshooting_text_no_child"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -55,7 +61,8 @@
             <TextView
                 android:visibility="@{showBatteryOptimizations ? View.VISIBLE : View.GONE}"
                 android:id="@+id/batery_optimizations_text"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/manage_device_troubleshooting_text_battery_optimization"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

@@ -20,6 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scroll"
+        android:clipToPadding="false"
+        android:paddingVertical="8dp"
         tools:context="io.timelimit.android.ui.setup.SetupSelectModeFragment">
 
         <LinearLayout
@@ -29,32 +31,41 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
                 android:text="@string/setup_select_mode_intro" />
 
             <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewElevatedStyle"
                 android:focusable="true"
                 android:id="@+id/btn_child_mode"
                 android:foreground="?selectableItemBackground"
-                app:cardUseCompatPadding="true"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/setup_select_mode_child_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp" />
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:text="@string/setup_select_mode_child_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -65,26 +76,32 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewElevatedStyle"
                 android:focusable="true"
                 android:id="@+id/btn_parent_mode"
                 android:foreground="?selectableItemBackground"
-                app:cardUseCompatPadding="true"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/setup_select_mode_parent_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp" />
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:text="@string/setup_select_mode_parent_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -93,26 +110,32 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewElevatedStyle"
                 android:focusable="true"
                 android:id="@+id/btn_uninstall"
                 android:foreground="?selectableItemBackground"
-                app:cardUseCompatPadding="true"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/setup_select_mode_uninstall_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp" />
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:text="@string/setup_select_mode_uninstall_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />

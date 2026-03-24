@@ -18,40 +18,47 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp"
+    android:paddingVertical="16dp"
+    android:paddingHorizontal="24dp"
     tools:context="io.timelimit.android.ui.manage.category.blocked_times.BlockedTimeAreasHelpDialog">
 
     <TextView
-        android:textAppearance="?android:textAppearanceLarge"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textColor="?attr/colorOnSurface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="@string/generic_help" />
 
     <TextView
-        android:paddingTop="8dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/blocked_time_areas_help_about"
-        android:textAppearance="?android:textAppearanceSmall"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:paddingTop="8dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/blocked_time_areas_help_colors"
-        android:textAppearance="?android:textAppearanceSmall"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:paddingTop="8dp"
+        android:layout_marginBottom="16dp"
         android:text="@string/blocked_time_areas_help_structure"
-        android:textAppearance="?android:textAppearanceSmall"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:paddingTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/blocked_time_areas_help_modify"
-        android:textAppearance="?android:textAppearanceSmall"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation version 3 of the License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
+    TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="text"
@@ -27,27 +16,30 @@
     </data>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <TextView
-            android:gravity="center_horizontal"
-            android:padding="8dp"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:text="@{text}"
-            tools:text="Are you sure that you want to delete?"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="@{text}"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="Are you sure that you want to delete?" />
 
         <Button
-            style="@style/DangerButton"
-            android:layout_margin="16dp"
-            android:onClick="@{() -> handlers.onConfirmDeletion()}"
-            android:layout_gravity="end"
-            android:text="@string/generic_delete"
+            android:id="@+id/confirm_delete"
+            style="?attr/materialButtonStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:backgroundTint="?attr/colorError"
+            android:onClick="@{() -> handlers.onConfirmDeletion()}"
+            android:text="@string/generic_delete"
+            android:textColor="?attr/colorOnError" />
 
     </LinearLayout>
 </layout>

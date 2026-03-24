@@ -51,6 +51,8 @@
 
     <ScrollView
         android:id="@+id/scroll"
+        android:clipToPadding="false"
+        android:paddingVertical="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -61,17 +63,23 @@
 
             <TextView
                 android:text="@string/setup_device_permissions_text"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp" />
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp">
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -79,41 +87,42 @@
                         android:id="@+id/usage_stats_access_title"
                         android:nextFocusDown="@id/usage_stats_access_btn"
                         tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
+                        android:drawableTint="?attr/colorOnSurface"
                         android:background="?selectableItemBackground"
                         android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                         android:onClick="@{() -> handlers.helpUsageStatsAccess()}"
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/manage_device_permissions_usagestats_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{usageStatsAccess == RuntimePermissionStatus.Granted ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_green"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_granted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{usageStatsAccess == RuntimePermissionStatus.NotGranted ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_red"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_not_granted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{usageStatsAccess == RuntimePermissionStatus.NotRequired ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_green"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_not_required"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -122,8 +131,8 @@
                         android:id="@+id/usage_stats_access_btn"
                         android:nextFocusUp="@id/usage_stats_access_title"
                         android:nextFocusDown="@id/device_admin_btn"
-                        style="?materialButtonOutlinedStyle"
-                        android:layout_marginEnd="8dp"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_marginTop="16dp"
                         android:text="@string/manage_device_permission_btn_modify"
                         android:layout_gravity="end"
                         android:onClick="@{() -> handlers.openUsageStatsSettings()}"
@@ -137,45 +146,54 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp">
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/manage_device_permission_device_admin_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" />
 
                     <TextView
                         android:visibility="@{protectionLevel == ProtectionLevel.None ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:text="@string/manage_device_permission_device_admin_text_disabled"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         android:visibility="@{protectionLevel == ProtectionLevel.SimpleDeviceAdmin ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:text="@string/manage_device_permission_device_admin_text_simple"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         android:visibility="@{protectionLevel == ProtectionLevel.PasswordDeviceAdmin ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:text="@string/manage_device_permission_device_admin_text_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
                         android:visibility="@{protectionLevel == ProtectionLevel.DeviceOwner ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:text="@string/manage_device_permission_device_admin_text_owner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -184,8 +202,8 @@
                         android:id="@+id/device_admin_btn"
                         android:nextFocusUp="@id/usage_stats_access_btn"
                         android:nextFocusDown="@id/notification_access_title"
-                        style="?materialButtonOutlinedStyle"
-                        android:layout_marginEnd="8dp"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_marginTop="16dp"
                         android:text="@string/manage_device_permission_btn_modify"
                         android:layout_gravity="end"
                         android:onClick="@{() -> handlers.manageDeviceAdmin()}"
@@ -196,12 +214,15 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp">
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -210,41 +231,42 @@
                         android:nextFocusUp="@id/device_admin_btn"
                         android:nextFocusDown="@id/notification_access_button"
                         tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
+                        android:drawableTint="?attr/colorOnSurface"
                         android:background="?selectableItemBackground"
                         android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                         android:onClick="@{() -> handlers.helpNotificationAccess()}"
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/manage_device_permission_notification_access_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{notificationAccessPermission == NewPermissionStatus.Granted ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_green"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_granted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{notificationAccessPermission == NewPermissionStatus.NotGranted ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_red"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_not_granted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{notificationAccessPermission == NewPermissionStatus.NotSupported ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_red"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_not_supported"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -253,8 +275,8 @@
                         android:id="@+id/notification_access_button"
                         android:nextFocusUp="@id/notification_access_title"
                         android:nextFocusDown="@id/overlay_title"
-                        style="?materialButtonOutlinedStyle"
-                        android:layout_marginEnd="8dp"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_marginTop="16dp"
                         android:text="@string/manage_device_permission_btn_modify"
                         android:layout_gravity="end"
                         android:onClick="@{() -> handlers.openNotificationAccessSettings()}"
@@ -266,12 +288,15 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp">
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -280,41 +305,42 @@
                         android:nextFocusUp="@id/notification_access_button"
                         android:nextFocusDown="@id/overlay_btn"
                         tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
+                        android:drawableTint="?attr/colorOnSurface"
                         android:background="?selectableItemBackground"
                         android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                         android:onClick="@{() -> handlers.helpDrawOverOtherApps()}"
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/manage_device_permissions_overlay_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{overlayPermission == RuntimePermissionStatus.Granted ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_green"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_granted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{overlayPermission == RuntimePermissionStatus.NotGranted ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_red"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_not_granted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{overlayPermission == RuntimePermissionStatus.NotRequired ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_green"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_not_required"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -323,8 +349,8 @@
                         android:id="@+id/overlay_btn"
                         android:nextFocusUp="@id/overlay_title"
                         android:nextFocusDown="@id/accessibility_title"
-                        style="?materialButtonOutlinedStyle"
-                        android:layout_marginEnd="8dp"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_marginTop="16dp"
                         android:text="@string/manage_device_permission_btn_modify"
                         android:layout_gravity="end"
                         android:onClick="@{() -> handlers.openDrawOverOtherAppsScreen()}"
@@ -336,12 +362,15 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp">
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -350,31 +379,32 @@
                         android:nextFocusUp="@id/overlay_btn"
                         android:nextFocusDown="@id/accessibility_btn"
                         tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
+                        android:drawableTint="?attr/colorOnSurface"
                         android:background="?selectableItemBackground"
                         android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                         android:onClick="@{() -> handlers.helpAccesibility()}"
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/manage_device_permission_accessibility_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{accessibilityServiceEnabled == true ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_green"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_granted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:paddingTop="8dp"
+                        android:paddingTop="16dp"
                         android:gravity="center_horizontal"
                         android:visibility="@{accessibilityServiceEnabled == false ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/text_red"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:text="@string/manage_device_permission_status_not_granted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -383,8 +413,8 @@
                         android:id="@+id/accessibility_btn"
                         android:nextFocusUp="@id/accessibility_title"
                         android:nextFocusDown="@id/next_btn"
-                        style="?materialButtonOutlinedStyle"
-                        android:layout_marginEnd="8dp"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_marginTop="16dp"
                         android:text="@string/manage_device_permission_btn_modify"
                         android:layout_gravity="end"
                         android:onClick="@{() -> handlers.openAccessibilitySettings()}"
@@ -397,9 +427,10 @@
             <Button
                 android:nextFocusUp="@id/accessibility_btn"
                 android:id="@+id/next_btn"
+                style="?attr/materialButtonStyle"
                 android:layout_gravity="end"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
                 android:enabled="@{usageStatsAccess != RuntimePermissionStatus.NotGranted}"
                 android:onClick="@{() -> handlers.gotoNextStep()}"
                 android:text="@string/wiazrd_next"

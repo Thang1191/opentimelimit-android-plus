@@ -16,31 +16,36 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <ScrollView
         android:id="@+id/scroll"
+        android:clipToPadding="false"
+        android:paddingVertical="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
-            android:padding="8dp"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnSurface"
                 android:text="@string/setup_help_look_for_this_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <ImageView
-                android:layout_margin="16dp"
+                android:layout_margin="24dp"
                 android:src="@drawable/ic_info_outline_black_24dp"
                 android:layout_width="match_parent"
                 android:layout_height="64dp" />
 
             <TextView
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:gravity="center_horizontal"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/setup_help_there_is_help_like_at_example"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -49,17 +54,19 @@
                 layout="@layout/manage_user_key_view" />
 
             <TextView
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="24dp"
                 android:autoLink="web"
                 android:id="@+id/text_with_links"
                 android:text="@string/setup_help_info_about_support_and_documentation"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <Button
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="24dp"
                 android:id="@+id/next_button"
+                style="?attr/materialButtonStyle"
                 android:text="@string/wiazrd_next"
                 android:layout_gravity="end"
                 android:layout_width="wrap_content"

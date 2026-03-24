@@ -20,6 +20,8 @@
 
     <ScrollView
         android:id="@+id/scroll"
+        android:clipToPadding="false"
+        android:paddingVertical="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -30,25 +32,30 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp">
                 <LinearLayout
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
                         tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
+                        android:drawableTint="?attr/colorOnSurface"
                         android:background="?selectableItemBackground"
                         android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                         android:id="@+id/extra_time_title"
                         android:text="@string/category_settings_extra_time_title"
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" />
 
                     <io.timelimit.android.ui.view.SelectTimeSpanView
                         android:id="@+id/extra_time_selection"
@@ -59,15 +66,20 @@
                         android:nextFocusDown="@id/extra_time_btn_ok"
                         android:id="@+id/switch_limit_extra_time_to_today"
                         android:text="@string/category_settings_extra_time_switch_limit_to_day"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp" />
 
                     <com.google.android.material.button.MaterialButton
                         app:icon="@drawable/ic_check_black_24dp"
                         android:visibility="gone"
                         tools:visibility="visible"
                         android:layout_gravity="end"
+                        android:layout_marginTop="8dp"
                         android:id="@+id/extra_time_btn_ok"
+                        style="?attr/materialButtonStyle"
                         android:text="@string/category_settings_extra_time_change"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -94,41 +106,48 @@
                 layout="@layout/manage_category_networks_view" />
 
             <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp">
                 <LinearLayout
-                    android:padding="8dp"
+                    android:padding="20dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/generic_manage_card"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" />
 
                     <Button
-                        style="?materialButtonOutlinedStyle"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:id="@+id/add_used_time_btn"
                         android:text="@string/add_used_time_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
                     <Button
-                        style="?materialButtonOutlinedStyle"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:id="@+id/edit_category_title_go"
                         android:text="@string/category_settings_rename"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" />
 
                     <Button
-                        style="?materialButtonOutlinedStyle"
+                        style="?attr/materialButtonOutlinedStyle"
                         android:id="@+id/btn_delete_category"
                         android:text="@string/category_settings_delete"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

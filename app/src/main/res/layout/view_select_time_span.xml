@@ -1,97 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation version 3 of the License.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <https://www.gnu.org/licenses/>.
+  TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/seekbar_container"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="16dp">
 
         <LinearLayout
-            android:layout_weight="1"
-            android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="wrap_content">
-
-            <SeekBar
-                android:id="@+id/minutes_seek"
-                android:max="59"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/minutes_text"
-                tools:text="5 Minuten"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="5 Minutes" />
+
+            <SeekBar
+                android:id="@+id/minutes_seek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:max="59" />
+
+            <TextView
+                android:id="@+id/hours_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="1 Hour" />
 
             <SeekBar
                 android:id="@+id/hours_seek"
-                android:max="23"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:max="23" />
 
             <TextView
-                tools:text="1 Stunde"
-                android:id="@+id/hours_text"
+                android:id="@+id/days_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="2 Days" />
 
             <SeekBar
                 android:id="@+id/days_seek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <TextView
-                tools:text="2 Tage"
-                android:id="@+id/days_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
         </LinearLayout>
 
         <ImageView
-            app:tint="?colorOnSurface"
             android:id="@+id/switch_to_picker_button"
-            android:src="@drawable/ic_unfold_more_black_24dp"
-            android:background="?selectableItemBackground"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center_vertical"
-            android:layout_width="32dp"
-            android:layout_height="32dp" />
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="12dp"
+            android:src="@drawable/ic_unfold_more_black_24dp"
+            app:tint="?attr/colorPrimary"
+            android:importantForAccessibility="no" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/picker_container"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="16dp"
+        android:gravity="center">
 
         <LinearLayout
             android:id="@+id/day_picker_container"
-            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical">
 
             <NumberPicker
                 android:id="@+id/day_picker"
@@ -99,17 +108,20 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/select_time_span_view_days"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical">
 
             <NumberPicker
                 android:id="@+id/hour_picker"
@@ -117,17 +129,19 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/select_time_span_view_hours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <NumberPicker
                 android:id="@+id/minute_picker"
@@ -135,28 +149,31 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/select_time_span_view_minutes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
         </LinearLayout>
 
         <View
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <ImageView
-            app:tint="?colorOnSurface"
             android:id="@+id/switch_to_seekbar_button"
-            android:rotation="90"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_unfold_more_black_24dp"
-            android:background="?selectableItemBackground"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center_vertical"
-            android:layout_width="32dp"
-            android:layout_height="32dp" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="12dp"
+            android:rotation="90"
+            android:src="@drawable/ic_unfold_more_black_24dp"
+            app:tint="?attr/colorPrimary"
+            android:importantForAccessibility="no" />
 
     </LinearLayout>
 

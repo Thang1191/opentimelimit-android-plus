@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TimeLimit Copyright <C> 2019 - 2021 Jonas Lochmann
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation version 3 of the License.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <https://www.gnu.org/licenses/>.
+  TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
@@ -25,86 +15,91 @@
             type="io.timelimit.android.ui.view.SelectDayViewHandlers" />
     </data>
 
-    <RelativeLayout
+    <HorizontalScrollView
+        android:id="@+id/select_days_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <HorizontalScrollView
-            android:scrollbars="none"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/select_days_scroll"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:scrollbars="none">
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle_group"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            app:singleSelection="false">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/day_0"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:text="@string/day_of_week_monday_short"
+                android:checked="@{safeUnbox(selectedDays.get(0))}"
+                android:onClick="@{() -> handlers.updateDayChecked(0)}" />
 
-                <com.google.android.material.button.MaterialButton
-                    style="?materialButtonOutlinedStyle"
-                    android:minWidth="0px"
-                    android:onClick="@{() -> handlers.updateDayChecked(0)}"
-                    android:checked="@{safeUnbox(selectedDays.get(0))}"
-                    android:text="@string/day_of_week_monday_short"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <requestFocus />
-                </com.google.android.material.button.MaterialButton>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/day_1"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:text="@string/day_of_week_tuesday_short"
+                android:checked="@{safeUnbox(selectedDays.get(1))}"
+                android:onClick="@{() -> handlers.updateDayChecked(1)}" />
 
-                <com.google.android.material.button.MaterialButton
-                    style="?materialButtonOutlinedStyle"
-                    android:minWidth="0px"
-                    android:onClick="@{() -> handlers.updateDayChecked(1)}"
-                    android:checked="@{safeUnbox(selectedDays.get(1))}"
-                    android:text="@string/day_of_week_tuesday_short"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/day_2"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:text="@string/day_of_week_wednesday_short"
+                android:checked="@{safeUnbox(selectedDays.get(2))}"
+                android:onClick="@{() -> handlers.updateDayChecked(2)}" />
 
-                <com.google.android.material.button.MaterialButton
-                    style="?materialButtonOutlinedStyle"
-                    android:minWidth="0px"
-                    android:onClick="@{() -> handlers.updateDayChecked(2)}"
-                    android:checked="@{safeUnbox(selectedDays.get(2))}"
-                    android:text="@string/day_of_week_wednesday_short"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/day_3"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:text="@string/day_of_week_thursday_short"
+                android:checked="@{safeUnbox(selectedDays.get(3))}"
+                android:onClick="@{() -> handlers.updateDayChecked(3)}" />
 
-                <com.google.android.material.button.MaterialButton
-                    style="?materialButtonOutlinedStyle"
-                    android:minWidth="0px"
-                    android:onClick="@{() -> handlers.updateDayChecked(3)}"
-                    android:checked="@{safeUnbox(selectedDays.get(3))}"
-                    android:text="@string/day_of_week_thursday_short"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/day_4"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:text="@string/day_of_week_friday_short"
+                android:checked="@{safeUnbox(selectedDays.get(4))}"
+                android:onClick="@{() -> handlers.updateDayChecked(4)}" />
 
-                <com.google.android.material.button.MaterialButton
-                    style="?materialButtonOutlinedStyle"
-                    android:minWidth="0px"
-                    android:onClick="@{() -> handlers.updateDayChecked(4)}"
-                    android:checked="@{safeUnbox(selectedDays.get(4))}"
-                    android:text="@string/day_of_week_friday_short"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/day_5"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:text="@string/day_of_week_saturday_short"
+                android:checked="@{safeUnbox(selectedDays.get(5))}"
+                android:onClick="@{() -> handlers.updateDayChecked(5)}" />
 
-                <com.google.android.material.button.MaterialButton
-                    style="?materialButtonOutlinedStyle"
-                    android:minWidth="0px"
-                    android:onClick="@{() -> handlers.updateDayChecked(5)}"
-                    android:checked="@{safeUnbox(selectedDays.get(5))}"
-                    android:text="@string/day_of_week_saturday_short"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/day_6"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:text="@string/day_of_week_sunday_short"
+                android:checked="@{safeUnbox(selectedDays.get(6))}"
+                android:onClick="@{() -> handlers.updateDayChecked(6)}" />
 
-                <com.google.android.material.button.MaterialButton
-                    style="?materialButtonOutlinedStyle"
-                    android:minWidth="0px"
-                    android:onClick="@{() -> handlers.updateDayChecked(6)}"
-                    android:checked="@{safeUnbox(selectedDays.get(6))}"
-                    android:text="@string/day_of_week_sunday_short"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.button.MaterialButtonToggleGroup>
-        </HorizontalScrollView>
-    </RelativeLayout>
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+    </HorizontalScrollView>
 </layout>

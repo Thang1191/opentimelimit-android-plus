@@ -29,33 +29,41 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_margin="8dp"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp">
+
         <LinearLayout
-            android:padding="8dp"
+            android:padding="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:text="@string/diagnose_bat_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 tools:text="@string/diagnose_bat_status"
                 android:text="@{@string/diagnose_bat_status(charging ? @string/diagnose_bat_status_charging : @string/diagnose_bat_status_mobile)}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 tools:text="@string/diagnose_bat_level"
                 android:text="@{@string/diagnose_bat_level(level)}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

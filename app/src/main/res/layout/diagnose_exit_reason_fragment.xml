@@ -37,8 +37,9 @@
 
         <TextView
             android:visibility="@{isEmpty ? View.VISIBLE : View.GONE}"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:padding="16dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:padding="24dp"
             android:gravity="center"
             android:text="@string/diagnose_er_empty"
             android:layout_width="match_parent"

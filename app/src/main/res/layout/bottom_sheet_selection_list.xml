@@ -32,6 +32,8 @@
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll"
+        android:clipToPadding="false"
+        android:paddingVertical="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -42,8 +44,10 @@
 
             <TextView
                 android:visibility="@{TextUtils.isEmpty(title) ? View.GONE : View.VISIBLE}"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:padding="8dp"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnSurface"
+                android:paddingHorizontal="24dp"
+                android:paddingBottom="16dp"
                 android:text="@{title}"
                 tools:text="Systemeinstellungen"
                 android:layout_width="match_parent"
@@ -61,13 +65,16 @@
 
             <TextView
                 android:visibility="@{someOptionsDisabledDueToChildAuthentication ? View.VISIBLE : View.GONE}"
-                android:drawablePadding="8dp"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:padding="8dp"
+                android:drawablePadding="12dp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="16dp"
                 android:text="@string/child_self_limit_add_caused_missing_options_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:drawableStartCompat="@drawable/ic_vpn_key_black_24dp" />
+                app:drawableStartCompat="@drawable/ic_vpn_key_black_24dp"
+                app:drawableTint="?attr/colorOnSurfaceVariant" />
 
         </LinearLayout>
 

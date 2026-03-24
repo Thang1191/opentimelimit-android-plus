@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation version 3 of the License.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <https://www.gnu.org/licenses/>.
+  TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -61,93 +50,125 @@
             android:layout_height="wrap_content" />
 
         <com.google.android.material.card.MaterialCardView
-            android:foreground="?selectableItemBackground"
             android:id="@+id/card"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            app:cardUseCompatPadding="true"
+            style="?attr/materialCardViewElevatedStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="20dp">
+
             <LinearLayout
-                android:padding="8dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp">
 
                 <LinearLayout
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@{title}"
-                        tools:text="Erlaubte Apps"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        tools:text="Allowed Apps" />
 
                     <TextView
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:visibility="@{usedForAppsWithoutCategory ? View.VISIBLE : View.GONE}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="@string/manage_child_category_for_unassigned_apps"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="?attr/colorPrimary"
+                        android:visibility="@{usedForAppsWithoutCategory ? View.VISIBLE : View.GONE}" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="vertical"
+                        android:visibility="@{TextUtils.isEmpty(usedTimeToday) &amp;&amp; TextUtils.isEmpty(remainingTimeToday) ? View.GONE : View.VISIBLE}">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{usedTimeToday}"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:visibility="@{TextUtils.isEmpty(usedTimeToday) ? View.GONE : View.VISIBLE}"
+                            tools:text="Used: 2 minutes" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{remainingTimeToday}"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:visibility="@{TextUtils.isEmpty(remainingTimeToday) ? View.GONE : View.VISIBLE}"
+                            tools:text="Remaining: 5 minutes" />
+                    </LinearLayout>
 
                     <TextView
-                        android:visibility="@{TextUtils.isEmpty(usedTimeToday) ? View.GONE : View.VISIBLE}"
-                        android:text="@{usedTimeToday}"
-                        tools:text="2 Minuten benutzt"
-                        android:textAppearance="?android:textAppearanceMedium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:visibility="@{TextUtils.isEmpty(remainingTimeToday) ? View.GONE : View.VISIBLE}"
-                        android:text="@{remainingTimeToday}"
-                        tools:text="5 Minuten verbleibend"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:visibility="@{TextUtils.isEmpty(remainingTimeToday) ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
                         android:text="@string/manage_child_category_no_time_limits"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:visibility="@{TextUtils.isEmpty(remainingTimeToday) ? View.VISIBLE : View.GONE}" />
 
-                    <TextView
-                        tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
-                        android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_lock_outline_black_24dp"
-                        android:visibility="@{isTemporarilyBlocked ? View.VISIBLE : View.GONE}"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        tools:text="@string/overview_user_item_temporarily_blocked"
-                        android:text="@{TextUtils.isEmpty(temporarilyBlockedUntil) ? @string/overview_user_item_temporarily_blocked : @string/overview_user_item_temporarily_blocked_until(temporarilyBlockedUntil)}"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="vertical"
+                        android:visibility="@{isTemporarilyBlocked || !TextUtils.isEmpty(limitsDisabledUntil) ? View.VISIBLE : View.GONE}">
 
-                    <TextView
-                        tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
-                        android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_alarm_off_black_24dp"
-                        android:visibility="@{TextUtils.isEmpty(limitsDisabledUntil) ? View.GONE : View.VISIBLE}"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        tools:text="@string/overview_user_item_temporarily_disabled_until"
-                        android:text="@{@string/overview_user_item_temporarily_disabled_until(limitsDisabledUntil)}"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:drawableStart="@drawable/ic_lock_outline_black_24dp"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:text="@{TextUtils.isEmpty(temporarilyBlockedUntil) ? @string/overview_user_item_temporarily_blocked : @string/overview_user_item_temporarily_blocked_until(temporarilyBlockedUntil)}"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorError"
+                            android:visibility="@{isTemporarilyBlocked ? View.VISIBLE : View.GONE}"
+                            app:drawableTint="?attr/colorError"
+                            tools:ignore="UnusedAttribute"
+                            tools:text="Temporarily Blocked" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_alarm_off_black_24dp"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:text="@{@string/overview_user_item_temporarily_disabled_until(limitsDisabledUntil)}"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:textColor="?attr/colorSecondary"
+                            android:visibility="@{TextUtils.isEmpty(limitsDisabledUntil) ? View.GONE : View.VISIBLE}"
+                            app:drawableTint="?attr/colorSecondary"
+                            tools:ignore="UnusedAttribute"
+                            tools:text="Limits disabled until..." />
+                    </LinearLayout>
 
                 </LinearLayout>
 
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/category_switch"
-                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

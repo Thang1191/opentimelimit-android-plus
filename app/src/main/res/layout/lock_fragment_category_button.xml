@@ -23,13 +23,12 @@
     </data>
 
     <Button
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        app:layout_flexGrow="1"
-        style="?materialButtonOutlinedStyle"
-        tools:text="@string/setup_category_allowed"
         android:id="@+id/button"
-        android:text="@{title}"
+        style="?attr/materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="4dp"
+        android:text="@{title}"
+        app:layout_flexGrow="1"
+        tools:text="@string/setup_category_allowed" />
 </layout>

@@ -35,49 +35,61 @@
     <com.google.android.material.card.MaterialCardView
         android:visibility="@{safeUnbox(hasAnyManipulation) ? View.VISIBLE : View.GONE}"
         android:theme="@style/AppThemeDarkOverlay"
-        app:cardUseCompatPadding="true"
+        style="?attr/materialCardViewFilledStyle"
+        app:cardBackgroundColor="@color/orange_background"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
-            android:background="@color/orange_background"
             android:orientation="vertical"
-            android:padding="8dp"
+            android:padding="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:drawablePadding="8dp"
+                android:drawablePadding="16dp"
                 android:drawableStart="@drawable/ic_warning_white_24dp"
                 android:text="@string/manage_device_manipulation_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/white"
                 android:text="@string/manage_device_manipulation_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <TextView
-                android:visibility="@{hasCurrentlyManipulation ? View.VISIBLE : View.GONE}"
-                android:text="@string/manage_device_manipulation_type_current"
-                android:textAppearance="?android:textAppearanceMedium"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/manage_device_manipulation_type_current"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:textColor="@color/white"
+                android:visibility="@{hasCurrentlyManipulation ? View.VISIBLE : View.GONE}" />
 
             <LinearLayout
                 android:id="@+id/current_manipulations"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:visibility="@{hadManipulationInPast ? View.VISIBLE : View.GONE}"
                 android:text="@string/manage_device_manipulation_type_past"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <LinearLayout
                 android:id="@+id/past_manipulations"
@@ -86,10 +98,10 @@
                 android:layout_height="wrap_content" />
 
             <com.google.android.material.button.MaterialButton
-                style="?borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:textColor="@color/white"
-                android:background="?selectableItemBackground"
                 android:id="@+id/ignore_warnings_btn"
+                android:layout_marginTop="16dp"
                 android:layout_gravity="end"
                 android:text="@string/manage_device_manipulation_btn_ignore"
                 android:layout_width="wrap_content"

@@ -22,8 +22,10 @@
         tools:context="io.timelimit.android.ui.login.NewLoginFragment">
 
         <TextView
-            android:padding="8dp"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/login_user_selection_text" />

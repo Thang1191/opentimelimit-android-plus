@@ -33,51 +33,62 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="20dp">
 
             <TextView
                 android:id="@+id/title_view"
                 android:text="@string/biometric_manage_title"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:background="?selectableItemBackground"
                 app:drawableEndCompat="@drawable/ic_info_outline_black_24dp"
-                app:drawableTint="?colorOnSurface"
+                app:drawableTint="?attr/colorOnSurface"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:text="@{biometricAuthEnabled ? @string/biometric_manage_description_enabled(userName) : @string/biometric_manage_description_disabled(userName)}"
                 tools:text="@string/biometric_manage_description_disabled"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:visibility="@{errorText == null || errorText.isEmpty() ? View.VISIBLE : View.GONE}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:text="@{errorText}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorError"
                 android:visibility="@{errorText == null || errorText.isEmpty() ? View.GONE : View.VISIBLE}"
                 app:drawableStartCompat="@android:drawable/ic_dialog_alert"
-                app:drawableTint="?android:attr/textColorSecondary"
-                android:drawablePadding="8dp"
+                app:drawableTint="?attr/colorError"
+                android:drawablePadding="16dp"
                 tools:text="@string/biometric_manage_error_hw_not_available"
                 tools:visibility="visible"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/toggle_biometric_auth_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/biometric_manage_switch_text"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:checked="@{biometricAuthEnabled}"
                 android:enabled="@{errorText == null || errorText.isEmpty()}" />
         </LinearLayout>

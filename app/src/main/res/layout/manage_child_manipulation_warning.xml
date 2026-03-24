@@ -16,28 +16,34 @@
 -->
 <com.google.android.material.card.MaterialCardView
     android:theme="@style/AppThemeDarkOverlay"
-    app:cardUseCompatPadding="true"
+    style="?attr/materialCardViewFilledStyle"
+    app:cardBackgroundColor="@color/orange_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
-        android:background="@color/orange_background"
         android:orientation="vertical"
-        android:padding="8dp"
+        android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:drawablePadding="8dp"
+            android:drawablePadding="16dp"
             android:drawableStart="@drawable/ic_warning_white_24dp"
             android:text="@string/manage_child_manipulation_title"
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
 
         <TextView
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/white"
             android:text="@string/manage_child_manipulation_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation version 3 of the License.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <https://www.gnu.org/licenses/>.
+  TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -42,54 +31,88 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:foreground="?selectableItemBackground"
         android:id="@+id/card"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="20dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="20dp">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
-                tools:text="Zimmer aufräumen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@{title}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="Clean up room" />
 
-            <!-- hidden at the lock screen where only items of one category are shown -->
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
-                android:visibility="@{category == null ? View.GONE : View.VISIBLE}"
-                tools:text="Erlaubte Spiele"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="@{category}"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorPrimary"
+                android:visibility="@{category == null ? View.GONE : View.VISIBLE}"
+                tools:text="Games" />
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="1dp"
+                android:layout_marginVertical="12dp"
+                android:background="?attr/colorOutlineVariant" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_lock_open_white_24dp"
+                    app:tint="?attr/colorOnSurfaceVariant"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@{duration}"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="15 Minutes" />
+
+            </LinearLayout>
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
-                tools:text="15 Minuten"
-                android:text="@{duration}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:visibility="@{pendingReview ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/lock_task_review_pending_hint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textColor="?attr/colorError"
+                android:visibility="@{pendingReview ? View.VISIBLE : View.GONE}" />
 
             <TextView
-                android:visibility="@{TextUtils.isEmpty(lastGrant) ? View.GONE : View.VISIBLE}"
-                android:textAppearance="?android:textAppearanceMedium"
-                tools:text="@string/manage_child_task_last_grant"
-                android:text="@{@string/manage_child_task_last_grant(lastGrant)}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{@string/manage_child_task_last_grant(lastGrant)}"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="@{TextUtils.isEmpty(lastGrant) ? View.GONE : View.VISIBLE}"
+                tools:text="Last granted: 2 hours ago" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

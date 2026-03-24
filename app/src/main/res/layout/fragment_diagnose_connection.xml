@@ -25,6 +25,8 @@
 
     <ScrollView
         android:id="@+id/scroll"
+        android:clipToPadding="false"
+        android:paddingVertical="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -34,25 +36,32 @@
             android:orientation="vertical">
 
             <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardUseCompatPadding="true">
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardCornerRadius="16dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:text="@string/diagnose_connection_network_id"
-                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp" />
 
                     <TextView
                         tools:text="ABCDEF"
                         android:text="@{networkId}"
-                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 

@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation version 3 of the License.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <https://www.gnu.org/licenses/>.
+  TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -55,246 +44,293 @@
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="88dp">
 
         <LinearLayout
-            android:padding="8dp"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <com.google.android.material.card.MaterialCardView
-                android:visibility="@{reason == BlockingReason.NotPartOfAnCategory ? View.VISIBLE : View.GONE}"
-                android:foreground="?selectableItemBackground"
-                android:onClick="@{() -> handlers.allowTemporarily()}"
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{() -> handlers.allowTemporarily()}"
+                android:visibility="@{reason == BlockingReason.NotPartOfAnCategory ? View.VISIBLE : View.GONE}"
+                app:cardCornerRadius="16dp">
+
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/lock_allow_temporarily_header"
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorOnSurface" />
 
                     <TextView
-                        tools:text="@string/lock_allow_temporarily_text"
-                        android:text="@{@string/lock_allow_temporarily_text(appTitle)}"
-                        android:textAppearance="?android:textAppearanceMedium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
+                        android:layout_height="wrap_content"
+                        android:text="@{@string/lock_allow_temporarily_text(appTitle)}"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        tools:text="Allow Temporarily" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:visibility="@{reason == BlockingReason.NotPartOfAnCategory ? View.VISIBLE : View.GONE}"
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:visibility="@{reason == BlockingReason.NotPartOfAnCategory ? View.VISIBLE : View.GONE}"
+                app:cardCornerRadius="16dp">
+
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:text="@string/lock_add_to_category_title"
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
-                        android:text="@string/lock_add_to_category_text"
-                        android:textAppearance="?android:textAppearanceMedium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/lock_add_to_category_title"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/lock_add_to_category_text"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/add_to_category_options"
-                        app:flexWrap="wrap"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <!-- This is filled at runtime -->
-
-                    </com.google.android.flexbox.FlexboxLayout>
-
+                        android:layout_height="wrap_content"
+                        app:flexWrap="wrap" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:visibility="@{reason == BlockingReason.TimeOver ? View.VISIBLE : View.GONE}"
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:visibility="@{reason == BlockingReason.TimeOver ? View.VISIBLE : View.GONE}"
+                app:cardCornerRadius="16dp">
+
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
-                        tools:ignore="UnusedAttribute"
-                        android:drawableTint="?colorOnSurface"
-                        android:background="?selectableItemBackground"
-                        android:drawableEnd="@drawable/ic_info_outline_black_24dp"
                         android:id="@+id/extra_time_title"
-                        android:text="@string/lock_extratime_title"
-                        android:textAppearance="?android:textAppearanceLarge"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:drawableEnd="@drawable/ic_info_outline_black_24dp"
+                        android:focusable="true"
+                        android:text="@string/lock_extratime_title"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        app:drawableTint="?attr/colorPrimary"
+                        tools:ignore="UnusedAttribute" />
 
                     <io.timelimit.android.ui.view.SelectTimeSpanView
                         android:id="@+id/extra_time_selection"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/switch_limit_extra_time_to_today"
-                        android:text="@string/category_settings_extra_time_switch_limit_to_day"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/category_settings_extra_time_switch_limit_to_day"
+                        android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                     <Button
-                        android:visibility="gone"
-                        tools:visibility="visible"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_gravity="end"
                         android:id="@+id/extra_time_btn_ok"
-                        android:text="@string/generic_ok"
+                        style="?attr/materialButtonStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/generic_ok"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:visibility="@{reason == BlockingReason.TemporarilyBlocked ? View.VISIBLE : View.GONE}"
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:visibility="@{reason == BlockingReason.TemporarilyBlocked ? View.VISIBLE : View.GONE}"
+                app:cardCornerRadius="16dp">
+
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
                     <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:text="@string/lock_disable_temporarily_lock_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/lock_disable_temporarily_lock_title"
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorOnSurface" />
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <Button
-                            style="?materialButtonOutlinedStyle"
-                            android:layout_marginEnd="4dp"
+                            style="?attr/materialButtonOutlinedStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
                             android:onClick="@{() -> handlers.disableTemporarilyLockForCurrentCategory()}"
-                            tools:text="Erlaubte Spiele"
                             android:text="@{appCategoryTitle}"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
+                            tools:text="Games" />
 
                         <Button
-                            android:layout_marginStart="4dp"
-                            style="?materialButtonOutlinedStyle"
+                            style="?attr/materialButtonOutlinedStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
                             android:onClick="@{() -> handlers.disableTemporarilyLockForAllCategories()}"
-                            android:text="@string/lock_disable_temporarily_all_categories"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent" />
-
+                            android:text="@string/lock_disable_temporarily_all_categories" />
                     </LinearLayout>
-
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:visibility="@{reason == BlockingReason.BlockedAtThisTime || reason == BlockingReason.TimeOver || reason == BlockingReason.TimeOverExtraTimeCanBeUsedLater || reason == BlockingReason.SessionDurationLimit || reason == BlockingReason.MissingRequiredNetwork ? View.VISIBLE : View.GONE}"
-                android:foreground="?selectableItemBackground"
+                style="?attr/materialCardViewElevatedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
                 android:onClick="@{() -> handlers.disableLimitsTemporarily()}"
-                app:cardUseCompatPadding="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:visibility="@{reason == BlockingReason.BlockedAtThisTime || reason == BlockingReason.TimeOver || reason == BlockingReason.TimeOverExtraTimeCanBeUsedLater || reason == BlockingReason.SessionDurationLimit || reason == BlockingReason.MissingRequiredNetwork ? View.VISIBLE : View.GONE}"
+                app:cardCornerRadius="16dp">
+
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
                     <TextView
-                        tools:text="@string/manage_child_special_mode_wizard_disable_limits_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="@{@string/manage_child_special_mode_wizard_disable_limits_title(appCategoryTitle)}"
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        tools:text="Disable limits" />
 
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/lock_disable_limits_temporarily_text"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:visibility="@{(reason == BlockingReason.MissingRequiredNetwork || reason == BlockingReason.MissingNetworkCheckPermission) &amp;&amp; missingNetworkIdPermission ? View.VISIBLE : View.GONE}"
-                android:foreground="?selectableItemBackground"
+                style="?attr/materialCardViewFilledStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
                 android:onClick="@{() -> handlers.requestLocationPermission()}"
-                app:cardUseCompatPadding="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:visibility="@{(reason == BlockingReason.MissingRequiredNetwork || reason == BlockingReason.MissingNetworkCheckPermission) &amp;&amp; missingNetworkIdPermission ? View.VISIBLE : View.GONE}"
+                app:cardBackgroundColor="?attr/colorErrorContainer"
+                app:cardCornerRadius="16dp"
+                app:strokeWidth="0dp">
+
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/lock_grant_permission_title"
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorOnErrorContainer" />
 
                     <TextView
-                        android:text="@string/lock_grant_permission_text"
-                        android:textAppearance="?android:textAppearanceMedium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
+                        android:layout_height="wrap_content"
+                        android:text="@string/lock_grant_permission_text"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnErrorContainer" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:foreground="?selectableItemBackground"
-                android:onClick="@{() -> handlers.openMainApp()}"
-                app:cardUseCompatPadding="true"
+                style="?attr/materialCardViewOutlinedStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{() -> handlers.openMainApp()}"
+                app:cardCornerRadius="16dp">
+
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/lock_goto_main_title"
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textAppearance="?attr/textAppearanceTitleLarge"
+                        android:textColor="?attr/colorPrimary" />
 
                     <TextView
-                        android:text="@string/lock_goto_main_text"
-                        android:textAppearance="?android:textAppearanceMedium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
+                        android:layout_height="wrap_content"
+                        android:text="@string/lock_goto_main_text"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

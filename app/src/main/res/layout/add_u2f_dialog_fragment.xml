@@ -17,9 +17,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <TextView
-        android:padding="16dp"
+        android:padding="24dp"
         android:gravity="center_horizontal"
-        android:textAppearance="?android:textAppearanceLarge"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textColor="?attr/colorOnSurface"
         android:id="@+id/text"
         tools:text="Testtext"
         android:layout_width="match_parent"

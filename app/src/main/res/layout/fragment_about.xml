@@ -1,17 +1,5 @@
 <!--
-    Open TimeLimit Copyright <C> 2019 - 2020 Jonas Lochmann
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation version 3 of the License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
+    Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
 -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -23,215 +11,279 @@
         <import type="android.view.View" />
     </data>
 
-    <ScrollView
-        android:id="@+id/scroll"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:padding="8dp"
-            android:orientation="vertical"
+        <ScrollView
+            android:id="@+id/scroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="24dp">
 
-            <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
+            <LinearLayout
+                android:padding="16dp"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:padding="8dp"
-                        android:layout_gravity="center_vertical"
-                        android:src="@mipmap/ic_launcher"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp" />
+                <!-- Header Card -->
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewElevatedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="24dp">
 
                     <LinearLayout
-                        android:padding="8dp"
+                        android:orientation="horizontal"
+                        android:padding="24dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/app_logo"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@mipmap/ic_launcher"
+                            android:importantForAccessibility="no" />
+
+                        <LinearLayout
+                            android:layout_marginStart="20dp"
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                                android:text="@string/app_name"
+                                android:textColor="?attr/colorOnSurface"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:textAppearance="?attr/textAppearanceLabelLarge"
+                                tools:text="Version 1.0.0"
+                                android:text="@{@string/about_version(BuildConfig.VERSION_NAME)}"
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Contact Section -->
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:text="@string/about_contact_title"
+                            android:textColor="?attr/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:autoLink="web"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:text="@string/about_contact_mail"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Source Code Section -->
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:text="@string/about_source_title"
+                            android:textColor="?attr/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/source_code_url"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:text="@string/about_source_text"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <include android:id="@+id/reset_shown_hints_view"
+                    layout="@layout/reset_shown_hints" />
+
+                <!-- Terms Section -->
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:padding="16dp"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <TextView
-                            android:textAppearance="?android:textAppearanceLarge"
-                            android:text="@string/app_name"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:text="@string/about_terms_title"
+                            android:textColor="?attr/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/terms_text"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:text="@string/terms_text"
+                            android:textColor="?attr/colorOnSurfaceVariant"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
-                        <TextView
-                            android:textAppearance="?android:textAppearanceMedium"
-                            tools:text="@string/about_version"
-                            android:text="@{@string/about_version(BuildConfig.VERSION_NAME)}"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
                     </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="8dp"
+                <!-- Diagnose Card -->
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:id="@+id/error_diagnose_card"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp">
 
-                    <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:text="@string/about_contact_title"
+                    <LinearLayout
+                        android:padding="16dp"
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:autoLink="web"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:text="@string/about_contact_mail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:text="@string/about_diagnose_title"
+                            android:textColor="?attr/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp" />
 
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:text="@string/about_diagnose_text"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
-            <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="8dp"
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Software Section -->
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp">
 
-                    <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:text="@string/about_source_title"
+                    <LinearLayout
+                        android:padding="16dp"
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/source_code_url"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:text="@string/about_source_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:text="@string/about_contained_software_title"
+                            android:textColor="?attr/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp" />
 
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:id="@+id/contained_software_text"
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:text="@string/about_contained_software_text"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
-            <include android:id="@+id/reset_shown_hints_view"
-                layout="@layout/reset_shown_hints" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:padding="8dp"
-                    android:orientation="vertical"
+                <!-- Developer Key Section -->
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp">
 
-                    <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:text="@string/about_terms_title"
+                    <LinearLayout
+                        android:padding="16dp"
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/terms_text"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:text="@string/terms_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        <TextView
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:text="@string/about_developer_key_title"
+                            android:textColor="?attr/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp" />
 
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:textAppearance="?attr/textAppearanceBodyMedium"
+                            android:text="@string/about_developer_key_text"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:foreground="?selectableItemBackground"
-                android:id="@+id/error_diagnose_card"
-                app:cardUseCompatPadding="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:padding="8dp"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                    <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:text="@string/about_diagnose_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:text="@string/about_diagnose_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:padding="8dp"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:text="@string/about_contained_software_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/contained_software_text"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:text="@string/about_contained_software_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                app:cardUseCompatPadding="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:padding="8dp"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:textAppearance="?android:textAppearanceLarge"
-                        android:text="@string/about_developer_key_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:textAppearance="?android:textAppearanceMedium"
-                        android:text="@string/about_developer_key_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-        </LinearLayout>
-    </ScrollView>
-
+            </LinearLayout>
+        </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -34,28 +34,35 @@
     </data>
 
     <LinearLayout
-        android:padding="8dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground">
 
         <TextView
-            android:textAppearance="?android:textAppearanceLarge"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface"
             android:text="@{date}"
             tools:text="01.01.2015"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp" />
 
         <TextView
             android:visibility="@{TextUtils.isEmpty(timeArea) ? View.GONE : View.VISIBLE}"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:text="@{timeArea}"
             tools:text="von 10:00 bis 16:00"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp" />
 
         <TextView
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:text="@{usedTime}"
             tools:text="13 Minuten genutzt"
             android:layout_width="match_parent"

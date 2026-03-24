@@ -35,47 +35,60 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        app:cardUseCompatPadding="true"
+        style="?attr/materialCardViewElevatedStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp">
+
         <LinearLayout
-            android:padding="8dp"
+            android:padding="20dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
                 tools:ignore="UnusedAttribute"
-                android:drawableTint="?colorOnSurface"
+                android:drawableTint="?attr/colorOnSurface"
                 android:id="@+id/title_view"
                 android:background="?selectableItemBackground"
                 android:drawableEnd="@drawable/ic_info_outline_black_24dp"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textColor="?attr/colorOnSurface"
                 android:text="@string/category_networks_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <TextView
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 tools:text="@string/category_networks_empty"
                 android:text="@{addedNetworksText}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <RadioGroup
                 android:layout_marginTop="8dp"
                 android:visibility="@{showRemoveNetworksButton ? View.VISIBLE : View.GONE}"
                 android:id="@+id/network_mode_group"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
 
                 <RadioButton
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:text="@string/category_networks_type_allow_list"
                     android:id="@+id/network_mode_allow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <RadioButton
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:text="@string/category_networks_type_block_list"
                     android:id="@+id/network_mode_block"
                     android:layout_width="wrap_content"
@@ -88,49 +101,60 @@
                 android:id="@+id/remove_btn"
                 android:layout_gravity="end"
                 android:text="@string/category_networks_action_remove"
-                style="?borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:visibility="@{status == NetworkStatus.MissingPermission ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorError"
                 android:text="@string/category_networks_status_missing_permission"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:visibility="@{status == NetworkStatus.NoneConnected ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/category_networks_status_none_connected"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:visibility="@{status == NetworkStatus.ConnectedButNotAdded ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/category_networks_status_connected_no_match"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:visibility="@{status == NetworkStatus.ConnectedNotAddedButFull ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/category_networks_status_connected_no_match_full"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:visibility="@{status == NetworkStatus.ConnectedAndAdded ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/category_networks_status_connected_has_match"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
 
             <Button
                 android:id="@+id/grant_permission_button"
                 android:visibility="@{status == NetworkStatus.MissingPermission ? View.VISIBLE : View.GONE}"
-                style="?materialButtonOutlinedStyle"
+                style="?attr/materialButtonOutlinedStyle"
                 android:text="@string/category_networks_action_grant"
                 android:layout_gravity="end"
                 android:layout_width="wrap_content"
@@ -139,7 +163,7 @@
             <Button
                 android:id="@+id/add_network_button"
                 android:visibility="@{status == NetworkStatus.ConnectedButNotAdded ? View.VISIBLE : View.GONE}"
-                style="?materialButtonOutlinedStyle"
+                style="?attr/materialButtonOutlinedStyle"
                 android:text="@string/category_networks_action_add"
                 android:layout_gravity="end"
                 android:layout_width="wrap_content"

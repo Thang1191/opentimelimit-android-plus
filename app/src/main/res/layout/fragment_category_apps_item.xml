@@ -35,62 +35,72 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
+        style="?attr/materialCardViewElevatedStyle"
         android:foreground="?selectableItemBackground"
-        app:cardUseCompatPadding="true"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="6dp"
+        app:cardCornerRadius="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/icon"
                 tools:src="@mipmap/ic_launcher"
-                android:layout_margin="8dp"
-                android:layout_gravity="center_vertical"
-                android:layout_width="@android:dimen/app_icon_size"
-                android:layout_height="@android:dimen/app_icon_size" />
+                android:layout_marginEnd="16dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:importantForAccessibility="no" />
 
             <LinearLayout
                 android:layout_weight="1"
-                android:padding="8dp"
                 android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnSurface"
                     tools:text="Android Settings"
                     android:text="@{title}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorSecondary"
                     tools:text="AVD 1"
                     android:text="@{deviceName}"
+                    android:layout_marginTop="2dp"
                     android:visibility="@{TextUtils.isEmpty(deviceName) ? View.GONE : View.VISIBLE}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     tools:text="com.android.settings"
                     android:text="@{subtitle}"
+                    android:layout_marginTop="2dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
             <ImageButton
                 android:id="@+id/delete_button"
-                android:tint="?attr/colorSecondary"
+                app:tint="?attr/colorError"
                 android:background="?selectableItemBackgroundBorderless"
-                android:padding="16dp"
-                android:layout_gravity="center_vertical"
+                android:padding="8dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/ic_delete_black_24dp"
                 android:layout_width="48dp"
-                android:layout_height="48dp" />
+                android:layout_height="48dp"
+                android:importantForAccessibility="no" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

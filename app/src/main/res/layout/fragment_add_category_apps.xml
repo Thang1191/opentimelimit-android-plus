@@ -37,7 +37,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_weight="1"
@@ -51,15 +52,19 @@
                     android:background="?android:windowBackground"
                     app:layout_scrollFlags="scroll|enterAlways|snap"
                     android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <include android:id="@+id/filter"
                         layout="@layout/app_filter_view" />
 
-                    <CheckBox
+                    <com.google.android.material.checkbox.MaterialCheckBox
                         android:checked="true"
                         android:id="@+id/show_other_categories_apps"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textColor="?attr/colorOnSurface"
                         android:text="@string/category_apps_add_dialog_show_assigned_to_other_category"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -70,8 +75,9 @@
             <!-- this gets a custom behavior for the correct align -->
             <TextView
                 android:id="@+id/empty_view"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:padding="16dp"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:padding="24dp"
                 android:gravity="center"
                 tools:text="Es gab einen schlimmen Fehler, daher ist diese Liste jetzt leer"
                 android:text="@{emptyText}"
@@ -88,8 +94,10 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <TextView
-            android:padding="8dp"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
             tools:text="2 entries are hidden"
             android:visibility="@{TextUtils.isEmpty(hiddenEntries) ? View.GONE : View.VISIBLE}"
             android:text="@{hiddenEntries}"
@@ -98,41 +106,47 @@
 
         <TextView
             android:visibility="@{someOptionsDisabledDueToChildAuthentication ? View.VISIBLE : View.GONE}"
-            android:drawablePadding="8dp"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:padding="8dp"
+            android:drawablePadding="12dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
             android:text="@string/child_self_limit_add_caused_missing_options_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:drawableStartCompat="@drawable/ic_vpn_key_black_24dp" />
+            app:drawableStartCompat="@drawable/ic_vpn_key_black_24dp"
+            app:drawableTint="?attr/colorOnSurfaceVariant" />
 
         <LinearLayout
             android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <Button
-                style="?borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:layout_weight="1"
                 android:text="@string/category_apps_add_dialog_select_all"
                 android:id="@+id/select_all_button"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content" />
 
             <Button
-                style="?borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:layout_weight="1"
                 android:text="@string/generic_cancel"
                 android:id="@+id/cancel_button"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content" />
 
             <Button
-                style="?borderlessButtonStyle"
+                style="?attr/materialButtonStyle"
                 android:layout_weight="1"
+                android:layout_marginStart="8dp"
                 android:text="@string/category_apps_add_dialog_btn_positive"
                 android:id="@+id/add_apps_button"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>

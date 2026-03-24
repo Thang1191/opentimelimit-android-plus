@@ -23,9 +23,11 @@
     </data>
 
     <TextView
-        android:textAppearance="?android:textAppearanceLarge"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textColor="?attr/colorPrimary"
         android:gravity="center_horizontal"
-        android:padding="8dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
         tools:text="Header"
         android:text="@{text}"
         android:layout_width="match_parent"

@@ -90,17 +90,20 @@
         android:layout_height="wrap_content"
         android:id="@+id/scroll">
         <LinearLayout
-            android:padding="8dp"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="16dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:textColor="?attr/colorOnSurface"
                 tools:text="@string/category_time_limit_rule_dialog_new"
                 android:text="@{safeUnbox(isNewRule) ? @string/category_time_limit_rule_dialog_new : @string/category_time_limit_rule_dialog_edit}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
             <include layout="@layout/view_select_days" android:id="@+id/day_selection" />
 
@@ -108,17 +111,18 @@
                 android:visibility="@{showWeeklyDailyOption ? View.VISIBLE : View.GONE}"
                 android:id="@+id/per_day_group"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/type_per_day"
-                    style="?materialButtonOutlinedStyle"
+                    style="?attr/materialButtonOutlinedStyle"
                     android:text="@string/category_time_limit_rules_per_day"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/type_per_week"
-                    style="?materialButtonOutlinedStyle"
+                    style="?attr/materialButtonOutlinedStyle"
                     android:text="@string/category_time_limit_rules_per_week"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
@@ -127,6 +131,7 @@
 
             <io.timelimit.android.ui.view.SelectTimeSpanView
                 android:id="@+id/time_span"
+                android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -134,33 +139,41 @@
                 android:onClick="@{() -> handlers.updateApplyToExtraTime(!safeUnbox(applyToExtraTime))}"
                 android:checked="@{safeUnbox(applyToExtraTime)}"
                 android:text="@string/category_time_limit_rules_apply_to_extra_time"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:onClick="@{() -> handlers.updateApplyToWholeDay(!safeUnbox(applyToWholeDay))}"
                 android:checked="@{safeUnbox(applyToWholeDay)}"
                 android:text="@string/category_time_limit_rules_apply_to_whole_day"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
             <com.google.android.flexbox.FlexboxLayout
                 app:flexWrap="wrap"
                 app:alignItems="center"
                 android:visibility="@{safeUnbox(applyToWholeDay) ? View.GONE : View.VISIBLE}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceSmall"
-                    android:paddingStart="0dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:paddingEnd="8dp"
+                    android:paddingStart="0dp"
                     android:text="@string/category_time_limit_rules_apply_to_part_day_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <Button
-                    style="?materialButtonOutlinedStyle"
+                    style="?attr/materialButtonOutlinedStyle"
                     android:onClick="@{() -> handlers.updateStartTime()}"
                     tools:text="10:00"
                     android:text="@{startTime}"
@@ -168,14 +181,15 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceSmall"
-                    android:padding="8dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:paddingHorizontal="8dp"
                     android:text="@string/category_time_limit_rules_apply_to_part_day_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <Button
-                    style="?materialButtonOutlinedStyle"
+                    style="?attr/materialButtonOutlinedStyle"
                     android:onClick="@{() -> handlers.updateEndTime()}"
                     tools:text="16:00"
                     android:text="@{endTime}"
@@ -183,8 +197,9 @@
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:padding="8dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:paddingHorizontal="8dp"
                     android:text="@string/category_time_limit_rules_apply_to_part_day_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -195,12 +210,16 @@
                 android:checked="@{enableSessionDurationLimit}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/category_time_limit_rules_enable_session_limit" />
 
             <androidx.gridlayout.widget.GridLayout
                 android:visibility="@{enableSessionDurationLimit ? View.VISIBLE : View.GONE}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
 
                 <TextView
                     app:layout_columnWeight="1"
@@ -210,17 +229,17 @@
                     android:paddingStart="0dp"
                     app:layout_row="1"
                     app:layout_column="1"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:text="@string/category_time_limit_rules_session_limit_duration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
                 <Button
-                    android:layout_marginEnd="4dp"
                     app:layout_columnWeight="0"
                     android:onClick="@{() -> handlers.updateSessionLength()}"
                     app:layout_gravity="center_vertical|fill_horizontal"
-                    style="?materialButtonOutlinedStyle"
+                    style="?attr/materialButtonOutlinedStyle"
                     app:layout_row="1"
                     app:layout_column="3"
                     tools:text="199999 Minuten"
@@ -234,7 +253,8 @@
                     android:gravity="center_vertical"
                     android:paddingEnd="8dp"
                     android:paddingStart="0dp"
-                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_row="2"
                     app:layout_column="1"
                     android:text="@string/category_time_limit_rules_session_limit_pause"
@@ -242,11 +262,10 @@
                     android:layout_height="wrap_content" />
 
                 <Button
-                    android:layout_marginEnd="4dp"
                     app:layout_columnWeight="0"
                     android:onClick="@{() -> handlers.updateSessionBreak()}"
                     app:layout_gravity="center_vertical|fill_horizontal"
-                    style="?materialButtonOutlinedStyle"
+                    style="?attr/materialButtonOutlinedStyle"
                     app:layout_row="2"
                     app:layout_column="3"
                     tools:text="20 Minuten"
@@ -261,15 +280,22 @@
                 android:checked="@{expireEnabled}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/category_time_limit_rules_enable_expires" />
 
             <LinearLayout
                 android:visibility="@{expireEnabled ? View.VISIBLE : View.GONE}"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical">
 
                 <TextView
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:text="@string/category_time_limit_rules_expires_at"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -277,7 +303,7 @@
                 <Button
                     android:layout_marginStart="16dp"
                     android:onClick="@{() -> handlers.updateExpireDate()}"
-                    style="?materialButtonOutlinedStyle"
+                    style="?attr/materialButtonOutlinedStyle"
                     tools:text="01.01.2025 13:00 am"
                     android:text="@{expireDateText}"
                     android:layout_width="wrap_content"
@@ -287,35 +313,36 @@
 
             <TextView
                 android:visibility="@{safeUnbox(applyToWholeDay) ? View.GONE : View.VISIBLE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:text="@string/category_time_limit_rules_warning_day_part"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
 
             <TextView
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
                 android:visibility="@{applyToZeroDays ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceSmall"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="@color/orange_text"
                 android:text="@string/category_time_limit_rules_warning_zero_day_part"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
             <TextView
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
                 android:visibility="@{blockCurrentSelfLimitationParams ? View.VISIBLE : View.GONE}"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textColor="@color/text_red"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorError"
                 android:text="@string/category_time_limit_rules_error_self_limit_only_more_strict"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
 
                 <View
                     android:layout_weight="1"
@@ -323,18 +350,17 @@
                     android:layout_height="0dp" />
 
                 <Button
-                    android:layout_marginEnd="4dp"
-                    style="?borderlessButtonStyle"
+                    style="?attr/borderlessButtonStyle"
                     android:onClick="@{() -> handlers.onDeleteRule()}"
                     android:visibility="@{safeUnbox(isNewRule) || isSelfLimitMode ? View.GONE : View.VISIBLE}"
-                    android:textColor="@color/text_red"
+                    android:textColor="?attr/colorError"
                     android:text="@string/generic_delete"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp" />
 
                 <Button
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
+                    style="?attr/materialButtonStyle"
                     android:onClick="@{() -> handlers.onSaveRule()}"
                     android:enabled="@{!blockCurrentSelfLimitationParams}"
                     tools:text="@string/generic_create"
