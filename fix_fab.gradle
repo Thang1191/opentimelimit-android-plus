@@ -1,0 +1,8 @@
+tasks.register("fixFab") {
+    doLast {
+        def f = file("src/main/java/io/timelimit/android/ui/main/AuthenticationFab.kt")
+        def content = f.text
+        content = content.replaceAll("\\.outerCircleColor\\(R\\.color\\.colorAccent\\)", ".outerCircleColorInt(com.google.android.material.color.MaterialColors.getColor(fab, com.google.android.material.R.attr.colorSecondary))")
+        f.text = content
+    }
+}

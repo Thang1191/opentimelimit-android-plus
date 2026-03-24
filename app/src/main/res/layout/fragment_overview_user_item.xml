@@ -41,7 +41,7 @@
         <import type="android.view.View" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:id="@+id/card"
@@ -111,5 +111,5 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

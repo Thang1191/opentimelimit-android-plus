@@ -32,7 +32,7 @@
         <import type="android.view.View" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:visibility="@{safeUnbox(hasAnyManipulation) ? View.VISIBLE : View.GONE}"
         android:theme="@style/AppThemeDarkOverlay"
         app:cardUseCompatPadding="true"
@@ -96,5 +96,5 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

@@ -1,0 +1,6 @@
+tasks.register("fixTabs") {
+    doLast {
+        def f = file("src/main/res/layout/lock_activity.xml")
+        f.text = f.text.replaceAll("@style/ThemeOverlay.AppCompat.Dark.ActionBar", "@style/AppThemeDarkOverlay")
+    }
+}

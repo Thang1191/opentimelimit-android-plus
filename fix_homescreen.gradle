@@ -1,0 +1,8 @@
+tasks.register("fixHomescreen") {
+    doLast {
+        def f = file("src/main/java/io/timelimit/android/ui/homescreen/HomescreenActivity.kt")
+        def content = f.text
+        content = content.replaceAll("super.onCreate\\(savedInstanceState\\)", "super.onCreate(savedInstanceState)\n        window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))")
+        f.text = content
+    }
+}

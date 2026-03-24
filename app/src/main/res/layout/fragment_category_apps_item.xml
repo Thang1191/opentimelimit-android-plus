@@ -33,7 +33,7 @@
         <import type="android.view.View" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
         android:foreground="?selectableItemBackground"
         app:cardUseCompatPadding="true"
@@ -67,7 +67,7 @@
 
                 <TextView
                     android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="?colorAccent"
+                    android:textColor="?attr/colorSecondary"
                     tools:text="AVD 1"
                     android:text="@{deviceName}"
                     android:visibility="@{TextUtils.isEmpty(deviceName) ? View.GONE : View.VISIBLE}"
@@ -84,7 +84,7 @@
 
             <ImageButton
                 android:id="@+id/delete_button"
-                android:tint="?colorAccent"
+                android:tint="?attr/colorSecondary"
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="16dp"
                 android:layout_gravity="center_vertical"
@@ -93,5 +93,5 @@
                 android:layout_height="48dp" />
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

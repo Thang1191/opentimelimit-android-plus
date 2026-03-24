@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.SwitchCompat
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/enable_switch"
                 android:text="@string/category_notifications_filter_checkbox"
                 android:layout_width="match_parent"
@@ -58,11 +58,11 @@
 
             <View
                 android:layout_marginVertical="8dp"
-                android:background="?colorAccent"
+                android:background="?attr/colorSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="1px" />
 
-            <androidx.appcompat.widget.SwitchCompat
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/delay_switch"
                 android:text="@string/category_notification_filter_delay_switch"
                 android:layout_width="match_parent"

@@ -130,14 +130,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:onClick="@{() -> handlers.updateApplyToExtraTime(!safeUnbox(applyToExtraTime))}"
                 android:checked="@{safeUnbox(applyToExtraTime)}"
                 android:text="@string/category_time_limit_rules_apply_to_extra_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:onClick="@{() -> handlers.updateApplyToWholeDay(!safeUnbox(applyToWholeDay))}"
                 android:checked="@{safeUnbox(applyToWholeDay)}"
                 android:text="@string/category_time_limit_rules_apply_to_whole_day"
@@ -190,7 +190,7 @@
                     android:layout_height="wrap_content" />
             </com.google.android.flexbox.FlexboxLayout>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:onClick="@{() -> handlers.updateSessionDurationLimit(!safeUnbox(enableSessionDurationLimit))}"
                 android:checked="@{enableSessionDurationLimit}"
                 android:layout_width="match_parent"
@@ -256,7 +256,7 @@
 
             </androidx.gridlayout.widget.GridLayout>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:onClick="@{() -> handlers.updateExpireEnabled(!safeUnbox(expireEnabled))}"
                 android:checked="@{expireEnabled}"
                 android:layout_width="match_parent"

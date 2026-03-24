@@ -90,7 +90,7 @@ object AuthenticationFab {
                                     .cancelable(true)
                                     .tintTarget(true)
                                     .transparentTarget(false)
-                                    .outerCircleColor(R.color.colorAccent)
+                                    .outerCircleColorInt(com.google.android.material.color.MaterialColors.getColor(fab, com.google.android.material.R.attr.colorSecondary))
                                     .textColor(R.color.white)
                                     .targetCircleColor(R.color.white)
                                     .icon(ContextCompat.getDrawable(activity, R.drawable.ic_lock_open_white_24dp)),

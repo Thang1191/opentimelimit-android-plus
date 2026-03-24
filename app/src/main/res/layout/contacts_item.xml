@@ -27,7 +27,7 @@
             type="String" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
         android:foreground="?selectableItemBackground"
         app:cardUseCompatPadding="true"
@@ -53,5 +53,5 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

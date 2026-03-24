@@ -45,7 +45,7 @@
             <include android:id="@+id/self_limit_add"
                 layout="@layout/allow_child_self_limit_add_view" />
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 app:cardUseCompatPadding="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -83,7 +83,7 @@
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>

@@ -80,7 +80,7 @@
                     android:id="@+id/manage_manipulation"
                     layout="@layout/manage_device_manipulation_view" />
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     app:cardUseCompatPadding="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -112,9 +112,9 @@
                             android:layout_height="wrap_content" />
 
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:visibility="@{safeUnbox(didAppDowngrade) ? View.VISIBLE : View.GONE}"
                     app:cardUseCompatPadding="true"
                     android:layout_width="match_parent"
@@ -141,9 +141,9 @@
                             android:layout_height="wrap_content" />
 
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:foreground="?selectableItemBackground"
                     android:onClick="@{() -> handlers.showUserScreen()}"
                     app:cardUseCompatPadding="true"
@@ -168,9 +168,9 @@
                             android:layout_height="wrap_content" />
 
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:foreground="?selectableItemBackground"
                     android:onClick="@{() -> handlers.showPermissionsScreen()}"
                     app:cardUseCompatPadding="true"
@@ -195,9 +195,9 @@
                             android:layout_height="wrap_content" />
 
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:foreground="?selectableItemBackground"
                     android:onClick="@{() -> handlers.showFeaturesScreen()}"
                     app:cardUseCompatPadding="true"
@@ -222,9 +222,9 @@
                             android:layout_height="wrap_content" />
 
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:foreground="?selectableItemBackground"
                     android:onClick="@{() -> handlers.showManageScreen()}"
                     app:cardUseCompatPadding="true"
@@ -249,7 +249,7 @@
                             android:layout_height="wrap_content" />
 
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
         </ScrollView>

@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/setup_select_mode_intro" />
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:focusable="true"
                 android:id="@+id/btn_child_mode"
                 android:foreground="?selectableItemBackground"
@@ -62,9 +62,9 @@
                 </LinearLayout>
 
                 <requestFocus />
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:focusable="true"
                 android:id="@+id/btn_parent_mode"
                 android:foreground="?selectableItemBackground"
@@ -90,9 +90,9 @@
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:focusable="true"
                 android:id="@+id/btn_uninstall"
                 android:foreground="?selectableItemBackground"
@@ -118,7 +118,7 @@
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>

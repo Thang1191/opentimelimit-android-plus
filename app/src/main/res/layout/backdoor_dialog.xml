@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:textColor="?colorAccent"
+                android:textColor="?attr/colorSecondary"
                 android:textAppearance="?android:textAppearanceMedium"
                 tools:text="abcdefghijklmnopqrstuvwxyz"
                 android:text="@{nonce}"
@@ -95,7 +95,7 @@
             <TextView
                 android:textAppearance="?android:textAppearanceMedium"
                 tools:text="012345-6789A-BCDEF"
-                android:textColor="?colorAccent"
+                android:textColor="?attr/colorSecondary"
                 android:singleLine="true"
                 android:ellipsize="start"
                 android:text="@{input}"

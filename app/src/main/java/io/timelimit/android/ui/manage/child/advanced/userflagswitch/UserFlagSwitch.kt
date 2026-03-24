@@ -16,7 +16,7 @@
 
 package io.timelimit.android.ui.manage.child.advanced.userflagswitch
 
-import androidx.appcompat.widget.SwitchCompat
+import com.google.android.material.materialswitch.MaterialSwitch
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -28,7 +28,7 @@ import io.timelimit.android.ui.main.ActivityViewModel
 
 object UserFlagSwitch {
     fun bind(
-            enableSwitch: SwitchCompat,
+            enableSwitch: MaterialSwitch,
             flag: Long,
             userEntry: LiveData<User?>,
             lifecycleOwner: LifecycleOwner,

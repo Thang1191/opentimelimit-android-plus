@@ -7,6 +7,7 @@ This report provides a detailed overview of the inner workings of the `opentimel
 The app relies heavily on background services to continuously monitor the device's state and enforce limits.
 
 *   **`BackgroundService`**: A persistent Android foreground service. It ensures the app's core logic keeps running in the background without being killed by the Android system. It displays an ongoing, low-priority notification showing the current status (e.g., how much time is remaining).
+    *   *Android 14 Note:* Now uses the `SPECIAL_USE` foreground service type, utilizing the `parental_control_monitoring` subtype to comply with modern Android background execution policies.
 *   **`BackgroundActionService`**: A service designed to handle actions triggered by `PendingIntent`s, typically from notifications. Examples include revoking temporarily allowed apps or switching the device's default user.
 *   **`AccessibilityService`**: A critical security component. This service allows the app to monitor UI events and, most importantly, execute global actions like `performGlobalAction(GLOBAL_ACTION_HOME)`. This prevents users from bypassing the lock screen by rapidly switching apps or using the "Recents" menu.
 *   **`NotificationListener`**: Binds to the system's notification listener service to monitor or block notifications from apps that are currently restricted or blocked.
@@ -19,6 +20,7 @@ Receivers listen to system-wide events to ensure the app functions properly acro
 *   **`BootReceiver`**: Listens for `ACTION_BOOT_COMPLETED`. It ensures that the app's monitoring services (`BackgroundService` and logic loops) restart automatically when the device is turned on.
 *   **`AdminReceiver`**: Acts as the Android Device Administrator. Having device admin rights makes it significantly harder for a child to uninstall the application or forcefully stop it. It also enables features like device lockdown.
 *   **`UpdateReceiver`**: Listens for `MY_PACKAGE_REPLACED` to run necessary database migrations or logic updates immediately after the app is updated via an app store.
+*   **`U2fBroadcastReceiver`**: Explicit receiver to securely handle USB and NFC intents for U2F security key authentication, ensuring Android 14+ compatibility without using implicit broadcast PendingIntents.
 
 ## 3. Core Logic & Scripts
 
@@ -55,6 +57,23 @@ The app utilizes a Single-Activity architecture powered by Android Jetpack Navig
 *   **`DiagnoseMainFragment`**: A suite of tools built into the app to help users troubleshoot why an app isn't being blocked, check clock synchronization, and test foreground app detection.
 *   **`ParentModeFragment`**: A secure area requiring a PIN or U2F authentication to alter settings.
 
+## 5. Recent Modernizations (Android 14 / Target SDK 34)
+
+The application has undergone a significant modernization effort to conform to modern Android development standards.
+
+*   **SDK Bumps**: The `targetSdkVersion` was raised to **34** (Android 14) and `minSdkVersion` to **24** (Android 7.0).
+*   **Dependency Upgrades**:
+    *   Moved away from deprecated lifecycle extensions in favor of `lifecycle-viewmodel-ktx` and `lifecycle-livedata-ktx`.
+    *   Upgraded core libraries including `AppCompat`, `Fragment-KTX`, `Material Components`, `Room`, `Paging`, and Kotlin Coroutines.
+*   **Shizuku Integration**: Added `dev.rikka.shizuku` API and Provider capabilities. This paves the way for executing elevated operations (like blocking uninstallation or forceful background management) on devices equipped with Shizuku, without needing root access.
+*   **Material You Integration**: Adopted dynamic colors using `DynamicColors.applyToActivitiesIfAvailable()`, allowing the app's UI to respect system-wide user themes and wallpapers on Android 12+.
+*   **Android 14 Background Service Policies**: Configured the critical enforcement service with `FOREGROUND_SERVICE_SPECIAL_USE` to comply with strict Android 14 requirements surrounding background persistent monitoring.
+*   **Security & Stability Improvements**:
+    *   Replaced mutable implicit `PendingIntent`s with explicitly targeted broadcast receivers (e.g. `U2fBroadcastReceiver`) to fix Android 14 crash requirements.
+    *   Corrected memory leaks by transitioning `LiveData` observers inside Fragments to use `viewLifecycleOwner` instead of `this`.
+    *   Migrated risky forced unwraps (`context!!`, `arguments!!`) to robust, safe Jetpack methods (`requireContext()`, `requireArguments()`).
+    *   Fixed deep XML layout hierarchies and casting issues (e.g. updating custom views from `ImageButton` to `ImageView` to support `app:tint`).
+
 ## Summary
 
-`Open TimeLimit` is built as an aggressive, highly persistent monitoring tool. It uses a combination of Android's standard background services, accessibility APIs, and device administration rights to create a robust wall against tampering. The core engine (`BackgroundTaskLogic`) acts as the continuous enforcer, while the UI relies heavily on modern Android architecture (Jetpack Navigation, LiveData, and ViewModels) to allow parents to configure these tight restrictions.
+`Open TimeLimit` is built as an aggressive, highly persistent monitoring tool. It uses a combination of Android's standard background services, accessibility APIs, and device administration rights to create a robust wall against tampering. The core engine (`BackgroundTaskLogic`) acts as the continuous enforcer, while the UI relies heavily on modern Android architecture (Jetpack Navigation, LiveData, and ViewModels) to allow parents to configure these tight restrictions. The recent leap to Target SDK 34 combined with Shizuku APIs ensures long-term viability, safety, and deeper integration with modern Android ecosystems.

@@ -1,0 +1,18 @@
+tasks.register("fixColors") {
+    doLast {
+        def layoutsDir = file("app/src/main/res/layout")
+        layoutsDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".xml")) {
+                def content = f.text
+                def newContent = content
+                newContent = newContent.replaceAll("@color/colorPrimary", "?attr/colorPrimary")
+                newContent = newContent.replaceAll("@color/colorAccent", "?attr/colorSecondary")
+                newContent = newContent.replaceAll("?colorAccent", "?attr/colorSecondary")
+                if (content != newContent) {
+                    f.text = newContent
+                    println "Updated ${f.name}"
+                }
+            }
+        }
+    }
+}

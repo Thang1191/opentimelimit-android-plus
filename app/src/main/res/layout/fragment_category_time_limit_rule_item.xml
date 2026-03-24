@@ -62,7 +62,7 @@
         <import type="android.text.TextUtils" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
         app:cardUseCompatPadding="true"
         android:foreground="?selectableItemBackground"
@@ -143,6 +143,6 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </layout>

@@ -39,6 +39,7 @@ class HomescreenActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
 
         binding = ActivityHomescreenBinding.inflate(layoutInflater)
         setContentView(binding.root)

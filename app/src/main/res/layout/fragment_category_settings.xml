@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 app:cardUseCompatPadding="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -55,7 +55,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                    <Switch
+                    <com.google.android.material.materialswitch.MaterialSwitch
                         android:nextFocusDown="@id/extra_time_btn_ok"
                         android:id="@+id/switch_limit_extra_time_to_today"
                         android:text="@string/category_settings_extra_time_switch_limit_to_day"
@@ -73,7 +73,7 @@
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <include android:id="@+id/battery_limit"
                 layout="@layout/category_battery_limit_view" />
@@ -93,7 +93,7 @@
             <include android:id="@+id/networks"
                 layout="@layout/manage_category_networks_view" />
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 app:cardUseCompatPadding="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -131,7 +131,7 @@
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>

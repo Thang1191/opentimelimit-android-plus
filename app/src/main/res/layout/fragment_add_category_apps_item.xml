@@ -41,7 +41,7 @@
         <import type="android.text.TextUtils" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
         android:foreground="?selectableItemBackground"
         app:cardUseCompatPadding="true"
@@ -78,7 +78,7 @@
                     android:visibility="@{TextUtils.isEmpty(currentCategoryTitle) ? View.GONE : View.VISIBLE}"
                     android:textAppearance="?android:textAppearanceMedium"
                     tools:text="@string/category_apps_add_dialog_already_assigned_to"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="?attr/colorPrimary"
                     android:text="@{@string/category_apps_add_dialog_already_assigned_to(currentCategoryTitle)}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -109,5 +109,5 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>
