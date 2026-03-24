@@ -1,0 +1,19 @@
+tasks.register("fixRadio") {
+    doLast {
+        def layoutsDir = file("app/src/main/res/layout")
+        layoutsDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".xml")) {
+                def content = f.text
+                def newContent = content
+
+                newContent = newContent.replaceAll("<RadioButton", "<com.google.android.material.radiobutton.MaterialRadioButton")
+                newContent = newContent.replaceAll("</RadioButton>", "</com.google.android.material.radiobutton.MaterialRadioButton>")
+
+                if (content != newContent) {
+                    f.text = newContent
+                    println "Updated \${f.name}"
+                }
+            }
+        }
+    }
+}

@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.parent.u2fkey.remove
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -49,7 +50,7 @@ class RemoveU2FKeyDialogFragment: DialogFragment() {
 
         model.authenticatedUser.observe(this) { if (it?.id != userId) dismissAllowingStateLoss() }
 
-        return AlertDialog.Builder(requireContext(), theme)
+        return MaterialAlertDialogBuilder(requireContext(), theme)
             .setMessage(R.string.manage_parent_u2f_remove_key_text)
             .setNegativeButton(R.string.generic_no, null)
             .setPositiveButton(R.string.generic_yes) { _, _ ->

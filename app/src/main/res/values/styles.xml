@@ -17,13 +17,13 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.Material3.DayNight">
+        <item name="actionBarStyle">@style/AppActionBar</item>
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorSecondary">@color/colorAccent</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="materialButtonOutlinedStyle">@style/AppButtonOutline</item>
         <item name="radioButtonStyle">@style/RadioButtonTheme</item>
         <item name="checkboxStyle">@style/CheckboxTheme</item>
 
@@ -45,7 +45,6 @@
         <item name="colorSecondary">@color/colorAccent</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="materialButtonOutlinedStyle">@style/AppButtonOutline</item>
         <item name="radioButtonStyle">@style/RadioButtonTheme</item>
         <item name="checkboxStyle">@style/CheckboxTheme</item>
 
@@ -62,7 +61,6 @@
         <item name="colorSecondary">@color/colorAccent</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="materialButtonOutlinedStyle">@style/AppButtonOutline</item>
         <item name="radioButtonStyle">@style/RadioButtonTheme</item>
         <item name="checkboxStyle">@style/CheckboxTheme</item>
 
@@ -79,13 +77,9 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="AppButtonOutline" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="strokeColor">@color/button_outline_color</item>
-        <item name="backgroundTint">@color/outlined_button_background_tint</item>
-    </style>
-
     <style name="DangerButton" parent="Widget.Material3.Button">
-        <item name="backgroundTint">@color/danger_button</item>
+        <item name="backgroundTint">?attr/colorError</item>
+        <item name="android:textColor">?attr/colorOnError</item>
     </style>
 
     <style name="RadioButtonTheme" parent="Widget.Material3.CompoundButton.RadioButton">
@@ -94,5 +88,14 @@
 
     <style name="CheckboxTheme" parent="Widget.Material3.CompoundButton.CheckBox">
         <item name="android:minHeight">0dp</item>
+    </style>
+
+    <style name="AppActionBar" parent="Widget.Material3.ActionBar.Solid">
+        <item name="background">?attr/colorSurface</item>
+        <item name="titleTextStyle">@style/AppActionBarTitle</item>
+    </style>
+
+    <style name="AppActionBarTitle" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 </resources>

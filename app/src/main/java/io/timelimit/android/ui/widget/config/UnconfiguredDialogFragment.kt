@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.widget.config
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -38,7 +39,7 @@ class UnconfiguredDialogFragment: DialogFragment() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
         .setMessage(R.string.widget_msg_unconfigured)
         .setPositiveButton(R.string.generic_ok) { _, _ -> model.userCancel() }
         .create()

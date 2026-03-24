@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.widget.config
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -55,7 +56,7 @@ class WidgetConfigOtherDialogFragment: DialogFragment() {
         outState.putBoolean(STATE_TRANSLUCENT, translucent)
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
         .setMultiChoiceItems(
             arrayOf(
                 getString(R.string.widget_config_other_translucent)

@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.widget.config
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -55,7 +56,7 @@ class WidgetConfigModeDialogFragment: DialogFragment() {
         outState.putInt(STATE_SELECTION, selection)
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
         .setSingleChoiceItems(
             arrayOf(
                 getString(R.string.widget_config_mode_all),

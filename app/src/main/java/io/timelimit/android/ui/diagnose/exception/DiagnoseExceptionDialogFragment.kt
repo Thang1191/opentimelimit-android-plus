@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.diagnose.exception
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -46,7 +47,7 @@ class DiagnoseExceptionDialogFragment: DialogFragment() {
         val message = ExceptionUtil.formatInterpreted(requireContext(), requireArguments().getSerializable(EXCEPTION) as Exception)
         val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        return AlertDialog.Builder(requireContext(), theme)
+        return MaterialAlertDialogBuilder(requireContext(), theme)
                 .setMessage(message)
                 .setNeutralButton(R.string.diagnose_copy_to_clipboard) { _, _ ->
                     clipboard.setPrimaryClip(ClipData.newPlainText("TimeLimit", message))

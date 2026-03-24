@@ -1,0 +1,18 @@
+tasks.register("fixDialogs") {
+    doLast {
+        def srcDir = file("app/src/main/java")
+        srcDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".kt") || f.name.endsWith(".java")) {
+                def content = f.text
+                if (content.contains("AlertDialog.Builder")) {
+                    content = content.replaceAll("AlertDialog\\.Builder", "MaterialAlertDialogBuilder")
+                    if (!content.contains("import com.google.android.material.dialog.MaterialAlertDialogBuilder")) {
+                        content = content.replaceFirst("import ", "import com.google.android.material.dialog.MaterialAlertDialogBuilder\nimport ")
+                    }
+                    f.text = content
+                    println "Updated dialogs in ${f.name}"
+                }
+            }
+        }
+    }
+}

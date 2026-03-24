@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.widget.config
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -61,7 +62,7 @@ class WidgetConfigFilterDialogFragment: DialogFragment() {
 
         if (!(state is WidgetConfigModel.State.ShowCategorySelection)) return super.onCreateDialog(savedInstanceState)
 
-        return AlertDialog.Builder(requireContext(), theme)
+        return MaterialAlertDialogBuilder(requireContext(), theme)
             .setMultiChoiceItems(
                 state.categories.map { it.title }.toTypedArray(),
                 state.categories.map { selectedCategoryIds.contains(it.id) }.toBooleanArray()

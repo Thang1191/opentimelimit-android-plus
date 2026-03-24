@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.device.manage.permission
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -31,7 +32,7 @@ class AdbDeviceAdminDialogFragment: DialogFragment() {
         private val GRANT_COMMAND = "adb shell dpm set-active-admin --user current ${BuildConfig.APPLICATION_ID}/${AdminReceiver::class.java.canonicalName}"
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(context!!, theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(context!!, theme)
             .setTitle(R.string.manage_device_permission_device_admin_title)
             .setMessage(getString(R.string.manage_device_permission_no_ui_device_admin, GRANT_COMMAND))
             .setPositiveButton(R.string.generic_ok, null)

@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.parent.key
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -34,7 +35,7 @@ class MissingBarcodeScannerDialogFragment: DialogFragment() {
         fun newInstance() = MissingBarcodeScannerDialogFragment()
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
         .setTitle(R.string.scan_key_missing_title)
         .setMessage(R.string.scan_key_missing_text)
         .setNegativeButton(R.string.generic_cancel, null)

@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.device.manage.permission
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -32,7 +33,7 @@ class AdbUsageStatsDialogFragment: DialogFragment() {
         private const val REVOKE_COMMAND = "adb shell pm revoke ${BuildConfig.APPLICATION_ID} $PERMISSION"
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(context!!, theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(context!!, theme)
             .setTitle(R.string.manage_device_permissions_usagestats_title)
             .setMessage(getString(R.string.manage_device_permission_no_ui_usage_stats_text, GRANT_COMMAND, REVOKE_COMMAND))
             .setPositiveButton(R.string.generic_ok, null)

@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.parent.key
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.os.Bundle
@@ -46,7 +47,7 @@ class AddUserKeyDialogFragment: DialogFragment() {
         dismiss()
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = MaterialAlertDialogBuilder(requireContext(), theme)
         .setTitle(R.string.manage_user_key_add)
         .setMessage(R.string.manage_user_key_info)
         .setNegativeButton(R.string.generic_cancel, null)

@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.obsolete
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -53,7 +54,7 @@ class ObsoleteDialogFragment: DialogFragment() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(requireContext(), theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?) = MaterialAlertDialogBuilder(requireContext(), theme)
             .setMessage(R.string.obsolete_message)
             .setPositiveButton(R.string.generic_ok, null)
             .create()

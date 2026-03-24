@@ -141,11 +141,18 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.3'
 }
 
-tasks.register("fixHomescreen") {
+tasks.register("fixAttr2") {
     doLast {
-        def f = file("src/main/java/io/timelimit/android/ui/homescreen/HomescreenActivity.kt")
-        def content = f.text
-        content = content.replaceAll("super.onCreate\\(savedInstanceState\\)", "super.onCreate(savedInstanceState)\n        window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))")
-        f.text = content
+        def layoutsDir = file("src/main/res/layout")
+        layoutsDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".xml")) {
+                def content = f.text
+                if (content.contains('=""?attr')) {
+                    content = content.replaceAll('=""\\?attr', '="?attr')
+                    f.text = content
+                    println "Fixed \${f.name}"
+                }
+            }
+        }
     }
 }

@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.ui.manage.parent.limitlogin
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.app.Dialog
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -29,7 +30,7 @@ class LimitLoginRestrictedToUserItselfDialogFragment: DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(requireContext(), theme)
+        return MaterialAlertDialogBuilder(requireContext(), theme)
                 .setMessage(R.string.parent_limit_login_error_user_itself)
                 .setPositiveButton(R.string.generic_ok, null)
                 .create()
