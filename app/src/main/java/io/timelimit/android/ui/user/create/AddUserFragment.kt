@@ -20,10 +20,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.map
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
@@ -44,7 +44,7 @@ class AddUserFragment : Fragment(), FragmentWithCustomTitle {
 
     private val activity: ActivityViewModelHolder by lazy { getActivity() as ActivityViewModelHolder }
     private val auth: ActivityViewModel by lazy { activity.getActivityViewModel() }
-    private val model: AddUserModel by lazy { ViewModelProviders.of(this).get(AddUserModel::class.java) }
+    private val model: AddUserModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,  savedInstanceState: Bundle?): View? {
         val binding = FragmentAddUserBinding.inflate(inflater, container, false)
@@ -66,7 +66,7 @@ class AddUserFragment : Fragment(), FragmentWithCustomTitle {
 
         // password
 
-        userType.observe(this, Observer {
+        userType.observe(viewLifecycleOwner, Observer {
             binding.isCreatingChildUser = it == UserType.Child
         })
 
@@ -83,7 +83,7 @@ class AddUserFragment : Fragment(), FragmentWithCustomTitle {
 
         val isEverythingOk = isPasswordOk.and(usernameOk)
 
-        isEverythingOk.observe(this, Observer { binding.createBtn.isEnabled = it!! })
+        isEverythingOk.observe(viewLifecycleOwner, Observer { binding.createBtn.isEnabled = it == true })
 
         // create function
 
@@ -99,7 +99,7 @@ class AddUserFragment : Fragment(), FragmentWithCustomTitle {
         }
 
 
-        mergeLiveData(model.status, auth.authenticatedUser).observe(this, Observer {
+        mergeLiveData(model.status, auth.authenticatedUser).observe(viewLifecycleOwner, Observer {
             data ->
 
             val (status, user) = data!!

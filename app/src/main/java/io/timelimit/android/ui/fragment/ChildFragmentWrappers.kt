@@ -43,7 +43,7 @@ abstract class ChildFragmentWrapper: SingleFragmentWrapper() {
 }
 
 class ChildAppsFragmentWrapper: ChildFragmentWrapper(), FragmentWithCustomTitle {
-    private val params by lazy { ChildAppsFragmentWrapperArgs.fromBundle(arguments!!) }
+    private val params by lazy { ChildAppsFragmentWrapperArgs.fromBundle(requireArguments()) }
     override val childId: String get() = params.childId
 
     override fun createChildFragment(): Fragment = ChildAppsFragment.newInstance(childId = childId)
@@ -51,7 +51,7 @@ class ChildAppsFragmentWrapper: ChildFragmentWrapper(), FragmentWithCustomTitle 
 }
 
 class ChildAdvancedFragmentWrapper: ChildFragmentWrapper(), FragmentWithCustomTitle {
-    private val params by lazy { ChildAdvancedFragmentWrapperArgs.fromBundle(arguments!!) }
+    private val params by lazy { ChildAdvancedFragmentWrapperArgs.fromBundle(requireArguments()) }
     override val childId: String get() = params.childId
 
     override fun createChildFragment(): Fragment = ManageChildAdvancedFragment.newInstance(childId = childId)
@@ -59,7 +59,7 @@ class ChildAdvancedFragmentWrapper: ChildFragmentWrapper(), FragmentWithCustomTi
 }
 
 class ChildUsageHistoryFragmentWrapper: ChildFragmentWrapper(), FragmentWithCustomTitle {
-    private val params by lazy { ChildUsageHistoryFragmentWrapperArgs.fromBundle(arguments!!) }
+    private val params by lazy { ChildUsageHistoryFragmentWrapperArgs.fromBundle(requireArguments()) }
     override val childId: String get() = params.childId
     override val showAuthButton: Boolean = false
 

@@ -21,7 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.timelimit.android.R
 import io.timelimit.android.data.model.App
@@ -45,7 +45,7 @@ class ChildAppsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ChildAppsFragmentBinding.inflate(inflater, container, false)
-        val model = ViewModelProviders.of(this).get(ChildAppsModel::class.java)
+        val model = ViewModelProvider(this).get(ChildAppsModel::class.java)
         val adapter = ChildAppsAdapter()
 
         fun getMode() = when (binding.sortSetting.checkedRadioButtonId) {
@@ -55,11 +55,11 @@ class ChildAppsFragment : Fragment() {
         }
 
         model.childIdLive.value = childId
-        AppFilterView.getFilterLive(binding.appFilter).observe(viewLifecycleOwner) { model.appFilterLive.value = it }
+        AppFilterView.getFilterLive(binding.appFilter).observe(viewLifecycleOwner) { filter -> model.appFilterLive.value = filter }
         model.modeLive.value = getMode()
         binding.sortSetting.setOnCheckedChangeListener { _, _ -> model.modeLive.value = getMode() }
 
-        model.listContentLive.observe(viewLifecycleOwner) { adapter.data = it }
+        model.listContentLive.observe(viewLifecycleOwner) { content -> adapter.data = content }
 
         binding.recycler.layoutManager = LinearLayoutManager(context)
         binding.recycler.adapter = adapter

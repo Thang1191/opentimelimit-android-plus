@@ -53,6 +53,7 @@ enum class ExitReason {
 }
 
 object ExitReasonConverter {
+    @RequiresApi(Build.VERSION_CODES.R)
     fun fromApplicationExitInfo(input: ApplicationExitInfo): ExitReason = when (input.reason) {
         ApplicationExitInfo.REASON_ANR -> ExitReason.AppNotResponding
         ApplicationExitInfo.REASON_CRASH -> ExitReason.Crash

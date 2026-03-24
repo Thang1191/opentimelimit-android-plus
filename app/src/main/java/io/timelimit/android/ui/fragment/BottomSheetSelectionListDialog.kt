@@ -60,7 +60,7 @@ abstract class BottomSheetSelectionListDialog: BottomSheetDialogFragment() {
         binding.list.addView(view)
     }
 
-    private fun buildSingleChoiceRow(): CheckedTextView = LayoutInflater.from(context!!).inflate(
+    private fun buildSingleChoiceRow(): CheckedTextView = LayoutInflater.from(requireContext()).inflate(
             android.R.layout.simple_list_item_single_choice,
             binding.list,
             false

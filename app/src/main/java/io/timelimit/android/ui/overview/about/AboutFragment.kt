@@ -37,7 +37,7 @@ class AboutFragment : Fragment() {
         }
     }
 
-    private val logic: AppLogic by lazy { DefaultAppLogic.with(context!!) }
+    private val logic: AppLogic by lazy { DefaultAppLogic.with(requireContext()) }
     private val listener: AboutFragmentParentHandlers by lazy { parentFragment as AboutFragmentParentHandlers }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

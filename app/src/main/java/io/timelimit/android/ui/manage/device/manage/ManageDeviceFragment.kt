@@ -23,7 +23,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import androidx.navigation.Navigation
@@ -60,7 +60,7 @@ class ManageDeviceFragment : Fragment(), FragmentWithCustomTitle {
                 deviceEntry = deviceEntry,
                 lifecycleOwner = this,
                 activityViewModel = auth,
-                status = ViewModelProviders.of(this).get(ManageDeviceManipulationStatusModel::class.java).data
+                status = ViewModelProvider(this).get(ManageDeviceManipulationStatusModel::class.java).data
         )
 
         // auth
@@ -114,7 +114,7 @@ class ManageDeviceFragment : Fragment(), FragmentWithCustomTitle {
             }
         }
 
-        deviceEntry.observe(this, Observer {
+        deviceEntry.observe(viewLifecycleOwner, Observer {
             device ->
 
             if (device == null) {
@@ -135,7 +135,7 @@ class ManageDeviceFragment : Fragment(), FragmentWithCustomTitle {
             }
         })
 
-        logic.deviceId.observe(this, Observer {
+        logic.deviceId.observe(viewLifecycleOwner, Observer {
             ownDeviceId ->
 
             binding.isThisDevice = ownDeviceId == args.deviceId
@@ -169,7 +169,7 @@ class ManageDeviceFragment : Fragment(), FragmentWithCustomTitle {
                 user = userEntry
         )
 
-        userEntry.observe(this, Observer {
+        userEntry.observe(viewLifecycleOwner, Observer {
             binding.userCardText = it?.name ?: getString(R.string.manage_device_current_user_none)
         })
 

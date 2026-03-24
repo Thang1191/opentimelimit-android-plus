@@ -21,7 +21,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import io.timelimit.android.R
 import io.timelimit.android.extensions.showSafe
 
@@ -44,10 +44,10 @@ class MustReadFragment: DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val model = ViewModelProviders.of(this).get(MustReadModel::class.java)
+        val model = ViewModelProvider(this).get(MustReadModel::class.java)
 
-        val alert = AlertDialog.Builder(context!!, theme)
-                .setMessage(arguments!!.getInt(MESSAGE))
+        val alert = AlertDialog.Builder(requireContext(), theme)
+                .setMessage(requireArguments().getInt(MESSAGE))
                 .setPositiveButton(R.string.generic_ok) { _, _ -> dismiss() }
                 .create()
 

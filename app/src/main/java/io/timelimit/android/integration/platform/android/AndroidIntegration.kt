@@ -664,7 +664,7 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
                 LockActivity.start(context, BuildConfig.APPLICATION_ID, null)
 
                 if (!BackgroundService.isBackgroundActivityRestricted(context)) {
-                    context.startService(Intent(context, BackgroundActionService::class.java))
+                    context.startService(Intent(context, BackgroundActionService::class.java).setPackage(context.packageName))
                 }
             }
 

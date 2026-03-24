@@ -46,7 +46,7 @@ class ParentLimitLoginSelectCategoryDialogFragment: BottomSheetSelectionListDial
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userId = arguments!!.getString(USER_ID)!!
+        val userId = requireArguments().getString(USER_ID)!!
         val auth = (activity as ActivityViewModelHolder).getActivityViewModel()
         val logic = auth.logic
         val options = logic.database.userLimitLoginCategoryDao().getLimitLoginCategoryOptions(userId)

@@ -16,6 +16,7 @@
 package io.timelimit.android.u2f
 
 import android.content.Context
+import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import io.timelimit.android.u2f.nfc.NFCU2FManager
 import io.timelimit.android.u2f.protocol.U2FDevice
@@ -64,6 +65,11 @@ class U2fManager (context: Context) {
 
     fun dispatchDeviceFound(device: U2FDevice) {
         deviceFoundListeners.lastOrNull()?.onDeviceFound(device)
+    }
+
+    fun dispatchIntent(intent: Intent) {
+        nfc.handleIntent(intent)
+        usb.handleIntent(intent)
     }
 
     fun setupActivity(activity: FragmentActivity) {

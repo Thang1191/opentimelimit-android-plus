@@ -58,7 +58,7 @@ class ConfigureHomescreenDelayDialogFragment: BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val auth = (activity as ActivityViewModelHolder).getActivityViewModel()
-        val database = DefaultAppLogic.with(context!!).database
+        val database = DefaultAppLogic.with(requireContext()).database
 
         binding = ConfigureHomescreenDelayDialogBinding.inflate(inflater, container, false)
 

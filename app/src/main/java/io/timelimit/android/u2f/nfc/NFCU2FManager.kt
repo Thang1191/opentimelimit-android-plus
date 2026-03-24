@@ -36,10 +36,11 @@ import io.timelimit.android.extensions.registerNotExportedReceiver
 import io.timelimit.android.integration.platform.android.PendingIntentIds
 import io.timelimit.android.livedata.liveDataFromFunction
 import io.timelimit.android.livedata.liveDataFromNonNullValue
+import io.timelimit.android.u2f.U2fBroadcastReceiver
 import io.timelimit.android.u2f.U2fManager
 import io.timelimit.android.u2f.util.U2FId
 
-class NFCU2FManager (val parent: U2fManager, context: Context) {
+class NFCU2FManager (val parent: U2fManager, private val context: Context) {
     companion object {
         private const val LOG_TAG = "NFCU2FManager"
     }
@@ -69,7 +70,9 @@ class NFCU2FManager (val parent: U2fManager, context: Context) {
     private val nfcReceiverIntent = PendingIntent.getBroadcast(
         context,
         PendingIntentIds.U2F_NFC_DISCOVERY,
-        Intent(nfcReceiverAction),
+        Intent(context, U2fBroadcastReceiver::class.java).apply {
+            action = nfcReceiverAction
+        },
         PendingIntentIds.PENDING_INTENT_FLAGS_ALLOW_MUTATION
     )
 
@@ -79,6 +82,12 @@ class NFCU2FManager (val parent: U2fManager, context: Context) {
         liveDataFromFunction { if (nfcAdapter.isEnabled) NfcStatus.Ready else NfcStatus.Disabled }
 
     init { context.registerNotExportedReceiver(nfcReceiver, IntentFilter(nfcReceiverAction)) }
+
+    fun handleIntent(intent: Intent) {
+        if (intent.action == nfcReceiverAction) {
+            nfcReceiver.onReceive(context, intent)
+        }
+    }
 
     fun setupActivity(activity: FragmentActivity) {
         if (nfcAdapter != null) {

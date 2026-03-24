@@ -31,7 +31,7 @@ import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.ui.manage.device.manage.permission.PermissionInfoHelpDialog
 
 class SetupDevicePermissionsFragment : Fragment() {
-    private val logic: AppLogic by lazy { DefaultAppLogic.with(context!!) }
+    private val logic: AppLogic by lazy { DefaultAppLogic.with(requireContext()) }
     private lateinit var binding: FragmentSetupDevicePermissionsBinding
 
     lateinit var refreshStatusRunnable: Runnable

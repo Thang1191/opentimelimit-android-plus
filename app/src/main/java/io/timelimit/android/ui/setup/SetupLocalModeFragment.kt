@@ -95,9 +95,9 @@ class SetupLocalModeFragment : Fragment() {
             binding.setPasswordView.isEnabled = isIdle
         }
 
-        model.status.observe(this, Observer {
+        model.status.observe(viewLifecycleOwner, Observer {
             if (it == SetupLocalModeModel.Status.Done) {
-                MustReadFragment.newInstance(R.string.must_read_child_manipulation).show(fragmentManager!!)
+                MustReadFragment.newInstance(R.string.must_read_child_manipulation).show(parentFragmentManager)
             }
         })
 
@@ -110,7 +110,11 @@ class SetupLocalModeFragment : Fragment() {
         binding.setPasswordView.allowNoPassword.value = true
 
         NotifyPermissionCard.bind(object: NotifyPermissionCard.Listener {
-            override fun onGrantClicked() { requestNotifyPermission.launch(Manifest.permission.POST_NOTIFICATIONS) }
+            override fun onGrantClicked() { 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestNotifyPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
             override fun onSkipClicked() { notifyPermission.value = NotifyPermissionCard.Status.SkipGrant }
         }, binding.notifyPermissionCard)
 

@@ -29,7 +29,7 @@ class LimitLoginRestrictedToUserItselfDialogFragment: DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(context!!, theme)
+        return AlertDialog.Builder(requireContext(), theme)
                 .setMessage(R.string.parent_limit_login_error_user_itself)
                 .setPositiveButton(R.string.generic_ok, null)
                 .create()

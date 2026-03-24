@@ -41,8 +41,8 @@ class HelpDialogFragment: BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = HelpDialogFragmentBinding.inflate(inflater, container, false)
 
-        binding.title = getString(arguments!!.getInt(EXTRA_TITLE))
-        binding.text = getString(arguments!!.getInt(EXTRA_TEXT))
+        binding.title = getString(requireArguments().getInt(EXTRA_TITLE))
+        binding.text = getString(requireArguments().getInt(EXTRA_TEXT))
 
         return binding.root
     }

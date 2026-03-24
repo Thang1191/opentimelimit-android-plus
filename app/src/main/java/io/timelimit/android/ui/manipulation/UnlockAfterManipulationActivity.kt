@@ -18,10 +18,9 @@ package io.timelimit.android.ui.manipulation
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import io.timelimit.android.R
 import io.timelimit.android.async.Threads
 import io.timelimit.android.data.model.UserType
 import io.timelimit.android.databinding.ActivityUnlockAfterManipulationBinding
@@ -33,9 +32,7 @@ import io.timelimit.android.ui.main.ActivityViewModel
 import io.timelimit.android.ui.main.ActivityViewModelHolder
 
 class UnlockAfterManipulationActivity : AppCompatActivity(), ActivityViewModelHolder {
-    private val model: ActivityViewModel by lazy {
-        ViewModelProviders.of(this).get(ActivityViewModel::class.java)
-    }
+    private val model: ActivityViewModel by viewModels()
 
     override var ignoreStop: Boolean = false
 

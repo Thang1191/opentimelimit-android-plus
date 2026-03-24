@@ -24,7 +24,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
 import androidx.navigation.Navigation
 import io.timelimit.android.R
@@ -53,7 +53,7 @@ class ManageParentFragment : Fragment(), FragmentWithCustomTitle {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentManageParentBinding.inflate(inflater, container, false)
         val navigation = Navigation.findNavController(container!!)
-        val model = ViewModelProviders.of(this).get(ManageParentModel::class.java)
+        val model = ViewModelProvider(this).get(ManageParentModel::class.java)
 
         AuthenticationFab.manageAuthenticationFab(
                 fab = binding.fab,
@@ -70,7 +70,7 @@ class ManageParentFragment : Fragment(), FragmentWithCustomTitle {
                 parentUserId = params.parentId
         )
 
-        parentUser.observe(this, Observer {
+        parentUser.observe(viewLifecycleOwner, Observer {
             user ->
 
             if (user != null) {
@@ -81,7 +81,7 @@ class ManageParentFragment : Fragment(), FragmentWithCustomTitle {
         if (!wereViewsCreated) {
             wereViewsCreated = true
 
-            parentUser.observe(this, Observer {
+            parentUser.observe(viewLifecycleOwner, Observer {
                 user ->
 
                 if (user == null) {

@@ -32,8 +32,8 @@ class SelectTimeSpanView(context: Context, attributeSet: AttributeSet? = null): 
     private val seekbarContainer = findViewById<View>(R.id.seekbar_container)
     private val pickerContainer = findViewById<View>(R.id.picker_container)
 
-    private val switchToPickerButton = findViewById<ImageButton>(R.id.switch_to_picker_button)
-    private val switchToSeekbarButton = findViewById<ImageButton>(R.id.switch_to_seekbar_button)
+    private val switchToPickerButton = findViewById<ImageView>(R.id.switch_to_picker_button)
+    private val switchToSeekbarButton = findViewById<ImageView>(R.id.switch_to_seekbar_button)
 
     private val daysText = findViewById<TextView>(R.id.days_text)
     private val dayPickerContainer = findViewById<View>(R.id.day_picker_container)
@@ -86,9 +86,9 @@ class SelectTimeSpanView(context: Context, attributeSet: AttributeSet? = null): 
     private fun bindTime() {
         val duration = Duration.decode(timeInMillis)
 
-        daysText.text = TimeTextUtil.days(duration.days, context!!)
-        minutesText.text = TimeTextUtil.minutes(duration.minutes, context!!)
-        hoursText.text = TimeTextUtil.hours(duration.hours, context!!)
+        daysText.text = TimeTextUtil.days(duration.days, context)
+        minutesText.text = TimeTextUtil.minutes(duration.minutes, context)
+        hoursText.text = TimeTextUtil.hours(duration.hours, context)
 
         minutePicker.value = duration.minutes
         minuteSeekbar.progress = duration.minutes

@@ -1,5 +1,5 @@
 /*
- * Open TimeLimit Copyright <C> 2019 Jonas Lochmann
+ * Open TimeLimit Copyright <C> 2019 - 2024 Jonas Lochmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,19 +13,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package io.timelimit.android
+package io.timelimit.android.u2f
 
-import android.app.Application
-import com.google.android.material.color.DynamicColors
-import com.jakewharton.threetenabp.AndroidThreeTen
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 
-class Application : Application() {
-    override fun onCreate() {
-        super.onCreate()
-
-        AndroidThreeTen.init(this)
-
-        // Apply Material You Dynamic Colors
-        DynamicColors.applyToActivitiesIfAvailable(this)
+class U2fBroadcastReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        U2fManager.with(context).dispatchIntent(intent)
     }
 }

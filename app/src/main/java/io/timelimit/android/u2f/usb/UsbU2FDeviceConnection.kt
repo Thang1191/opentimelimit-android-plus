@@ -18,6 +18,7 @@ package io.timelimit.android.u2f.usb
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbEndpoint
 import android.hardware.usb.UsbRequest
+import android.os.Build
 import android.os.SystemClock
 import android.util.Log
 import io.timelimit.android.BuildConfig
@@ -70,7 +71,12 @@ class UsbU2FDeviceConnection (
             synchronized(pendingRequests) { pendingRequests.add(it) }
 
             it.initialize(connection, outputEndpoint)
-            it.queue(ByteBuffer.wrap(data))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                it.queue(ByteBuffer.wrap(data))
+            } else {
+                @Suppress("DEPRECATION")
+                it.queue(ByteBuffer.wrap(data), data.size)
+            }
         }
     }
 
@@ -82,7 +88,12 @@ class UsbU2FDeviceConnection (
 
             it.initialize(connection, inputEndpoint)
             it.clientData = request
-            it.queue(request.buffer)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                it.queue(request.buffer)
+            } else {
+                @Suppress("DEPRECATION")
+                it.queue(request.buffer, inputEndpoint.maxPacketSize)
+            }
         }
     }
 
@@ -97,7 +108,13 @@ class UsbU2FDeviceConnection (
             if (disconnectReporter.didDisconnect) throw U2FException.DisconnectedException()
 
             val remaining = end - SystemClock.uptimeMillis(); if (remaining < 0) break
-            val response = U2FThread.usb.executeAndWait { connection.requestWait(remaining) } ?: continue
+            val response = U2FThread.usb.executeAndWait {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    connection.requestWait(remaining)
+                } else {
+                    connection.requestWait()
+                }
+            } ?: continue
 
             synchronized(pendingRequests) { pendingRequests.remove(response) }
 

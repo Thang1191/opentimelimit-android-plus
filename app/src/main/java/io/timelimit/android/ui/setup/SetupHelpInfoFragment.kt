@@ -41,7 +41,7 @@ class SetupHelpInfoFragment: Fragment() {
         }
 
         binding.nextButton.setOnClickListener {
-            Navigation.findNavController(view!!).safeNavigate(
+            Navigation.findNavController(requireView()).safeNavigate(
                     SetupHelpInfoFragmentDirections.actionSetupHelpInfoFragmentToSetupSelectModeFragment(),
                     R.id.setupHelpInfoFragment
             )

@@ -21,9 +21,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.map
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
@@ -35,21 +35,19 @@ import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.ui.main.FragmentWithCustomTitle
 
 class ChangeParentPasswordFragment : Fragment(), FragmentWithCustomTitle {
-    val logic: AppLogic by lazy { DefaultAppLogic.with(context!!) }
+    val logic: AppLogic by lazy { DefaultAppLogic.with(requireContext()) }
     val params: ChangeParentPasswordFragmentArgs by lazy {
-        ChangeParentPasswordFragmentArgs.fromBundle(arguments!!)
+        ChangeParentPasswordFragmentArgs.fromBundle(requireArguments())
     }
     val parentUser: LiveData<User?> by lazy { logic.database.user().getParentUserByIdLive(params.parentUserId) }
 
-    val model: ChangeParentPasswordViewModel by lazy {
-        ViewModelProviders.of(this).get(ChangeParentPasswordViewModel::class.java)
-    }
+    val model: ChangeParentPasswordViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val navigation = Navigation.findNavController(container!!)
         val binding = ChangeParentPasswordFragmentBinding.inflate(inflater, container, false)
 
-        parentUser.observe(this, Observer {
+        parentUser.observe(viewLifecycleOwner, Observer {
             parentUser ->
 
             if (parentUser == null) {
@@ -57,7 +55,7 @@ class ChangeParentPasswordFragment : Fragment(), FragmentWithCustomTitle {
             }
         })
 
-        binding.newPassword.passwordOk.observe(this, Observer {
+        binding.newPassword.passwordOk.observe(viewLifecycleOwner, Observer {
             isPasswordOk ->
 
             binding.canConfirm = isPasswordOk
@@ -71,7 +69,7 @@ class ChangeParentPasswordFragment : Fragment(), FragmentWithCustomTitle {
             )
         }
 
-        model.status.observe(this, Observer {
+        model.status.observe(viewLifecycleOwner, Observer {
             status ->
 
             when (status!!) {
@@ -100,7 +98,7 @@ class ChangeParentPasswordFragment : Fragment(), FragmentWithCustomTitle {
                     model.confirmError()
                 }
                 ChangeParentPasswordViewModelStatus.Done -> {
-                    Toast.makeText(context!!, R.string.manage_parent_change_password_toast_success, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.manage_parent_change_password_toast_success, Toast.LENGTH_SHORT).show()
 
                     navigation.popBackStack()
 

@@ -22,7 +22,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.timelimit.android.R
 import io.timelimit.android.data.Database
@@ -57,7 +57,7 @@ class UpdateChildPasswordDialogFragment: BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ChangePasswordViewBinding.inflate(inflater, container, false)
-        val model = ViewModelProviders.of(this).get(UpdateChildPasswordViewModel::class.java)
+        val model = ViewModelProvider(this).get(UpdateChildPasswordViewModel::class.java)
 
         binding.newPassword.passwordOk.observe(this, Observer {
             binding.canConfirm = it

@@ -26,7 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import androidx.navigation.NavController
@@ -238,7 +238,7 @@ class MainActivity : AppCompatActivity(), ActivityViewModelHolder, U2fManager.De
     }
 
     override fun getActivityViewModel(): ActivityViewModel {
-        return ViewModelProviders.of(this).get(ActivityViewModel::class.java)
+        return ViewModelProvider(this).get(ActivityViewModel::class.java)
     }
 
     private fun getNavHostFragment(): NavHostFragment {

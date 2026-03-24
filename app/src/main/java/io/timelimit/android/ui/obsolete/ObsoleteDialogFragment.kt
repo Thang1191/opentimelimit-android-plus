@@ -53,7 +53,7 @@ class ObsoleteDialogFragment: DialogFragment() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(context!!, theme)
+    override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(requireContext(), theme)
             .setMessage(R.string.obsolete_message)
             .setPositiveButton(R.string.generic_ok, null)
             .create()

@@ -77,7 +77,7 @@ class DiagnoseMainFragment : Fragment(), FragmentWithCustomTitle {
             )
         }
 
-        logic.backgroundTaskLogic.lastLoopException.observe(this, Observer { ex ->
+        logic.backgroundTaskLogic.lastLoopException.observe(viewLifecycleOwner, Observer { ex ->
             if (ex != null) {
                 binding.diagnoseBgTaskLoopExButton.isEnabled = true
                 binding.diagnoseBgTaskLoopExButton.setOnClickListener {

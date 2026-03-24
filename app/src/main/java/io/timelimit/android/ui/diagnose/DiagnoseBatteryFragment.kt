@@ -33,7 +33,7 @@ class DiagnoseBatteryFragment : Fragment(), FragmentWithCustomTitle {
         val binding = DiagnoseBatteryFragmentBinding.inflate(inflater, container, false)
         val logic = DefaultAppLogic.with(requireContext())
 
-        logic.platformIntegration.getBatteryStatusLive().observe(this, Observer {
+        logic.platformIntegration.getBatteryStatusLive().observe(viewLifecycleOwner, Observer {
             binding.charging = it.charging
             binding.level = it.level
         })

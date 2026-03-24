@@ -52,7 +52,7 @@ class DiagnoseClockFragment : Fragment(), FragmentWithCustomTitle {
             calendar.timeZone = tz
             calendar.timeInMillis = ts
 
-            String.format("%2d:%2d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
+            String.format(Locale.getDefault(), "%2d:%2d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
         }}
         val dateString = timeZone.switchMap { tz -> timestamp.map { ts ->
             DateFormat.getDateFormat(context).apply {
@@ -60,15 +60,15 @@ class DiagnoseClockFragment : Fragment(), FragmentWithCustomTitle {
             }.format(Date(ts))
         }}
 
-        timestamp.observe(this, androidx.lifecycle.Observer { binding.epochalSeconds = it / 1000 })
-        timeZone.observe(this, androidx.lifecycle.Observer { binding.timeZone = it.displayName })
-        timeOfDay.observe(this, androidx.lifecycle.Observer { binding.timeOfDay = it })
-        dateString.observe(this, androidx.lifecycle.Observer { binding.dateString = it })
-        dateInTimezone.observe(this, androidx.lifecycle.Observer {
+        timestamp.observe(viewLifecycleOwner, androidx.lifecycle.Observer { binding.epochalSeconds = it / 1000 })
+        timeZone.observe(viewLifecycleOwner, androidx.lifecycle.Observer { binding.timeZone = it.displayName })
+        timeOfDay.observe(viewLifecycleOwner, androidx.lifecycle.Observer { binding.timeOfDay = it })
+        dateString.observe(viewLifecycleOwner, androidx.lifecycle.Observer { binding.dateString = it })
+        dateInTimezone.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.dayOfWeek = it.dayOfWeek
             binding.dayOfEpoch = it.dayOfEpoch.toLong()
         })
-        minuteOfWeek.observe(this, androidx.lifecycle.Observer {
+        minuteOfWeek.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.minuteOfWeek = it
         })
 

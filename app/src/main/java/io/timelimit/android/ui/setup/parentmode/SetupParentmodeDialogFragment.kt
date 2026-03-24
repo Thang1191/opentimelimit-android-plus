@@ -36,7 +36,7 @@ class SetupParentmodeDialogFragment: DialogFragment() {
         super.onCreate(savedInstanceState)
 
         ViewModelProvider(this).get(SetupParentmodeDialogModel::class.java)
-                .init(DefaultAppLogic.with(context!!).database)
+                .init(DefaultAppLogic.with(requireContext()).database)
                 .observe(this, Observer { ok ->
                     dismissAllowingStateLoss()
 

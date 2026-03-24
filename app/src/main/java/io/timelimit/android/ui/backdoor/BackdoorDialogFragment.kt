@@ -25,7 +25,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import io.timelimit.android.R
 import io.timelimit.android.crypto.HexString
 import io.timelimit.android.databinding.BackdoorDialogBinding

@@ -27,6 +27,7 @@ import androidx.core.content.getSystemService
 import io.timelimit.android.BuildConfig
 import io.timelimit.android.extensions.registerNotExportedReceiver
 import io.timelimit.android.integration.platform.android.PendingIntentIds
+import io.timelimit.android.u2f.U2fBroadcastReceiver
 import io.timelimit.android.u2f.U2fManager
 import io.timelimit.android.u2f.util.U2FId
 
@@ -54,7 +55,7 @@ class UsbU2FManager (val parent: U2fManager, context: Context) {
     private val permissionResponseAction = U2FId.generate()
 
     private val permissionResponseListener = object: BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
+        override fun onReceive(context: Context?, intent: Intent) {
             try {
                 if (intent.action == permissionResponseAction) {
                     val device = intent.usbDevice
@@ -77,7 +78,9 @@ class UsbU2FManager (val parent: U2fManager, context: Context) {
     private val permissionResponseIntent = PendingIntent.getBroadcast(
         context,
         PendingIntentIds.U2F_USB_RESPONSE,
-        Intent(permissionResponseAction),
+        Intent(context, U2fBroadcastReceiver::class.java).apply {
+            action = permissionResponseAction
+        },
         PendingIntentIds.PENDING_INTENT_FLAGS_ALLOW_MUTATION
     )
 
@@ -89,6 +92,12 @@ class UsbU2FManager (val parent: U2fManager, context: Context) {
         context.registerNotExportedReceiver(usbConnectionListener, IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED))
         context.registerNotExportedReceiver(usbConnectionListener, IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED))
         context.registerNotExportedReceiver(permissionResponseListener, IntentFilter(permissionResponseAction))
+    }
+
+    fun handleIntent(intent: Intent) {
+        if (intent.action == permissionResponseAction) {
+            permissionResponseListener.onReceive(null, intent)
+        }
     }
 
     private fun handleAddedDevice(device: UsbDevice) {

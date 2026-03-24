@@ -29,8 +29,9 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
     <!-- for the categories which are limited to a wifi network -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -146,7 +147,12 @@
 
         <service
             android:name=".integration.platform.android.BackgroundService"
-            android:exported="false" />
+            android:foregroundServiceType="specialUse"
+            android:exported="false">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="parental_control_monitoring" />
+        </service>
 
         <service
             android:name=".integration.platform.android.BackgroundActionService"
@@ -201,6 +207,8 @@
         <service android:name=".ui.widget.TimesWidgetService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
+        <receiver android:name=".u2f.U2fBroadcastReceiver" android:exported="false" />
 
     </application>
 
