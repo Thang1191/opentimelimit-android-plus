@@ -216,10 +216,29 @@ class NewLoginFragment: DialogFragment() {
             password.setOnEnterListenr { go() }
             challengeInput.setOnEnterListenr { go() }
 
+            // Block paste/copy/cut on challenge input to prevent cheating
+            val blockActionCallback = object : android.view.ActionMode.Callback {
+                override fun onCreateActionMode(mode: android.view.ActionMode?, menu: android.view.Menu?) = false
+                override fun onPrepareActionMode(mode: android.view.ActionMode?, menu: android.view.Menu?) = false
+                override fun onActionItemClicked(mode: android.view.ActionMode?, item: android.view.MenuItem?) = false
+                override fun onDestroyActionMode(mode: android.view.ActionMode?) {}
+            }
+            challengeInput.customSelectionActionModeCallback = blockActionCallback
+            challengeInput.customInsertionActionModeCallback = blockActionCallback
+            challengeInput.isLongClickable = false
+
             biometricAuthButton.setOnClickListener {
                 tryBiometricLogin()
             }
         }
+
+        // Observe challenge invalidation (foreground app changed) — dismiss the dialog
+        model.challengeInvalidated.observe(viewLifecycleOwner, Observer { invalidated ->
+            if (invalidated) {
+                model.challengeInvalidated.value = false
+                dismissAllowingStateLoss()
+            }
+        })
 
         binding.childPassword.apply {
             password.setOnEnterListenr {

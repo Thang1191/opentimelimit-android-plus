@@ -42,6 +42,7 @@ import io.timelimit.android.sync.actions.apply.ApplyActionUtil
 import io.timelimit.android.ui.main.ActivityViewModel
 import io.timelimit.android.ui.main.AuthenticatedUser
 import io.timelimit.android.ui.manage.parent.key.ScannedKey
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.security.SecureRandom
@@ -95,11 +96,48 @@ class LoginDialogFragmentModel(application: Application): AndroidViewModel(appli
     private val randomUnlockLength = logic.database.config().getRandomUnlockLengthLive()
     private val currentChallenge = MutableLiveData<String?>().apply { value = null }
     private val wasChallengeWrong = MutableLiveData<Boolean>().apply { value = false }
+    val challengeInvalidated = MutableLiveData<Boolean>().apply { value = false }
+    private var foregroundMonitorJob: kotlinx.coroutines.Job? = null
 
     private fun generateChallenge(length: Int): String {
         val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#%&*+-="
         val random = SecureRandom()
         return (1..length).map { chars[random.nextInt(chars.length)] }.joinToString("")
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun startForegroundMonitor() {
+        foregroundMonitorJob?.cancel()
+        foregroundMonitorJob = GlobalScope.launch(Dispatchers.Main) {
+            try {
+                // Small delay to let the app settle
+                delay(1000)
+                while (true) {
+                    delay(500)
+                    if (currentChallenge.value == null) break
+
+                    try {
+                        val foregroundApps = logic.platformIntegration.getForegroundApps(
+                            logic.getForegroundAppQueryInterval(),
+                            0L
+                        )
+                        val ownPackage = BuildConfig.APPLICATION_ID
+                        val isOwnAppInForeground = foregroundApps.isEmpty() ||
+                            foregroundApps.any { it.packageName == ownPackage }
+
+                        if (!isOwnAppInForeground) {
+                            // Another app came to foreground — cancel the challenge
+                            challengeInvalidated.value = true
+                            break
+                        }
+                    } catch (_: SecurityException) {
+                        // Missing usage stats permission — can't monitor, skip
+                    }
+                }
+            } catch (_: CancellationException) {
+                // Normal cancellation
+            }
+        }
     }
 
     val status: LiveData<LoginDialogStatus> = isLoginDone.switchMap { isLoginDone ->
@@ -116,6 +154,7 @@ class LoginDialogFragmentModel(application: Application): AndroidViewModel(appli
                                 randomUnlockLength.switchMap { unlockLen ->
                                     if (currentChallenge.value == null) {
                                         currentChallenge.value = generateChallenge(unlockLen)
+                                        startForegroundMonitor()
                                     }
                                     mergeLiveDataWaitForValues(isCheckingPassword, wasChallengeWrong).switchMap { (isCheckingPw, challengeWrong) ->
                                         currentChallenge.map { challenge ->
@@ -194,8 +233,10 @@ class LoginDialogFragmentModel(application: Application): AndroidViewModel(appli
 
     fun startSignIn(user: User) {
         biometricPromptDismissed = false
+        foregroundMonitorJob?.cancel()
         currentChallenge.value = null
         wasChallengeWrong.value = false
+        challengeInvalidated.value = false
         selectedUserId.value = user.id
     }
 
@@ -491,6 +532,8 @@ class LoginDialogFragmentModel(application: Application): AndroidViewModel(appli
         return if (status.value is UserListLoginDialogStatus) {
             false
         } else {
+            foregroundMonitorJob?.cancel()
+            currentChallenge.value = null
             selectedUserId.value = null
 
             true

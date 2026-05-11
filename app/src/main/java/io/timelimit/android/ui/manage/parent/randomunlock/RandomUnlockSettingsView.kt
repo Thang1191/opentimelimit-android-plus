@@ -23,8 +23,10 @@ object RandomUnlockSettingsView {
 
         configDao.getRandomUnlockLengthLive().observe(lifecycleOwner, Observer { length ->
             view.challengeLength = length
-            view.lengthLabel.text = view.root.context.getString(R.string.random_unlock_length_label, length)
-            view.lengthSlider.value = length.toFloat()
+            // Only update the input if the user isn't currently editing it
+            if (!view.lengthInput.isFocused) {
+                view.lengthInput.setText(length.toString())
+            }
         })
 
         view.randomUnlockSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -40,15 +42,16 @@ object RandomUnlockSettingsView {
             }
         }
 
-        view.lengthSlider.addOnChangeListener { _, value, fromUser ->
-            if (fromUser) {
-                val newLength = value.toInt()
-                view.lengthLabel.text = view.root.context.getString(R.string.random_unlock_length_label, newLength)
-
-                if (auth.requestAuthenticationOrReturnTrue()) {
+        view.saveLengthButton.setOnClickListener {
+            if (auth.requestAuthenticationOrReturnTrue()) {
+                val newLength = view.lengthInput.text?.toString()?.toIntOrNull()
+                if (newLength != null && newLength >= 1) {
                     Threads.database.execute {
                         configDao.setRandomUnlockLengthSync(newLength)
                     }
+                    Toast.makeText(view.root.context, R.string.random_unlock_saved_toast, Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(view.root.context, "Enter a number ≥ 1", Toast.LENGTH_SHORT).show()
                 }
             }
         }
