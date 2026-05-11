@@ -1267,4 +1267,13 @@
     <string name="app_clicked_dialog_message">Tap the trash icon to remove the App from the category.
         To move it to another category, hold the App item.
     </string>
+
+    <string name="random_unlock_title">Random character unlock</string>
+    <string name="random_unlock_description">When enabled, you must type a randomly displayed string instead of a password to unlock editing. This makes it harder to unlock out of habit.</string>
+    <string name="random_unlock_enabled_switch">Enable random character unlock</string>
+    <string name="random_unlock_length_label">Number of characters: %d</string>
+    <string name="random_unlock_challenge_label">Type the following characters to unlock:</string>
+    <string name="random_unlock_challenge_hint">Type the characters here…</string>
+    <string name="random_unlock_wrong">The typed characters do not match</string>
+    <string name="random_unlock_saved_toast">Random unlock settings saved</string>
 </resources>

@@ -18,13 +18,19 @@ package io.timelimit.android.ui.login
 
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.SpannableString
+import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.biometric.BiometricPrompt
@@ -63,9 +69,14 @@ class NewLoginFragment: DialogFragment() {
         private const val CHILD_ALREADY_CURRENT_USER = 3
         private const val CHILD_AUTH = 4
         private const val PARENT_LOGIN_BLOCKED = 5
+
+        private const val COLOR_CORRECT = 0xFF2E7D32.toInt()  // Green 800
+        private const val COLOR_WRONG = 0xFFC62828.toInt()     // Red 800
     }
 
     private val model: LoginDialogFragmentModel by viewModels()
+    private var currentChallengeForWatcher: String? = null
+    private var challengeTextWatcher: TextWatcher? = null
 
     private val inputMethodManager: InputMethodManager by lazy {
         requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -123,6 +134,15 @@ class NewLoginFragment: DialogFragment() {
         model.selectedUserId.value?.let { outState.putString(SELECTED_USER_ID, it) }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        val status = model.status.value
+        if (status is ParentUserLogin && status.randomChallenge != null) {
+            dismissAllowingStateLoss()
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = NewLoginFragmentBinding.inflate(inflater, container, false)
 
@@ -132,6 +152,7 @@ class NewLoginFragment: DialogFragment() {
             override fun onUserClicked(user: User) {
                 // reset parent password view
                 binding.enterPassword.password.setText("")
+                binding.enterPassword.challengeInput.setText("")
 
                 // go to the next step
                 model.startSignIn(user)
@@ -165,10 +186,18 @@ class NewLoginFragment: DialogFragment() {
             }
 
             fun go() {
-                model.tryParentLogin(
-                        password = password.text.toString(),
-                        model = getActivityViewModel(requireActivity())
-                )
+                val currentStatus = model.status.value
+                if (currentStatus is ParentUserLogin && currentStatus.randomChallenge != null) {
+                    model.tryParentLoginWithChallenge(
+                            typedChallenge = challengeInput.text.toString(),
+                            model = getActivityViewModel(requireActivity())
+                    )
+                } else {
+                    model.tryParentLogin(
+                            password = password.text.toString(),
+                            model = getActivityViewModel(requireActivity())
+                    )
+                }
             }
 
             keyboard.listener = object: KeyboardViewListener {
@@ -185,6 +214,7 @@ class NewLoginFragment: DialogFragment() {
             }
 
             password.setOnEnterListenr { go() }
+            challengeInput.setOnEnterListenr { go() }
 
             biometricAuthButton.setOnClickListener {
                 tryBiometricLogin()
@@ -227,19 +257,83 @@ class NewLoginFragment: DialogFragment() {
                         }
                     }
 
-                    binding.enterPassword.password.isEnabled = !status.isCheckingPassword
-                    binding.enterPassword.biometricAuthEnabled = status.biometricAuthEnabled
+                    // Set the challenge text for data binding
+                    binding.enterPassword.randomChallenge = status.randomChallenge
 
-                    if (!binding.enterPassword.showCustomKeyboard) {
-                        binding.enterPassword.password.requestFocus()
-                        inputMethodManager.showSoftInput(binding.enterPassword.password, 0)
-                    }
+                    if (status.randomChallenge != null) {
+                        val challenge = status.randomChallenge
 
-                    if (status.wasPasswordWrong) {
-                        Toast.makeText(requireContext(), R.string.login_snackbar_wrong, Toast.LENGTH_SHORT).show()
-                        binding.enterPassword.password.setText("")
+                        // Challenge mode — force monospace typeface programmatically
+                        val monoTypeface = android.graphics.Typeface.MONOSPACE
+                        binding.enterPassword.challengeDisplay.typeface = android.graphics.Typeface.create(monoTypeface, android.graphics.Typeface.BOLD)
 
-                        model.resetPasswordWrong()
+                        // Apply background programmatically (theme attrs don't work in drawable XML)
+                        val bgColor = com.google.android.material.color.MaterialColors.getColor(binding.enterPassword.challengeDisplay, com.google.android.material.R.attr.colorPrimaryContainer)
+                        val defaultTextColor = com.google.android.material.color.MaterialColors.getColor(binding.enterPassword.challengeDisplay, com.google.android.material.R.attr.colorOnPrimaryContainer)
+                        val bg = android.graphics.drawable.GradientDrawable()
+                        bg.setColor(bgColor)
+                        bg.cornerRadius = 12f * resources.displayMetrics.density
+                        binding.enterPassword.challengeDisplay.background = bg
+
+                        // Helper to update challenge display with colored characters
+                        fun updateChallengeColors(typed: String) {
+                            val spannable = SpannableString(challenge)
+                            for (i in challenge.indices) {
+                                if (i < typed.length) {
+                                    val color = if (typed[i] == challenge[i]) COLOR_CORRECT else COLOR_WRONG
+                                    spannable.setSpan(ForegroundColorSpan(color), i, i + 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                } else {
+                                    spannable.setSpan(ForegroundColorSpan(defaultTextColor), i, i + 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                }
+                            }
+                            binding.enterPassword.challengeDisplay.setText(spannable, TextView.BufferType.SPANNABLE)
+                        }
+
+                        // Set up TextWatcher if challenge changed
+                        if (currentChallengeForWatcher != challenge) {
+                            currentChallengeForWatcher = challenge
+
+                            // Remove old watcher
+                            challengeTextWatcher?.let { binding.enterPassword.challengeInput.removeTextChangedListener(it) }
+
+                            // Add new watcher
+                            challengeTextWatcher = object : TextWatcher {
+                                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                                override fun afterTextChanged(s: Editable?) {
+                                    updateChallengeColors(s?.toString() ?: "")
+                                }
+                            }
+                            binding.enterPassword.challengeInput.addTextChangedListener(challengeTextWatcher)
+                        }
+
+                        // Initial color update
+                        updateChallengeColors(binding.enterPassword.challengeInput.text?.toString() ?: "")
+
+                        binding.enterPassword.challengeInput.isEnabled = !status.isCheckingPassword
+                        binding.enterPassword.challengeInput.requestFocus()
+                        inputMethodManager.showSoftInput(binding.enterPassword.challengeInput, 0)
+
+                        if (status.wasChallengeWrong) {
+                            Toast.makeText(requireContext(), R.string.random_unlock_wrong, Toast.LENGTH_SHORT).show()
+                            binding.enterPassword.challengeInput.setText("")
+                            model.resetChallengeWrong()
+                        }
+                    } else {
+                        // Password mode
+                        binding.enterPassword.password.isEnabled = !status.isCheckingPassword
+                        binding.enterPassword.biometricAuthEnabled = status.biometricAuthEnabled
+
+                        if (!binding.enterPassword.showCustomKeyboard) {
+                            binding.enterPassword.password.requestFocus()
+                            inputMethodManager.showSoftInput(binding.enterPassword.password, 0)
+                        }
+
+                        if (status.wasPasswordWrong) {
+                            Toast.makeText(requireContext(), R.string.login_snackbar_wrong, Toast.LENGTH_SHORT).show()
+                            binding.enterPassword.password.setText("")
+                            model.resetPasswordWrong()
+                        }
                     }
 
                     null

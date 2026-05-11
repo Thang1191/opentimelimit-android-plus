@@ -192,4 +192,12 @@ abstract class ConfigDao {
 
     fun getAnnoyManualUnblockCounter() = getValueOfKeySync(ConfigurationItemType.AnnoyManualUnblockCounter).let { it?.toInt() ?: 0 }
     fun setAnoyManualUnblockCounterSync(counter: Int) { updateValueSync(ConfigurationItemType.AnnoyManualUnblockCounter, counter.toString()) }
+
+    fun getRandomUnlockEnabledLive(): LiveData<Boolean> = getValueOfKeyAsync(ConfigurationItemType.RandomUnlockEnabled).map { it == "1" }
+    fun getRandomUnlockEnabledSync(): Boolean = getValueOfKeySync(ConfigurationItemType.RandomUnlockEnabled) == "1"
+    fun setRandomUnlockEnabledSync(enabled: Boolean) = updateValueSync(ConfigurationItemType.RandomUnlockEnabled, if (enabled) "1" else "0")
+
+    fun getRandomUnlockLengthLive(): LiveData<Int> = getValueOfKeyAsync(ConfigurationItemType.RandomUnlockLength).map { it?.toIntOrNull() ?: 6 }
+    fun getRandomUnlockLengthSync(): Int = getValueOfKeySync(ConfigurationItemType.RandomUnlockLength)?.toIntOrNull() ?: 6
+    fun setRandomUnlockLengthSync(length: Int) = updateValueSync(ConfigurationItemType.RandomUnlockLength, length.toString())
 }

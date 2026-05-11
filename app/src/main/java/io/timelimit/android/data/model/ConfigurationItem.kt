@@ -87,6 +87,8 @@ enum class ConfigurationItemType {
     ParentModeKey,
     CustomOrganizationName,
     AnnoyManualUnblockCounter,
+    RandomUnlockEnabled,
+    RandomUnlockLength,
 }
 
 object ConfigurationItemTypeUtil {
@@ -102,6 +104,8 @@ object ConfigurationItemTypeUtil {
     private const val PARENT_MODE_KEY = 10
     private const val CUSTOM_ORGANIZATION_NAME = 11
     private const val ANNOY_MANUAL_UNBLOCK_COUNTER = 12
+    private const val RANDOM_UNLOCK_ENABLED = 13
+    private const val RANDOM_UNLOCK_LENGTH = 14
 
     val TYPES = listOf(
             ConfigurationItemType.OwnDeviceId,
@@ -115,7 +119,9 @@ object ConfigurationItemTypeUtil {
             ConfigurationItemType.HomescreenDelay,
             ConfigurationItemType.ParentModeKey,
             ConfigurationItemType.CustomOrganizationName,
-            ConfigurationItemType.AnnoyManualUnblockCounter
+            ConfigurationItemType.AnnoyManualUnblockCounter,
+            ConfigurationItemType.RandomUnlockEnabled,
+            ConfigurationItemType.RandomUnlockLength
     )
 
     fun serialize(value: ConfigurationItemType) = when(value) {
@@ -131,6 +137,8 @@ object ConfigurationItemTypeUtil {
         ConfigurationItemType.ParentModeKey -> PARENT_MODE_KEY
         ConfigurationItemType.CustomOrganizationName -> CUSTOM_ORGANIZATION_NAME
         ConfigurationItemType.AnnoyManualUnblockCounter -> ANNOY_MANUAL_UNBLOCK_COUNTER
+        ConfigurationItemType.RandomUnlockEnabled -> RANDOM_UNLOCK_ENABLED
+        ConfigurationItemType.RandomUnlockLength -> RANDOM_UNLOCK_LENGTH
     }
 
     fun parse(value: Int) = when(value) {
@@ -146,6 +154,8 @@ object ConfigurationItemTypeUtil {
         PARENT_MODE_KEY -> ConfigurationItemType.ParentModeKey
         CUSTOM_ORGANIZATION_NAME -> ConfigurationItemType.CustomOrganizationName
         ANNOY_MANUAL_UNBLOCK_COUNTER -> ConfigurationItemType.AnnoyManualUnblockCounter
+        RANDOM_UNLOCK_ENABLED -> ConfigurationItemType.RandomUnlockEnabled
+        RANDOM_UNLOCK_LENGTH -> ConfigurationItemType.RandomUnlockLength
         else -> throw IllegalArgumentException()
     }
 }

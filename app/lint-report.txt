@@ -1,0 +1,798 @@
+A:\AndroidProjects\opentimelimit-android\app\lint-baseline.xml: Information: 80 errors and 121 warnings were filtered out because they are listed in the baseline file, lint-baseline.xml [LintBaseline]
+A:\AndroidProjects\opentimelimit-android\app\lint-baseline.xml: Information: 348 errors/warnings were listed in the baseline file (lint-baseline.xml) but not found in the project; perhaps they have been fixed? Another possible explanation is that lint recently stopped analyzing (and including results from) dependent projects by default. You can turn this back on with android.lintOptions.checkDependencies=true. Unmatched issue types: Autofill (13), ContentDescription (21), DefaultLocale (2), FragmentLiveDataObserve (8), LabelFor, NullSafeMutableLiveData, Overdraw, PluralsCandidate, QueryAllPackagesPermission, RtlHardcoded, StringFormatCount (2), TextFields (2), UnusedAttribute (3), UnusedResources (339), UseAppTint (7), UseCompatTextViewDrawableXml (20), UseRequireInsteadOfGet (49), UseSwitchCompatOrMaterialXml (2), UselessParent (7), VectorRaster (8), WrongConstant [LintBaselineFixed]
+
+   Explanation for issues of type "LintBaselineFixed":
+   If a lint baseline describes a problem which is no longer reported, then
+   the problem has either been fixed, or perhaps the issue type has been
+   disabled. In any case, the entry can be removed from the baseline (such
+   that if the issue is reintroduced at some point, lint will complain rather
+   than just silently starting to match the old baseline entry again.)
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\apps\addactivity\AddAppActivitiesDialogFragment.kt:68: Warning: Use of LayoutInflater.from(Context) detected. Consider using layoutInflater instead [UseGetLayoutInflater from androidx.fragment]
+        val binding = FragmentAddCategoryActivitiesBinding.inflate(LayoutInflater.from(context))
+                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\apps\add\AddCategoryAppsFragment.kt:80: Warning: Use of LayoutInflater.from(Context) detected. Consider using layoutInflater instead [UseGetLayoutInflater from androidx.fragment]
+        val binding = FragmentAddCategoryAppsBinding.inflate(LayoutInflater.from(context))
+                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\timelimit_rules\edit\DurationPickerDialogFragment.kt:63: Warning: Use of LayoutInflater.from(Context) detected. Consider using layoutInflater instead [UseGetLayoutInflater from androidx.fragment]
+        val binding = DurationPickerDialogFragmentBinding.inflate(LayoutInflater.from(requireContext()))
+                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\child\advanced\timezone\SetUserTimezoneDialogFragment.kt:79: Warning: Use of LayoutInflater.from(Context) detected. Consider using layoutInflater instead [UseGetLayoutInflater from androidx.fragment]
+        val binding = SetChildTimezoneDialogFragmentBinding.inflate(LayoutInflater.from(context!!))
+                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UseGetLayoutInflater":
+   Using LayoutInflater.from(Context) can return a LayoutInflater             
+       that does not have the correct theme.
+
+   Vendor: Android Open Source Project
+   Identifier: androidx.fragment
+   Feedback: https://issuetracker.google.com/issues/new?component=460964
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\contacts\ContactsFragment.kt:147: Warning: Calling setType after setting URI in Intent constructor will clear the data: Call setDataAndType instead? [IntentReset]
+                            .setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE),
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\contacts\ContactsFragment.kt:146: Originally set here
+
+   Explanation for issues of type "IntentReset":
+   Intent provides the following APIs: setData(Uri) and setType(String).
+   Unfortunately, setting one clears the other. If you want to set both, you
+   should call setDataAndType(Uri, String) instead.
+
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:29: Warning: Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details. [OldTargetApi]
+        targetSdkVersion 34
+        ~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "OldTargetApi":
+   When your application runs on a version of Android that is more recent than
+   your targetSdkVersion specifies that it has been tested with, various
+   compatibility modes kick in. This ensures that your application continues
+   to work, but it may look out of place. For example, if the targetSdkVersion
+   is less than 14, your app may get an option button in the UI.
+
+   To fix this issue, set the targetSdkVersion to the highest available value.
+   Then test your app to make sure everything works correctly. You may want to
+   consult the compatibility notes to see what changes apply to each version
+   you are adding support for:
+   https://developer.android.com/reference/android/os/Build.VERSION_CODES.html
+   as well as follow this guide:
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.
+   html
+
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.html
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\xml\times_widget_info.xml:24: Warning: Attribute widgetFeatures is only used in API level 28 and higher (current min is 24) [UnusedAttribute]
+    android:widgetFeatures="reconfigurable|configuration_optional"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\xml\times_widget_info.xml:25: Warning: Attribute previewLayout is only used in API level 31 and higher (current min is 24) [UnusedAttribute]
+    android:previewLayout="@layout/widget_times_preview"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedAttribute":
+   This check finds attributes set in XML files that were introduced in a
+   version newer than the oldest version targeted by your application (with
+   the minSdkVersion attribute).
+
+   This is not an error; the application will simply ignore the attribute.
+   However, if the attribute is important to the appearance or functionality
+   of your application, you should consider finding an alternative way to
+   achieve the same result with only available attributes, and then you can
+   optionally create a copy of the layout in a layout-vNN folder which will be
+   used on API NN or higher where you can take advantage of the newer
+   attribute.
+
+   Note: This check does not only apply to attributes. For example, some tags
+   can be unused too, such as the new <tag> element in layouts introduced in
+   API 21.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\fragment_setup_local_mode.xml:62: Error: Layout parameter layout_marginHorizontal ignored unless both layout_width and layout_height are also specified on <include> tag [IncludeLayoutParam]
+                android:layout_marginHorizontal="-8dp"
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "IncludeLayoutParam":
+   Layout parameters specified on an <include> tag will only be used if you
+   also override layout_width and layout_height on the <include> tag;
+   otherwise they will be ignored.
+
+   https://stackoverflow.com/questions/2631614/does-android-xml-layouts-include-tag-really-work
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\AndroidManifest.xml:36: Warning: Requiring Wifi permissions limits app availability on TVs that support only Ethernet [LeanbackUsesWifi]
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "LeanbackUsesWifi":
+   WiFi is not required for Android TV and many devices connect to the
+   internet via alternative methods e.g. Ethernet.
+
+   If your app is not focused specifically on WiFi functionality and only
+   wishes to connect to the internet, please modify your Manifest to contain:
+   <uses-feature android:name="android.hardware.wifi" android:required="false"
+   />
+
+   Un-metered or non-roaming connections can be detected in software using
+   NetworkCapabilities#NET_CAPABILITY_NOT_METERED and
+   NetworkCapabilities#NET_CAPABILITY_NOT_ROAMING.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\extensions\ContextRegisterReceiver.kt:27: Warning: receiver is missing RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED flag for unprotected broadcasts registered for an IntentFilter that cannot be inspected by lint [UnspecifiedRegisterReceiverFlag]
+    else this.registerReceiver(receiver, filter)
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnspecifiedRegisterReceiverFlag":
+   In Android U, all receivers registering for non-system broadcasts are
+   required to include a flag indicating the receiver's exported state. Apps
+   registering for non-system broadcasts should use the
+   ContextCompat#registerReceiver APIs with flags set to either
+   RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED.
+
+   If you are not expecting broadcasts from other apps on the device, register
+   your receiver with RECEIVER_NOT_EXPORTED to protect your receiver on all
+   platform releases.
+
+   https://developer.android.com/reference/androidx/core/content/ContextCompat#registerReceiver(android.content.Context,android.content.BroadcastReceiver,android.content.IntentFilter,int)
+
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:92: Warning: A newer version of org.jetbrains.kotlin:kotlin-stdlib-jdk8 than 1.9.21 is available: 2.2.10 [GradleDependency]
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:93: Warning: A newer version of androidx.appcompat:appcompat than 1.7.0 is available: 1.7.1 [GradleDependency]
+    implementation 'androidx.appcompat:appcompat:1.7.0' // Upgraded due to SDK 21
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:94: Warning: A newer version of androidx.core:core than 1.13.1 is available: 1.18.0 [GradleDependency]
+    implementation 'androidx.core:core:1.13.1'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:96: Warning: A newer version of androidx.gridlayout:gridlayout than 1.0.0 is available: 1.1.0 [GradleDependency]
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:98: Warning: A newer version of androidx.fragment:fragment-ktx than 1.8.2 is available: 1.8.9 [GradleDependency]
+    implementation 'androidx.fragment:fragment-ktx:1.8.2' // Upgraded due to SDK 21
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:100: Warning: A newer version of androidx.navigation:navigation-fragment-ktx than 2.7.7 is available: 2.9.7 [GradleDependency]
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:101: Warning: A newer version of androidx.navigation:navigation-ui than 2.7.7 is available: 2.9.7 [GradleDependency]
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:104: Warning: A newer version of androidx.lifecycle:lifecycle-viewmodel-ktx than 2.6.2 is available: 2.10.0 [GradleDependency]
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:105: Warning: A newer version of androidx.lifecycle:lifecycle-livedata-ktx than 2.6.2 is available: 2.10.0 [GradleDependency]
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:106: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.6.2 is available: 2.10.0 [GradleDependency]
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:107: Warning: A newer version of androidx.lifecycle:lifecycle-common-java8 than 2.6.2 is available: 2.10.0 [GradleDependency]
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:113: Warning: A newer version of androidx.room:room-runtime than 2.6.1 is available: 2.8.4 [GradleDependency]
+    implementation "androidx.room:room-runtime:$room_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:114: Warning: A newer version of androidx.room:room-ktx than 2.6.1 is available: 2.8.4 [GradleDependency]
+    implementation "androidx.room:room-ktx:$room_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:118: Warning: A newer version of androidx.paging:paging-runtime than 3.3.1 is available: 3.4.2 [GradleDependency]
+    implementation "androidx.paging:paging-runtime:$paging_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:120: Warning: A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-core than 1.6.4 is available: 1.7.3 [GradleDependency]
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:121: Warning: A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-android than 1.7.3 is available: 1.9.0 [GradleDependency]
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:126: Warning: A newer version of androidx.test:runner than 1.6.1 is available: 1.7.0 [GradleDependency]
+    androidTestImplementation 'androidx.test:runner:1.6.1'
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:127: Warning: A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0 [GradleDependency]
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "GradleDependency":
+   This detector looks for usages of libraries where the version you are using
+   is not the current stable release. Using older versions is fine, and there
+   are cases where you deliberately want to stick with an older version.
+   However, you may simply not be aware that a more recent version is
+   available, and that is what this lint check helps find.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\AndroidManifest.xml:77: Warning: Expecting android:resizeableActivity="true" for this activity so the user can take advantage of the multi-window environment on all devices. NOTE: beginning with Android 12, all apps run in multi-window mode on large screen devices. [NonResizeableActivity]
+            android:resizeableActivity="false"
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "NonResizeableActivity":
+   The <activity> element should be allowed to be resized to allow users to
+   take advantage of the multi-window environments available on larger screen
+   Android devices.
+
+   To fix the issue, consider declaring the corresponding activity element
+   with resizableActivity="true" attribute.
+
+   https://developer.android.com/topic/arc/window-management
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\drawable\ic_keyboard_black_24dp.xml: Warning: Overriding @drawable/ic_keyboard_black_24dp which is marked as private in com.google.android.material:material:1.13.0. If deliberate, use tools:override="true", otherwise pick a different name. [PrivateResource]
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\new_login_fragment_password.xml:69: Warning: The resource @drawable/ic_keyboard_black_24dp is marked as private in com.google.android.material:material:1.13.0 [PrivateResource]
+                android:src="@drawable/ic_keyboard_black_24dp"
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "PrivateResource":
+   Private resources should not be referenced; the may not be present
+   everywhere, and even where they are they may disappear without notice.
+
+   To fix this, copy the resource into your own project instead.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\AndroidManifest.xml:77: Warning: Activity should not be non-resizable. With this setting, apps cannot be used in multi-window or free form mode. [DiscouragedApi]
+            android:resizeableActivity="false"
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "DiscouragedApi":
+   Discouraged APIs are allowed and are not deprecated, but they may be unfit
+   for common use (e.g. due to slow performance or subtle behavior).
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\values-de\strings.xml:266: Warning: Inconsistent number of arguments in formatting string category_settings_battery_limit_mobile; found both 1 here and 0 in values/strings.xml [StringFormatCount]
+    <string name="category_settings_battery_limit_mobile">Beim Entladen müssen mindestens %d\%% des Akkus verbleiben</string>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    A:\AndroidProjects\opentimelimit-android\app\src\main\res\values\strings.xml:297: Conflicting number of arguments (0) here
+
+   Explanation for issues of type "StringFormatCount":
+   When a formatted string takes arguments, it usually needs to reference the
+   same arguments in all translations (or all arguments if there are no
+   translations.
+
+   There are cases where this is not the case, so this issue is a warning
+   rather than an error by default. However, this usually happens when a
+   language is not translated or updated correctly.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\AndroidManifest.xml:52: Warning: The attribute android:allowBackup is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute android:dataExtractionRules specifying an @xml resource which configures cloud backups and device transfers on Android 12 and higher. [DataExtractionRules]
+        android:allowBackup="false"
+                             ~~~~~
+
+   Explanation for issues of type "DataExtractionRules":
+   Before Android 12, the attributes android:allowBackup and
+   android:fullBackupContent were used to configure all forms of backup,
+   including cloud backups, device-to-device transfers and adb backup.
+
+   In Android 12 and higher, these attributes have been deprecated and will
+   only apply to cloud backups. You should instead use the attribute
+   android:dataExtractionRules, specifying an @xml resource that configures
+   which files to back up, for cloud backups and for device-to-device
+   transfers, separately. If your minSdkVersion supports older versions,
+   you'll still want to specify an android:fullBackupContent resource if the
+   default behavior is not right for your app.
+
+   https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   https://goo.gle/DataExtractionRules
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\blocked_times\Adapter.kt:31: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var blockedTimeAreas: BitSet? by Delegates.observable(null as BitSet?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                        ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\blocked_times\Adapter.kt:32: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var selectedMinuteOfWeek: Int? by Delegates.observable(null as Int?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                      ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\blocked_times\Adapter.kt:33: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var handlers: Handlers? by Delegates.observable(null as Handlers?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                    ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\blocked_times\Adapter.kt:34: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var items: BlockedTimeItems by Delegates.observable(items) { _, _, _ -> notifyDataSetChanged() }
+                                                                            ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\parent\u2fkey\Adapter.kt:35: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var items: List<U2FKeyListItem> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                      ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\child\category\Adapter.kt:40: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var categories: List<ManageChildCategoriesListItem>? by Delegates.observable(null as List<ManageChildCategoriesListItem>?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                                                                            ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\child\category\Adapter.kt:41: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var handlers: Handlers? by Delegates.observable(null as Handlers?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                    ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\apps\addactivity\AddAppActivityAdapter.kt:26: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var data: List<AddActivityListItem>? by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                           ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\apps\add\AddAppAdapter.kt:27: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var data: List<AddAppListItem> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                     ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\apps\add\AddAppAdapter.kt:29: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var selectedApps: Set<String> by Delegates.observable(emptySet()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                   ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\appsandrules\AppAndRuleAdapter.kt:49: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var items: List<AppAndRuleItem> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                      ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\appsandrules\AppAndRuleAdapter.kt:50: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var usedTimes: List<UsedTimeItem> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                        ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\appsandrules\AppAndRuleAdapter.kt:51: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var date: DateInTimezone? by Delegates.observable(null as DateInTimezone?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                            ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\child\apps\ChildAppsAdapter.kt:38: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var data: List<ChildAppsEntry> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                     ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\child\tasks\ChildTaskAdapter.kt:39: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var data: List<ChildTaskItem> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                    ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\contacts\ContactsAdapter.kt:34: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var items: List<ContactsItem>? by Delegates.observable(null as List<ContactsItem>?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                                     ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\diagnose\exitreason\DiagnoseExitReasonAdapter.kt:28: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var content: List<ExitLogItem> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                     ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\lock\LockTaskAdapter.kt:36: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var content: List<LockTaskItem> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                      ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\login\LoginUserAdapter.kt:26: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var data: List<LoginUserAdapterItem>? by Delegates.observable(null as List<LoginUserAdapterItem>?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                                                    ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\login\LoginUserAdapter.kt:27: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var listener: LoginUserAdapterListener? by Delegates.observable(null as LoginUserAdapterListener?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                                                    ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\overview\overview\OverviewFragmentAdapter.kt:38: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var data: List<OverviewFragmentItem>? by Delegates.observable(null as List<OverviewFragmentItem>?) { _, _, _ -> notifyDataSetChanged() }
+                                                                                                                    ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\child\category\specialmode\SpecialModeOptionAdapter.kt:24: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var items: List<SpecialModeOption> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                         ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\child\advanced\timezone\TimezoneAdapter.kt:28: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var timezones: List<TimeZone> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
+                                                                                    ~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\category\usagehistory\UsageHistoryAdapter.kt:45: Warning: It will always be more efficient to use more specific change events if you can. Rely on notifyDataSetChanged as a last resort. [NotifyDataSetChanged]
+    var showCategoryTitle: Boolean by Delegates.observable(false) { _, _, _ -> notifyDataSetChanged() }
+                                                                               ~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "NotifyDataSetChanged":
+   The RecyclerView adapter's onNotifyDataSetChanged method does not specify
+   what about the data set has changed, forcing any observers to assume that
+   all existing items and structure may no longer be valid. `LayoutManager`s
+   will be forced to fully rebind and relayout all visible views.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AccessibilityService.kt:31: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AdminStatus.kt:28: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidDeviceOwnerApi.kt:30: Warning: Unnecessary; SDK_INT is never < 24 [ObsoleteSdkInt]
+        if (VERSION.SDK_INT < VERSION_CODES.M) return false
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:78: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:159: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:178: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:218: Warning: Unnecessary; SDK_INT is never < 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:266: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:360: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:439: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:451: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+    @TargetApi(Build.VERSION_CODES.N)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:455: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:471: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:483: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:529: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:569: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:577: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:584: Warning: Unnecessary; SDK_INT is never < 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:610: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:637: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:654: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:681: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:753: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        SystemPermission.UsageStats -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:822: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        SystemPermission.Overlay -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manipulation\AnnoyActivity.kt:74: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manipulation\AnnoyActivity.kt:135: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\logic\AnnoyLogic.kt:33: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        val ENABLE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\Apps.kt:84: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\diagnose\DiagnoseForegroundAppFragment.kt:126: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        binding.osUsageStatsTextExportButton.isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\diagnose\DiagnoseForegroundAppFragment.kt:126: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        binding.osUsageStatsTextExportButton.isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\diagnose\DiagnoseForegroundAppFragment.kt:154: Warning: Unnecessary; SDK_INT is never < 24 [ObsoleteSdkInt]
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\foregroundapp\ForegroundAppHelper.kt:37: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+                        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\device\manage\permission\InformAboutDeviceOwnerDialogFragment.kt:39: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        val shouldShow = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\lock\LockActivity.kt:164: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\lock\LockActivity.kt:168: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+            val isLocked = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\foregroundapp\LollipopForegroundAppHelper.kt:31: Warning: Unnecessary; SDK_INT is always >= 21 [ObsoleteSdkInt]
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\logic\ManipulationLogic.kt:44: Warning: Unnecessary;` Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP` is never true here [ObsoleteSdkInt]
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\logic\ManipulationLogic.kt:77: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\login\NewLoginFragment.kt:107: Warning: Unnecessary; SDK_INT is never < 24 [ObsoleteSdkInt]
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\login\NewLoginFragment.kt:162: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\Notification.kt:139: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+    val PENDING_INTENT_FLAGS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\NotificationListener.kt:41: Warning: Unnecessary; SDK_INT is always >= 21 [ObsoleteSdkInt]
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\OverlayUtil.kt:92: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+    fun getOverlayPermissionStatus(strictChecking: Boolean) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manipulation\UnlockAfterManipulationActivity.kt:45: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manipulation\UnlockAfterManipulationActivity.kt:65: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manipulation\UnlockAfterManipulationActivity.kt:90: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\foregroundapp\UsageStatsForegroundAppHelper.kt:29: Warning: Unnecessary; SDK_INT is always >= 21 [ObsoleteSdkInt]
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\foregroundapp\UsageStatsForegroundAppHelper.kt:31: Warning: Unnecessary; SDK_INT is always >= 24 [ObsoleteSdkInt]
+    protected val usageStatsManager = context.getSystemService(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) Context.USAGE_STATS_SERVICE else "usagestats") as UsageStatsManager
+                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\xml-v21: Warning: This folder configuration (v21) is unnecessary; minSdkVersion is 24. Merge all the resources in this folder into xml. [ObsoleteSdkInt]
+
+   Explanation for issues of type "ObsoleteSdkInt":
+   This check flags version checks that are not necessary, because the
+   minSdkVersion (or surrounding known API level) is already at least as high
+   as the version checked for.
+
+   Similarly, it also looks for resources in -vNN folders, such as values-v14
+   where the version qualifier is less than or equal to the minSdkVersion,
+   where the contents should be merged into the best folder.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\child_task_item.xml:74: Warning: This tag and its children can be replaced by one <TextView/> and a compound drawable [UseCompoundDrawables]
+            <LinearLayout
+             ~~~~~~~~~~~~
+
+   Explanation for issues of type "UseCompoundDrawables":
+   A LinearLayout which contains an ImageView and a TextView can be more
+   efficiently handled as a compound drawable (a single TextView, using the
+   drawableTop, drawableLeft, drawableRight and/or drawableBottom attributes
+   to draw one or more images adjacent to the text).
+
+   If the two widgets are offset from each other with margins, this can be
+   replaced with a drawablePadding attribute.
+
+   There's a lint quickfix to perform this conversion in the Eclipse plugin.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\drawable\ic_fingerprint_24dp.xml:9: Warning: Very long vector path (2085 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector. [VectorPath]
+      android:pathData="M17.81,4.47c-0.08,0 -0.16,-0.02 -0.23,-0.06C15.66,3.42 14,3 12.01,3c-1.98,0 -3.86,0.47 -5.57,1.41 -0.24,0.13 -0.54,0.04 -0.68,-0.2 -0.13,-0.24 -0.04,-0.55 0.2,-0.68C7.82,2.52 9.86,2 12.01,2c2.13,0 3.99,0.47 6.03,1.52 0.25,0.13 0.34,0.43 0.21,0.67 -0.09,0.18 -0.26,0.28 -0.44,0.28zM3.5,9.72c-0.1,0 -0.2,-0.03 -0.29,-0.09 -0.23,-0.16 -0.28,-0.47 -0.12,-0.7 0.99,-1.4 2.25,-2.5 3.75,-3.27C9.98,4.04 14,4.03 17.15,5.65c1.5,0.77 2.76,1.86 3.75,3.25 0.16,0.22 0.11,0.54 -0.12,0.7 -0.23,0.16 -0.54,0.11 -0.7,-0.12 -0.9,-1.26 -2.04,-2.25 -3.39,-2.94 -2.87,-1.47 -6.54,-1.47 -9.4,0.01 -1.36,0.7 -2.5,1.7 -3.4,2.96 -0.08,0.14 -0.23,0.21 -0.39,0.21zM9.75,21.79c-0.13,0 -0.26,-0.05 -0.35,-0.15 -0.87,-0.87 -1.34,-1.43 -2.01,-2.64 -0.69,-1.23 -1.05,-2.73 -1.05,-4.34 0,-2.97 2.54,-5.39 5.66,-5.39s5.66,2.42 5.66,5.39c0,0.28 -0.22,0.5 -0.5,0.5s-0.5,-0.22 -0.5,-0.5c0,-2.42 -2.09,-4.39 -4.66,-4.39 -2.57,0 -4.66,1.97 -4.66,4.39 0,1.44 0.32,2.77 0.93,3.85 0.64,1.15 1.08,1.64 1.85,2.42 0.19,0.2 0.19,0.51 0,0.71 -0.11,0.1 -0.24,0.15 -0.37,0.15zM16.92,19.94c-1.19,0 -2.24,-0.3 -3.1,-0.89 -1.49,-1.01 -2.38,-2.65 -2.38,-4.39 0,-0.28 0.22,-0.5 0.5,-0.5s0.5,0.22 0.5,0.5c0,1.41 0.72,2.74 1.94,3.56 0.71,0.48 1.54,0.71 2.54,0.71 0.24,0 0.64,-0.03 1.04,-0.1 0.27,-0.05 0.53,0.13 0.58,0.41 0.05,0.27 -0.13,0.53 -0.41,0.58 -0.57,0.11 -1.07,0.12 -1.21,0.12zM14.91,22c-0.04,0 -0.09,-0.01 -0.13,-0.02 -1.59,-0.44 -2.63,-1.03 -3.72,-2.1 -1.4,-1.39 -2.17,-3.24 -2.17,-5.22 0,-1.62 1.38,-2.94 3.08,-2.94 1.7,0 3.08,1.32 3.08,2.94 0,1.07 0.93,1.94 2.08,1.94s2.08,-0.87 2.08,-1.94c0,-3.77 -3.25,-6.83 -7.25,-6.83 -2.84,0 -5.44,1.58 -6.61,4.03 -0.39,0.81 -0.59,1.76 -0.59,2.8 0,0.78 0.07,2.01 0.67,3.61 0.1,0.26 -0.03,0.55 -0.29,0.64 -0.26,0.1 -0.55,-0.04 -0.64,-0.29 -0.49,-1.31 -0.73,-2.61 -0.73,-3.96 0,-1.2 0.23,-2.29 0.68,-3.24 1.33,-2.79 4.28,-4.6 7.51,-4.6 4.55,0 8.25,3.51 8.25,7.83 0,1.62 -1.38,2.94 -3.08,2.94s-3.08,-1.32 -3.08,-2.94c0,-1.07 -0.93,-1.94 -2.08,-1.94s-2.08,0.87 -2.08,1.94c0,1.71 0.66,3.31 1.87,4.51 0.95,0.94 1.86,1.46 3.27,1.85 0.27,0.07 0.42,0.35 0.35,0.61 -0.05,0.23 -0.26,0.38 -0.47,0.38z"/>
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\drawable\ic_settings_black_24dp.xml:8: Warning: Very long vector path (871 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector. [VectorPath]
+        android:pathData="M19.43,12.98c0.04,-0.32 0.07,-0.64 0.07,-0.98s-0.03,-0.66 -0.07,-0.98l2.11,-1.65c0.19,-0.15 0.24,-0.42 0.12,-0.64l-2,-3.46c-0.12,-0.22 -0.39,-0.3 -0.61,-0.22l-2.49,1c-0.52,-0.4 -1.08,-0.73 -1.69,-0.98l-0.38,-2.65C14.46,2.18 14.25,2 14,2h-4c-0.25,0 -0.46,0.18 -0.49,0.42l-0.38,2.65c-0.61,0.25 -1.17,0.59 -1.69,0.98l-2.49,-1c-0.23,-0.09 -0.49,0 -0.61,0.22l-2,3.46c-0.13,0.22 -0.07,0.49 0.12,0.64l2.11,1.65c-0.04,0.32 -0.07,0.65 -0.07,0.98s0.03,0.66 0.07,0.98l-2.11,1.65c-0.19,0.15 -0.24,0.42 -0.12,0.64l2,3.46c0.12,0.22 0.39,0.3 0.61,0.22l2.49,-1c0.52,0.4 1.08,0.73 1.69,0.98l0.38,2.65c0.03,0.24 0.24,0.42 0.49,0.42h4c0.25,0 0.46,-0.18 0.49,-0.42l0.38,-2.65c0.61,-0.25 1.17,-0.59 1.69,-0.98l2.49,1c0.23,0.09 0.49,0 0.61,-0.22l2,-3.46c0.12,-0.22 0.07,-0.49 -0.12,-0.64l-2.11,-1.65zM12,15.5c-1.93,0 -3.5,-1.57 -3.5,-3.5s1.57,-3.5 3.5,-3.5 3.5,1.57 3.5,3.5 -1.57,3.5 -3.5,3.5z"/>
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\drawable\ic_settings_white_24dp.xml:4: Warning: Very long vector path (871 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector. [VectorPath]
+    <path android:fillColor="#FF000000" android:pathData="M19.43,12.98c0.04,-0.32 0.07,-0.64 0.07,-0.98s-0.03,-0.66 -0.07,-0.98l2.11,-1.65c0.19,-0.15 0.24,-0.42 0.12,-0.64l-2,-3.46c-0.12,-0.22 -0.39,-0.3 -0.61,-0.22l-2.49,1c-0.52,-0.4 -1.08,-0.73 -1.69,-0.98l-0.38,-2.65C14.46,2.18 14.25,2 14,2h-4c-0.25,0 -0.46,0.18 -0.49,0.42l-0.38,2.65c-0.61,0.25 -1.17,0.59 -1.69,0.98l-2.49,-1c-0.23,-0.09 -0.49,0 -0.61,0.22l-2,3.46c-0.13,0.22 -0.07,0.49 0.12,0.64l2.11,1.65c-0.04,0.32 -0.07,0.65 -0.07,0.98s0.03,0.66 0.07,0.98l-2.11,1.65c-0.19,0.15 -0.24,0.42 -0.12,0.64l2,3.46c0.12,0.22 0.39,0.3 0.61,0.22l2.49,-1c0.52,0.4 1.08,0.73 1.69,0.98l0.38,2.65c0.03,0.24 0.24,0.42 0.49,0.42h4c0.25,0 0.46,-0.18 0.49,-0.42l0.38,-2.65c0.61,-0.25 1.17,-0.59 1.69,-0.98l2.49,1c0.23,0.09 0.49,0 0.61,-0.22l2,-3.46c0.12,-0.22 0.07,-0.49 -0.12,-0.64l-2.11,-1.65zM12,15.5c-1.93,0 -3.5,-1.57 -3.5,-3.5s1.57,-3.5 3.5,-3.5 3.5,1.57 3.5,3.5 -1.57,3.5 -3.5,3.5z"/>
+                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "VectorPath":
+   Using long vector paths is bad for performance. There are several ways to
+   make the pathData shorter:
+   * Using less precision
+   * Removing some minor details
+   * Using the Android Studio vector conversion tool
+   * Rasterizing the image (converting to PNG)
+
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:115: Warning: This library supports using KSP instead of kapt, which greatly improves performance. Learn more: https://developer.android.com/studio/build/migrate-to-ksp [KaptUsageInsteadOfKsp]
+    kapt "androidx.room:room-compiler:$room_version"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "KaptUsageInsteadOfKsp":
+   KSP is a more efficient replacement for kapt. For libraries that support
+   both, KSP should be used to improve build times.
+
+   https://developer.android.com/studio/build/migrate-to-ksp
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:382: Warning: Notifications should only launch a Service from notification actions (addAction) [LaunchActivityFromNotification]
+                    .setContentIntent(actionIntent)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\integration\platform\android\AndroidIntegration.kt:371: This Service intent is launched from a notification; this is discouraged except as notification actions
+
+   Explanation for issues of type "LaunchActivityFromNotification":
+   Notifications should only launch activities -- that's what users expect
+   (and has been the guidance in both the Android SDK and Material Design
+   documentation for a while).
+
+   A Service or a BroadcastReceiver should not be used as an intermediate,
+   because this can lead to significant performance problems, and as a result,
+   this will not be allowed in Android 12.
+
+   https://developer.android.com/guide/topics/ui/notifiers/notifications?hl=en#Actions
+   https://d.android.com/r/studio-ui/designer/material/notifications-behavior
+   https://developer.android.com/guide/topics/ui/notifiers/notifications?hl=en
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\widget_times.xml:10: Warning: Possible overdraw: Root element paints background ?attr/colorSurface with a theme that also paints a background (inferred theme is @style/AppTheme) [Overdraw]
+    android:background="?attr/colorSurface">
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\widget_times_preview.xml:9: Warning: Possible overdraw: Root element paints background @color/widgetBackground with a theme that also paints a background (inferred theme is @style/AppTheme) [Overdraw]
+    android:background="@color/widgetBackground"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\widget_times_translucent.xml:20: Warning: Possible overdraw: Root element paints background @color/widgetBackgroundTranslucent with a theme that also paints a background (inferred theme is @style/AppTheme) [Overdraw]
+    android:background="@color/widgetBackgroundTranslucent">
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "Overdraw":
+   If you set a background drawable on a root view, then you should use a
+   custom theme where the theme background is null. Otherwise, the theme
+   background will be painted first, only to have your custom background
+   completely cover it; this is called "overdraw".
+
+   NOTE: This detector relies on figuring out which layouts are associated
+   with which activities based on scanning the Java code, and it's currently
+   doing that using an inexact pattern matching algorithm. Therefore, it can
+   incorrectly conclude which activity the layout is associated with and then
+   wrongly complain that a background-theme is hidden.
+
+   If you want your custom background on multiple pages, then you should
+   consider making a custom theme with your custom background and just using
+   that theme instead of a root element background.
+
+   Of course it's possible that your custom drawable is translucent and you
+   want it to be mixed with the background. However, you will get better
+   performance if you pre-mix the background with your drawable and use that
+   resulting image or color as a custom theme background instead.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\color\button_outline_color.xml:16: Warning: The resource R.color.button_outline_color appears to be unused [UnusedResources]
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+^
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\values\colors.xml:27: Warning: The resource R.color.gray appears to be unused [UnusedResources]
+    <color name="gray">#9E9E9E</color>
+           ~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\values\colors.xml:31: Warning: The resource R.color.background_red appears to be unused [UnusedResources]
+    <color name="background_red">#a00</color>
+           ~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\color\danger_button.xml:16: Warning: The resource R.color.danger_button appears to be unused [UnusedResources]
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+^
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\color\outlined_button_background_tint.xml:16: Warning: The resource R.color.outlined_button_background_tint appears to be unused [UnusedResources]
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+^
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\values\styles.xml:80: Warning: The resource R.style.DangerButton appears to be unused [UnusedResources]
+    <style name="DangerButton" parent="Widget.Material3.Button">
+           ~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedResources":
+   Unused resources make applications larger and slow down builds.
+
+
+   The unused resource check can ignore tests. If you want to include
+   resources that are only referenced from tests, consider packaging them in a
+   test source set instead.
+
+   You can include test sources in the unused resource check by setting the
+   system property lint.unused-resources.include-tests =true, and to exclude
+   them (usually for performance reasons), use
+   lint.unused-resources.exclude-tests =true.
+   ,
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\activity_unlock_after_manipulation.xml:30: Warning: This LinearLayout layout or its RelativeLayout parent is unnecessary [UselessParent]
+        <LinearLayout
+         ~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\fragment_add_user_missing_authentication.xml:22: Warning: This LinearLayout layout or its RelativeLayout parent is unnecessary [UselessParent]
+        <LinearLayout
+         ~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\widget_times_category_item.xml:26: Warning: This LinearLayout layout or its FrameLayout parent is possibly unnecessary [UselessParent]
+    <LinearLayout
+     ~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\widget_times_category_item_translucent.xml:26: Warning: This LinearLayout layout or its FrameLayout parent is possibly unnecessary [UselessParent]
+    <LinearLayout
+     ~~~~~~~~~~~~
+
+   Explanation for issues of type "UselessParent":
+   A layout with children that has no siblings, is not a scrollview or a root
+   layout, and does not have a background, can be removed and have its
+   children moved directly into the parent for a flatter and more efficient
+   layout hierarchy.
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\mipmap-anydpi-v26\ic_launcher.xml:2: Warning: The application adaptive icon is missing a monochrome tag [MonochromeLauncherIcon]
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+^
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\mipmap-anydpi-v26\ic_launcher_round.xml:2: Warning: The application adaptive roundIcon is missing a monochrome tag [MonochromeLauncherIcon]
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+^
+
+   Explanation for issues of type "MonochromeLauncherIcon":
+   If android:roundIcon and android:icon are both in your manifest, you must
+   either remove the reference to android:roundIcon if it is not needed; or,
+   supply the monochrome icon in the drawable defined by the android:roundIcon
+   and android:icon attribute.
+
+   For example, if android:roundIcon and android:icon are both in the
+   manifest, a launcher might choose to use android:roundIcon over
+   android:icon to display the adaptive app icon. Therefore, your themed
+   application iconwill not show if your monochrome attribute is not also
+   specified in android:roundIcon.
+
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:101: Information: Add suffix -ktx to enable the Kotlin extensions for this library [KtxExtensionAvailable]
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\build.gradle:118: Information: Add suffix -ktx to enable the Kotlin extensions for this library [KtxExtensionAvailable]
+    implementation "androidx.paging:paging-runtime:$paging_version"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "KtxExtensionAvailable":
+   Android KTX extensions augment some libraries with support for modern
+   Kotlin language features like extension functions, extension properties,
+   lambdas, named parameters, coroutines, and more.
+
+   In Kotlin projects, use the KTX version of a library by replacing the
+   dependency in your build.gradle file. For example, you can replace
+   androidx.fragment:fragment with androidx.fragment:fragment-ktx.
+
+   https://developer.android.com/kotlin/ktx
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\manage_parent_u2f_key_fragment.xml:33: Warning: Missing contentDescription attribute on image [ContentDescription]
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "ContentDescription":
+   Non-textual widgets like ImageViews and ImageButtons should use the
+   contentDescription attribute to specify a textual description of the widget
+   such that screen readers and other accessibility tools can adequately
+   describe the user interface.
+
+   Note that elements in application screens that are purely decorative and do
+   not provide any content or enable a user action should not have
+   accessibility content descriptions. In this case, set their descriptions to
+   @null. If your app's minSdkVersion is 16 or higher, you can instead set
+   these graphical elements' android:importantForAccessibility attributes to
+   no.
+
+   Note that for text fields, you should not set both the hint and the
+   contentDescription attributes since the hint will never be shown. Just set
+   the hint.
+
+   https://developer.android.com/guide/topics/ui/accessibility/apps#special-cases
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\manage\parent\delete\DeleteParentView.kt:52: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+            view.userPasswordField.setText("")
+                                           ~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\login\NewLoginFragment.kt:134: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                binding.enterPassword.password.setText("")
+                                                       ~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\login\NewLoginFragment.kt:240: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                        binding.enterPassword.password.setText("")
+                                                               ~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\java\io\timelimit\android\ui\login\NewLoginFragment.kt:269: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                        binding.childPassword.password.setText("")
+                                                               ~~
+
+   Explanation for issues of type "SetTextI18n":
+   When calling TextView#setText
+   * Never call Number#toString() to format numbers; it will not handle
+   fraction separators and locale-specific digits properly. Consider using
+   String#format with proper format specifications (%d or %f) instead.
+   * Do not pass a string literal (e.g. "Hello") to display text. Hardcoded
+   text can not be properly translated to other languages. Consider using
+   Android resource strings instead.
+   * Do not build messages by concatenating text chunks. Such messages can not
+   be properly translated.
+
+   https://developer.android.com/guide/topics/resources/localization.html
+
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:117: Warning: Hardcoded string "0", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(0)}" android:enabled="@{enableButtons}" android:text="0" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:118: Warning: Hardcoded string "1", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(1)}" android:enabled="@{enableButtons}" android:text="1" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:119: Warning: Hardcoded string "2", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(2)}" android:enabled="@{enableButtons}" android:text="2" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:120: Warning: Hardcoded string "3", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(3)}" android:enabled="@{enableButtons}" android:text="3" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:121: Warning: Hardcoded string "4", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(4)}" android:enabled="@{enableButtons}" android:text="4" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:122: Warning: Hardcoded string "5", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(5)}" android:enabled="@{enableButtons}" android:text="5" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:123: Warning: Hardcoded string "6", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(6)}" android:enabled="@{enableButtons}" android:text="6" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:124: Warning: Hardcoded string "7", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(7)}" android:enabled="@{enableButtons}" android:text="7" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:125: Warning: Hardcoded string "8", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(8)}" android:enabled="@{enableButtons}" android:text="8" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:126: Warning: Hardcoded string "9", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(9)}" android:enabled="@{enableButtons}" android:text="9" />
+                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:127: Warning: Hardcoded string "A", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(10)}" android:enabled="@{enableButtons}" android:text="A" />
+                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:128: Warning: Hardcoded string "B", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(11)}" android:enabled="@{enableButtons}" android:text="B" />
+                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:129: Warning: Hardcoded string "C", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(12)}" android:enabled="@{enableButtons}" android:text="C" />
+                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:130: Warning: Hardcoded string "D", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(13)}" android:enabled="@{enableButtons}" android:text="D" />
+                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:131: Warning: Hardcoded string "E", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(14)}" android:enabled="@{enableButtons}" android:text="E" />
+                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:132: Warning: Hardcoded string "F", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.onButtonClicked(15)}" android:enabled="@{enableButtons}" android:text="F" />
+                                                                                                                                                                                                                                                                                       ~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\backdoor_dialog.xml:133: Warning: Hardcoded string "<", should use @string resource [HardcodedText]
+                <Button style="?attr/materialButtonTonalStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:minWidth="60dp" android:onClick="@{() -> handlers.removeLastChar()}" android:enabled="@{enableButtons}" android:text="&lt;" />
+                                                                                                                                                                                                                                                                                    ~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\fragment_add_user.xml:76: Warning: Hardcoded string "User Type", should use @string resource [HardcodedText]
+                            android:text="User Type"
+                            ~~~~~~~~~~~~~~~~~~~~~~~~
+A:\AndroidProjects\opentimelimit-android\app\src\main\res\layout\fragment_usage_history.xml:29: Warning: Hardcoded string "All Categories", should use @string resource [HardcodedText]
+            android:text="All Categories"
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "HardcodedText":
+   Hardcoding text attributes directly in layout files is bad for several
+   reasons:
+
+   * When creating configuration variations (for example for landscape or
+   portrait) you have to repeat the actual text (and keep it up to date when
+   making changes)
+
+   * The application cannot be translated to other languages by just adding
+   new translations for existing string resources.
+
+   There are quickfixes to automatically extract this hardcoded string into a
+   resource lookup.
+
+1 errors, 152 warnings (80 errors, 121 warnings filtered by baseline lint-baseline.xml)

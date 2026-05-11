@@ -44,6 +44,7 @@ import io.timelimit.android.ui.main.AuthenticatedUser
 import io.timelimit.android.ui.manage.parent.key.ScannedKey
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.security.SecureRandom
 
 class LoginDialogFragmentModel(application: Application): AndroidViewModel(application) {
     companion object {
@@ -90,6 +91,16 @@ class LoginDialogFragmentModel(application: Application): AndroidViewModel(appli
     var biometricPromptDismissed = false
     private val isLoginDone = MutableLiveData<Boolean>().apply { value = false }
     private val loginLock = Mutex()
+    private val randomUnlockEnabled = logic.database.config().getRandomUnlockEnabledLive()
+    private val randomUnlockLength = logic.database.config().getRandomUnlockLengthLive()
+    private val currentChallenge = MutableLiveData<String?>().apply { value = null }
+    private val wasChallengeWrong = MutableLiveData<Boolean>().apply { value = false }
+
+    private fun generateChallenge(length: Int): String {
+        val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#%&*+-="
+        val random = SecureRandom()
+        return (1..length).map { chars[random.nextInt(chars.length)] }.joinToString("")
+    }
 
     val status: LiveData<LoginDialogStatus> = isLoginDone.switchMap { isLoginDone ->
         if (isLoginDone) {
@@ -100,14 +111,38 @@ class LoginDialogFragmentModel(application: Application): AndroidViewModel(appli
 
                 when (selectedUser?.type) {
                     UserType.Parent -> {
-                        val loginScreen = isCheckingPassword.switchMap { isCheckingPassword ->
-                            wasPasswordWrong.map { wasPasswordWrong ->
-                                ParentUserLogin(
-                                    isCheckingPassword = isCheckingPassword,
-                                    wasPasswordWrong = wasPasswordWrong,
-                                    biometricAuthEnabled = selectedUser.biometricAuthEnabled,
-                                    userName = selectedUser.name
-                                ) as LoginDialogStatus
+                        val loginScreen = randomUnlockEnabled.switchMap { unlockEnabled ->
+                            if (unlockEnabled) {
+                                randomUnlockLength.switchMap { unlockLen ->
+                                    if (currentChallenge.value == null) {
+                                        currentChallenge.value = generateChallenge(unlockLen)
+                                    }
+                                    mergeLiveDataWaitForValues(isCheckingPassword, wasChallengeWrong).switchMap { (isCheckingPw, challengeWrong) ->
+                                        currentChallenge.map { challenge ->
+                                            ParentUserLogin(
+                                                isCheckingPassword = isCheckingPw,
+                                                wasPasswordWrong = false,
+                                                biometricAuthEnabled = false,
+                                                userName = selectedUser.name,
+                                                randomChallenge = challenge,
+                                                wasChallengeWrong = challengeWrong
+                                            ) as LoginDialogStatus
+                                        }
+                                    }
+                                }
+                            } else {
+                                isCheckingPassword.switchMap { isCheckingPw ->
+                                    wasPasswordWrong.map { wasPwWrong ->
+                                        ParentUserLogin(
+                                            isCheckingPassword = isCheckingPw,
+                                            wasPasswordWrong = wasPwWrong,
+                                            biometricAuthEnabled = selectedUser.biometricAuthEnabled,
+                                            userName = selectedUser.name,
+                                            randomChallenge = null,
+                                            wasChallengeWrong = false
+                                        ) as LoginDialogStatus
+                                    }
+                                }
                             }
                         }
 
@@ -159,40 +194,48 @@ class LoginDialogFragmentModel(application: Application): AndroidViewModel(appli
 
     fun startSignIn(user: User) {
         biometricPromptDismissed = false
+        currentChallenge.value = null
+        wasChallengeWrong.value = false
         selectedUserId.value = user.id
     }
 
     fun tryDefaultLogin(model: ActivityViewModel) {
         runAsync {
             loginLock.withLock {
+                val randomUnlockOn = Threads.database.executeAndWait {
+                    logic.database.config().getRandomUnlockEnabledSync()
+                }
+
                 val allUsers = logic.database.user().getAllUsersLive().waitForNonNullValue()
 
-                allUsers.singleOrNull { it.type == UserType.Parent }?.let { user ->
-                    val emptyPasswordValid = Threads.crypto.executeAndWait { PasswordHashing.validateSync("", user.password) }
+                if (!randomUnlockOn) {
+                    allUsers.singleOrNull { it.type == UserType.Parent }?.let { user ->
+                        val emptyPasswordValid = Threads.crypto.executeAndWait { PasswordHashing.validateSync("", user.password) }
 
-                    val shouldSignIn = if (emptyPasswordValid) {
-                        Threads.database.executeAndWait {
-                            AllowUserLoginStatusUtil.calculateSync(
-                                    logic = logic,
-                                    userId = user.id
-                            ) is AllowUserLoginStatus.Allow
+                        val shouldSignIn = if (emptyPasswordValid) {
+                            Threads.database.executeAndWait {
+                                AllowUserLoginStatusUtil.calculateSync(
+                                        logic = logic,
+                                        userId = user.id
+                                ) is AllowUserLoginStatus.Allow
+                            }
+                        } else {
+                            false
                         }
-                    } else {
-                        false
-                    }
 
-                    if (shouldSignIn) {
-                        model.setAuthenticatedUser(AuthenticatedUser.Password(
-                            userId = user.id,
-                            passwordHash = user.password
-                        ))
+                        if (shouldSignIn) {
+                            model.setAuthenticatedUser(AuthenticatedUser.Password(
+                                userId = user.id,
+                                passwordHash = user.password
+                            ))
 
-                        isLoginDone.value = true
+                            isLoginDone.value = true
+                        }
                     }
                 }
 
                 if (isLoginDone.value == false && !hasParentKeys.waitForNonNullValue()) {
-                    allUsers.singleOrNull { it.password.isNotEmpty() }?.let { user ->
+                    allUsers.singleOrNull { it.password.isNotEmpty() || (randomUnlockOn && it.type == UserType.Parent) }?.let { user ->
                         selectedUserId.value = user.id
                     }
                 }
@@ -308,6 +351,61 @@ class LoginDialogFragmentModel(application: Application): AndroidViewModel(appli
         }
     }
 
+    fun tryParentLoginWithChallenge(
+            typedChallenge: String,
+            model: ActivityViewModel
+    ) {
+        runAsync {
+            loginLock.withLock {
+                try {
+                    isCheckingPassword.value = true
+
+                    val expectedChallenge = currentChallenge.value
+                    if (expectedChallenge == null || typedChallenge != expectedChallenge) {
+                        wasChallengeWrong.value = true
+                        return@runAsync
+                    }
+
+                    val userEntryInfo = selectedUser.waitForNullableValue()
+                    val userEntry = userEntryInfo?.loginRelatedData?.user
+
+                    if (userEntry?.type != UserType.Parent) {
+                        selectedUserId.value = null
+                        return@runAsync
+                    }
+
+                    val allowLoginStatus = Threads.database.executeAndWait {
+                        AllowUserLoginStatusUtil.calculateSync(
+                                logic = logic,
+                                userId = userEntry.id
+                        )
+                    }
+
+                    val shouldSignIn = allowLoginStatus is AllowUserLoginStatus.Allow
+
+                    if (!shouldSignIn) {
+                        Toast.makeText(getApplication(), formatAllowLoginStatusError(allowLoginStatus, getApplication()), Toast.LENGTH_SHORT).show()
+                        return@runAsync
+                    }
+
+                    model.setAuthenticatedUser(AuthenticatedUser.LocalAuth.Biometric(
+                        userId = userEntry.id
+                    ))
+
+                    isLoginDone.value = true
+                } finally {
+                    isCheckingPassword.value = false
+                }
+            }
+        }
+    }
+
+    fun resetChallengeWrong() {
+        if (wasChallengeWrong.value == true) {
+            wasChallengeWrong.value = false
+        }
+    }
+
     fun tryChildLogin(
             password: String
     ) {
@@ -407,7 +505,9 @@ data class ParentUserLogin(
     val isCheckingPassword: Boolean,
     val wasPasswordWrong: Boolean,
     val biometricAuthEnabled: Boolean,
-    val userName: String
+    val userName: String,
+    val randomChallenge: String? = null,
+    val wasChallengeWrong: Boolean = false
 ): LoginDialogStatus()
 object LoginDialogDone: LoginDialogStatus()
 data class CanNotSignInChildHasNoPassword(val childName: String): LoginDialogStatus()

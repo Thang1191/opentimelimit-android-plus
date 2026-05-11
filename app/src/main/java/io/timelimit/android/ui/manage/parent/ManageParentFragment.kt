@@ -42,6 +42,7 @@ import io.timelimit.android.ui.manage.parent.delete.DeleteParentView
 import io.timelimit.android.ui.manage.parent.key.ManageUserKeyView
 import io.timelimit.android.ui.manage.parent.limitlogin.ParentLimitLoginView
 import io.timelimit.android.ui.manage.parent.password.biometric.ManageUserBiometricAuthView
+import io.timelimit.android.ui.manage.parent.randomunlock.RandomUnlockSettingsView
 
 class ManageParentFragment : Fragment(), FragmentWithCustomTitle {
     private val activity: ActivityViewModelHolder by lazy { getActivity() as ActivityViewModelHolder }
@@ -127,6 +128,12 @@ class ManageParentFragment : Fragment(), FragmentWithCustomTitle {
             auth = activity.getActivityViewModel(),
             fragmentManager = parentFragmentManager,
             fragment = this
+        )
+
+        RandomUnlockSettingsView.bind(
+            view = binding.randomUnlock,
+            lifecycleOwner = viewLifecycleOwner,
+            auth = activity.getActivityViewModel()
         )
 
         binding.handlers = object: ManageParentFragmentHandlers {

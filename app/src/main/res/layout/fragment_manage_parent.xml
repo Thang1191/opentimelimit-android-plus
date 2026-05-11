@@ -116,6 +116,10 @@
                     layout="@layout/manage_user_biometric_auth_view" />
 
                 <include
+                    android:id="@+id/random_unlock"
+                    layout="@layout/random_unlock_settings_view" />
+
+                <include
                     android:id="@+id/timezone"
                     layout="@layout/user_timezone_view" />
 
