@@ -568,8 +568,13 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
                         appPackageName: String?,
                         appActivityToShow: String?
                 ): AppStatusMessage = when (handling) {
-                    is AppBaseHandling.UseCategories -> throw IllegalArgumentException()
-                    AppBaseHandling.BlockDueToNoCategory -> throw IllegalArgumentException()
+                    is AppBaseHandling.UseCategories,
+                    AppBaseHandling.BlockDueToNoCategory -> buildStatusMessageWithCurrentAppTitle(
+                            text = appLogic.context.getString(R.string.background_logic_opening_lockscreen),
+                            titleSuffix = suffix,
+                            appPackageName = appPackageName,
+                            appActivityToShow = appActivityToShow
+                    )
                     AppBaseHandling.PauseLogic -> AppStatusMessage(
                             title = appLogic.context.getString(R.string.background_logic_paused_title) + suffix,
                             text = appLogic.context.getString(R.string.background_logic_paused_text),

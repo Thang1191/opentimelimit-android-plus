@@ -195,4 +195,6 @@ class DummyIntegration(
     override val deviceOwner: DeviceOwnerApi = object: DeviceOwnerApi {
         override fun grantLocationAccess(): Boolean = false
     }
+
+    override fun isManagedProfile(): Boolean = false
 }

@@ -21,6 +21,9 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.Process
+import android.os.UserHandle
+import android.os.UserManager
 import android.provider.ContactsContract
 import android.provider.Settings
 import android.provider.Telephony
@@ -69,6 +72,11 @@ object AndroidIntegrationApps {
     fun shouldIgnoreActivity(packageName: String, activityName: String) = ignoredActivities.contains("$packageName:$activityName")
 
     fun getLocalApps(context: Context): Collection<App> {
+        val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
+        if (userManager.isManagedProfile) {
+            return emptyList()
+        }
+
         val packageManager = context.packageManager
 
         val result = HashMap<String, App>()
@@ -100,6 +108,10 @@ object AndroidIntegrationApps {
         for (applicationInfo in installedPackages) {
             val packageName = applicationInfo.packageName
 
+            if (UserHandle.getUserHandleForUid(applicationInfo.uid) != Process.myUserHandle()) {
+                continue
+            }
+
             if (!result.containsKey(packageName) && !ignoredApps.contains(packageName)) {
                 result[packageName] = App(
                         packageName = packageName,
@@ -114,7 +126,14 @@ object AndroidIntegrationApps {
     }
 
     fun getLocalAppActivities(deviceId: String, context: Context): Collection<AppActivity> {
-        return context.packageManager.getInstalledApplications(0).asSequence().map { applicationInfo ->
+        val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
+        if (userManager.isManagedProfile) {
+            return emptyList()
+        }
+
+        return context.packageManager.getInstalledApplications(0).asSequence().filter {
+            UserHandle.getUserHandleForUid(it.uid) == Process.myUserHandle()
+        }.map { applicationInfo ->
             (
                     try {
                         context.packageManager.getPackageInfo(applicationInfo.packageName, PackageManager.GET_ACTIVITIES)?.activities
@@ -137,15 +156,20 @@ object AndroidIntegrationApps {
         val packageManager = context.packageManager
 
         for (info in resolveInfoList) {
-            val packageName = info.activityInfo.applicationInfo.packageName
+            val appInfo = info.activityInfo.applicationInfo
+            val packageName = appInfo.packageName
             if (ignoredApps.contains(packageName)) {
+                continue
+            }
+
+            if (UserHandle.getUserHandleForUid(appInfo.uid) != Process.myUserHandle()) {
                 continue
             }
 
             if (!map.containsKey(packageName)) {
                 map[packageName] = App(
                         packageName = packageName,
-                        title = info.activityInfo.applicationInfo.loadLabel(packageManager).toString(),
+                        title = appInfo.loadLabel(packageManager).toString(),
                         isLaunchable = true,
                         recommendation = recommendation
                 )

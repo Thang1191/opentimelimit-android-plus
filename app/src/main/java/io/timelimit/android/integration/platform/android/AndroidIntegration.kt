@@ -33,6 +33,8 @@ import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
+import android.os.Process
+import android.os.UserHandle
 import android.os.UserManager
 import android.provider.Settings
 import android.util.Log
@@ -113,7 +115,15 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
         return AndroidIntegrationApps.getLocalApps(context)
     }
 
-    override fun getLocalAppPackageNames(): List<String> = context.packageManager.getInstalledApplications(0).map { it.packageName }
+    override fun getLocalAppPackageNames(): List<String> {
+        if (isManagedProfile()) {
+            return emptyList()
+        }
+
+        return context.packageManager.getInstalledApplications(0)
+            .filter { UserHandle.getUserHandleForUid(it.uid) == Process.myUserHandle() }
+            .map { it.packageName }
+    }
 
     override fun getLocalAppActivities(deviceId: String): Collection<AppActivity> {
         return AndroidIntegrationApps.getLocalAppActivities(deviceId, context)
@@ -149,7 +159,18 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
         return AdminStatus.getAdminStatus(context, policyManager)
     }
 
-    override suspend fun getForegroundApps(queryInterval: Long, experimentalFlags: Long): Set<ForegroundApp> = foregroundAppHelper.getForegroundApps(queryInterval, experimentalFlags)
+    override suspend fun getForegroundApps(queryInterval: Long, experimentalFlags: Long): Set<ForegroundApp> {
+        return foregroundAppHelper.getForegroundApps(queryInterval, experimentalFlags)
+            .filter { app ->
+                try {
+                    val appInfo = context.packageManager.getApplicationInfo(app.packageName, 0)
+                    UserHandle.getUserHandleForUid(appInfo.uid) == Process.myUserHandle()
+                } catch (ex: PackageManager.NameNotFoundException) {
+                    false
+                }
+            }
+            .toSet()
+    }
 
     override fun getForegroundAppPermissionStatus(): RuntimePermissionStatus {
         return foregroundAppHelper.getPermissionStatus()
@@ -161,7 +182,16 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
                 val manager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
                 val sessions = manager.getActiveSessions(ComponentName(context, NotificationListener::class.java))
 
-                return sessions.find { isPlaying(it) }?.packageName
+                return sessions
+                    .filter { session ->
+                        try {
+                            val appInfo = context.packageManager.getApplicationInfo(session.packageName, 0)
+                            UserHandle.getUserHandleForUid(appInfo.uid) == Process.myUserHandle()
+                        } catch (ex: PackageManager.NameNotFoundException) {
+                            false
+                        }
+                    }
+                    .find { isPlaying(it) }?.packageName
             }
         }
 
@@ -881,4 +911,9 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
     }
 
     override val deviceOwner: DeviceOwnerApi = AndroidDeviceOwnerApi(deviceAdmin, policyManager)
+
+    override fun isManagedProfile(): Boolean {
+        val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
+        return userManager.isManagedProfile
+    }
 }

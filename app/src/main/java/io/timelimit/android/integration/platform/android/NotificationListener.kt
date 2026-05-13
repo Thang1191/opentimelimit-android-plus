@@ -19,6 +19,7 @@ import android.annotation.TargetApi
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.os.Process
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
@@ -57,6 +58,14 @@ class NotificationListener: NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
+        if (appLogic.platformIntegration.isManagedProfile()) {
+            return
+        }
+
+        if (sbn.user != Process.myUserHandle()) {
+            return
+        }
+
         super.onNotificationPosted(sbn)
 
         if (BuildConfig.DEBUG) {

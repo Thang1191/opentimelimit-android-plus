@@ -94,6 +94,8 @@ abstract class PlatformIntegration(
 
     abstract val deviceOwner: DeviceOwnerApi
 
+    abstract fun isManagedProfile(): Boolean
+
     var installedAppsChangeListener: Runnable? = null
     var systemClockChangeListener: Runnable? = null
 }

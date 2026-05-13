@@ -34,9 +34,10 @@ class AppLogic(
         val timeApi: TimeApi,
         val database: Database,
         val context: Context,
-        val isInitialized: LiveData<Boolean>
+        val isInitialized: LiveData<Boolean>,
+        enabledInitially: Boolean = true
 ) {
-    val enable = MutableLiveData<Boolean>().apply { value = true }
+    val enable = MutableLiveData<Boolean>().apply { value = enabledInitially }
 
     val deviceId = database.config().getOwnDeviceId()
 

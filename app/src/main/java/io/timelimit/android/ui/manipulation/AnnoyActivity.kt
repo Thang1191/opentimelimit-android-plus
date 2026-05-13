@@ -20,6 +20,8 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.os.Build
 import android.os.Bundle
+import android.os.Process
+import android.os.UserHandle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -74,6 +76,7 @@ class AnnoyActivity : AppCompatActivity(), ActivityViewModelHolder, U2fManager.D
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val systemImageApps = packageManager.getInstalledApplications(0)
                 .filter { it.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM }
+                .filter { UserHandle.getUserHandleForUid(it.uid) == Process.myUserHandle() }
                 .map { it.packageName }.toSet()
 
             val lockTaskPackages = AndroidIntegrationApps.appsToIncludeInLockTasks + setOf(packageName) + systemImageApps

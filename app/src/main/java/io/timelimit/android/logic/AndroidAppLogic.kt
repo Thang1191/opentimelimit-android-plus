@@ -38,12 +38,16 @@ object AndroidAppLogic {
             if (instance == null) {
                 val isInitialized = MutableLiveData<Boolean>().apply { value = false }
 
+                val platformIntegration = AndroidIntegration(safeContext)
+                val isManagedProfile = platformIntegration.isManagedProfile()
+
                 instance = AppLogic(
-                        platformIntegration = AndroidIntegration(safeContext),
+                        platformIntegration = platformIntegration,
                         timeApi = RealTimeApi,
                         database = RoomDatabase.with(safeContext),
                         context = safeContext,
-                        isInitialized = isInitialized
+                        isInitialized = isInitialized,
+                        enabledInitially = !isManagedProfile
                 )
 
                 runAsync {
