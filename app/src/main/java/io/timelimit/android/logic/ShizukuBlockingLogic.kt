@@ -145,39 +145,43 @@ class ShizukuBlockingLogic(private val appLogic: AppLogic) {
         val toDisable = shouldBeDisabled - disabledPackages
         val toEnable = disabledPackages - shouldBeDisabled
 
+        var disabledCount = 0
         for (pkg in toDisable) {
             if (BuildConfig.DEBUG) {
                 Log.d(LOG_TAG, "Disabling package: $pkg")
             }
             if (ShizukuIntegration.disablePackage(pkg)) {
                 disabledPackages.add(pkg)
+                disabledCount++
             } else {
                 if (BuildConfig.DEBUG) {
                     Log.w(LOG_TAG, "Failed to disable package: $pkg")
                 }
             }
         }
-        if (toDisable.isNotEmpty()) {
+        if (disabledCount > 0) {
             android.os.Handler(android.os.Looper.getMainLooper()).post {
-                android.widget.Toast.makeText(appLogic.context, "Disabled ${toDisable.size} app(s) via Shizuku", android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(appLogic.context, "Disabled $disabledCount app(s) via Shizuku", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
 
+        var enabledCount = 0
         for (pkg in toEnable) {
             if (BuildConfig.DEBUG) {
                 Log.d(LOG_TAG, "Enabling package: $pkg")
             }
             if (ShizukuIntegration.enablePackage(pkg)) {
                 disabledPackages.remove(pkg)
+                enabledCount++
             } else {
                 if (BuildConfig.DEBUG) {
                     Log.w(LOG_TAG, "Failed to enable package: $pkg")
                 }
             }
         }
-        if (toEnable.isNotEmpty()) {
+        if (enabledCount > 0) {
             android.os.Handler(android.os.Looper.getMainLooper()).post {
-                android.widget.Toast.makeText(appLogic.context, "Enabled ${toEnable.size} app(s) via Shizuku", android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(appLogic.context, "Enabled $enabledCount app(s) via Shizuku", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -43,25 +43,25 @@ class LifeUpBroadcastReceiver : BroadcastReceiver() {
                 val db = appLogic.database
                 val rules = db.timeLimitRules().getAllRulesSync()
             
-            var modified = false
-            for (rule in rules) {
-                if (rule.lifeUpShopItemName == itemName && rule.lifeUpOverrideActive != isOverrideActive) {
-                    val updatedRule = rule.copy(lifeUpOverrideActive = isOverrideActive)
-                    db.timeLimitRules().updateTimeLimitRule(updatedRule)
-                    modified = true
-                    if (BuildConfig.DEBUG) {
-                        Log.d("LifeUpIntegration", "Updated rule ${rule.id} override state to $isOverrideActive")
+                var modified = false
+                for (rule in rules) {
+                    if (rule.lifeUpShopItemName == itemName && rule.lifeUpOverrideActive != isOverrideActive) {
+                        val updatedRule = rule.copy(lifeUpOverrideActive = isOverrideActive)
+                        db.timeLimitRules().updateTimeLimitRule(updatedRule)
+                        modified = true
+                        if (BuildConfig.DEBUG) {
+                            Log.d("LifeUpIntegration", "Updated rule ${rule.id} override state to $isOverrideActive")
+                        }
                     }
                 }
-            }
-            
-            if (modified) {
-                // The BackgroundTaskLogic loop runs frequently enough that DB updates 
-                // will be naturally picked up on the next tick.
-                if (BuildConfig.DEBUG) {
-                    Log.d("LifeUpIntegration", "Rules updated, awaiting next background loop tick")
+                
+                if (modified) {
+                    // The BackgroundTaskLogic loop runs frequently enough that DB updates 
+                    // will be naturally picked up on the next tick.
+                    if (BuildConfig.DEBUG) {
+                        Log.d("LifeUpIntegration", "Rules updated, awaiting next background loop tick")
+                    }
                 }
-            }
             } finally {
                 pendingResult?.finish()
             }
