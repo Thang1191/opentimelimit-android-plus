@@ -25,6 +25,9 @@
         android:name="android.permission.GET_TASKS"
         android:maxSdkVersion="20" />
     <uses-permission
+        android:name="android.permission.MODIFY_QUIET_MODE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -209,6 +212,26 @@
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <receiver android:name=".u2f.U2fBroadcastReceiver" android:exported="false" />
+
+        <!-- Shizuku provider for elevated operations -->
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:exported="true"
+            android:multiprocess="false"
+            android:enabled="true"
+            tools:ignore="ExportedContentProvider" />
+
+        <!-- LifeUp Integration Receiver -->
+        <receiver android:name=".integration.lifeup.LifeUpBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="app.lifeup.item.countdown.start" />
+                <action android:name="app.lifeup.item.countdown.stop" />
+                <action android:name="app.lifeup.item.countdown.complete" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

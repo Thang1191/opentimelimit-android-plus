@@ -68,7 +68,7 @@ class ChildAppsModel(application: Application): AndroidViewModel(application) {
                                     } else {
                                         val sortedApps = apps
                                                 .distinctBy { it.packageName }
-                                                .sortedBy { it.title.toLowerCase(Locale.getDefault()) }
+                                                .sortedBy { it.title.lowercase() }
 
                                         result.addAll(
                                                 sortedApps.map { app ->
@@ -101,7 +101,7 @@ class ChildAppsModel(application: Application): AndroidViewModel(application) {
 
                                 filteredChildApps
                                         .distinctBy { it.packageName }
-                                        .sortedBy { it.title.toLowerCase(Locale.getDefault()) }
+                                        .sortedBy { it.title.lowercase(Locale.getDefault()) }
                                         .map { app ->
                                             val categoryId = categoryAppByPackageName[app.packageName]?.categoryId
                                             val category = categoryById[categoryId]

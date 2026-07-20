@@ -69,13 +69,20 @@ class InstanceIdForegroundAppHelper(context: Context): UsageStatsForegroundAppHe
 
             val queryEndTime = now + TOLERANCE
 
-            usageStatsManager.queryEvents(queryStartTime, queryEndTime)?.let { nativeEvents ->
+            android.util.Log.d("InstanceIdHelper", "queryEvents: startTime=$queryStartTime, endTime=$queryEndTime, shouldDoFullQuery=$shouldDoFullQuery")
+            val nativeEvents = usageStatsManager.queryEvents(queryStartTime, queryEndTime)
+            if (nativeEvents == null) {
+                android.util.Log.d("InstanceIdHelper", "nativeEvents is null")
+            } else {
                 val events = DirectUsageStatsReader(nativeEvents)
 
                 try {
                     var isFirstEvent = true
+                    var eventCount = 0
+                    var moveToForegroundCount = 0
 
                     while (events.loadNextEvent()) {
+                        eventCount++
                         // check the consistency
                         if (events.timestamp < lastEventTimestamp - TOLERANCE && !isFirstEvent) {
                             throw InstanceIdException.EventsNotSortedByTimestamp(
@@ -88,6 +95,7 @@ class InstanceIdForegroundAppHelper(context: Context): UsageStatsForegroundAppHe
                         if (events.eventType == UsageStatsConstants.DEVICE_STARTUP) {
                             apps.clear()
                         } else if (events.eventType == UsageStatsConstants.MOVE_TO_FOREGROUND) {
+                            moveToForegroundCount++
                             val app = ForegroundApp(events.packageName, events.className)
 
                             apps.put(events.instanceId, app)
@@ -102,6 +110,7 @@ class InstanceIdForegroundAppHelper(context: Context): UsageStatsForegroundAppHe
                         if (isFirstEvent || events.timestamp > lastEventTimestamp) lastEventTimestamp = events.timestamp
                         isFirstEvent = false
                     }
+                    android.util.Log.d("InstanceIdHelper", "processed $eventCount events, $moveToForegroundCount were MOVE_TO_FOREGROUND")
                 } finally {
                     events.free()
                 }
@@ -114,6 +123,8 @@ class InstanceIdForegroundAppHelper(context: Context): UsageStatsForegroundAppHe
             for (index in 0 until apps.size) {
                 appsSet.add(apps.valueAt(index))
             }
+
+            android.util.Log.d("InstanceIdHelper", "getForegroundApps: found ${appsSet.size} foreground apps. Current map: $appsSet")
 
             appsSet
         }

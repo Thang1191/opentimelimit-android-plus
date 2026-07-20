@@ -173,6 +173,11 @@ data class UpdateCategoryTitleAction(val categoryId: String, val newTitle: Strin
         IdGenerator.assertIdValid(categoryId)
     }
 }
+data class UpdateCategoryForceDnsHostnameAction(val categoryId: String, val newHostname: String): ParentAction() {
+    init {
+        IdGenerator.assertIdValid(categoryId)
+    }
+}
 data class SetCategoryExtraTimeAction(val categoryId: String, val newExtraTime: Long, val extraTimeDay: Int = -1): ParentAction() {
     init {
         IdGenerator.assertIdValid(categoryId)
@@ -461,7 +466,7 @@ data class CreateTimeLimitRuleAction(val rule: TimeLimitRule): ParentAction()
 data class UpdateTimeLimitRuleAction(
         val ruleId: String, val dayMask: Byte, val maximumTimeInMillis: Int, val applyToExtraTimeUsage: Boolean,
         val start: Int, val end: Int, val sessionDurationMilliseconds: Int, val sessionPauseMilliseconds: Int,
-        val perDay: Boolean, val expiresAt: Long?
+        val perDay: Boolean, val expiresAt: Long?, val lifeUpShopItemName: String
 ): ParentAction() {
     init {
         IdGenerator.assertIdValid(ruleId)

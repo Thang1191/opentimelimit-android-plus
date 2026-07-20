@@ -27,7 +27,7 @@ class QForegroundAppHelper(context: Context): UsageStatsForegroundAppHelper(cont
         queryInterval: Long,
         experimentalFlags: Long
     ): Set<ForegroundApp> {
-        val canUseModern = DirectUsageStatsReader.instanceIdSupported
+        val canUseModern = false // FORCE LEGACY HELPER FOR DEBUGGING
 
         return if (canUseModern) modern.getForegroundApps(queryInterval, experimentalFlags)
         else legacy.getForegroundApps(queryInterval, experimentalFlags)

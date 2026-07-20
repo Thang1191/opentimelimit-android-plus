@@ -90,6 +90,9 @@
             <include android:id="@+id/battery_limit"
                 layout="@layout/category_battery_limit_view" />
 
+            <include android:id="@+id/blocking_technique"
+                layout="@layout/category_blocking_technique_view" />
+
             <include android:id="@+id/time_warnings"
                 layout="@layout/category_time_warnings_view" />
 

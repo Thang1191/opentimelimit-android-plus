@@ -160,16 +160,27 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
     }
 
     override suspend fun getForegroundApps(queryInterval: Long, experimentalFlags: Long): Set<ForegroundApp> {
-        return foregroundAppHelper.getForegroundApps(queryInterval, experimentalFlags)
+        val helperApps = foregroundAppHelper.getForegroundApps(queryInterval, experimentalFlags)
+        Log.d(LOG_TAG, "getForegroundApps: helper returned ${helperApps.size} apps: $helperApps")
+        val filtered = helperApps
             .filter { app ->
                 try {
                     val appInfo = context.packageManager.getApplicationInfo(app.packageName, 0)
-                    UserHandle.getUserHandleForUid(appInfo.uid) == Process.myUserHandle()
+                    val userHandle = UserHandle.getUserHandleForUid(appInfo.uid)
+                    val myUserHandle = Process.myUserHandle()
+                    val matches = userHandle == myUserHandle
+                    if (!matches) {
+                        Log.d(LOG_TAG, "getForegroundApps: filtered out ${app.packageName} due to user mismatch ($userHandle != $myUserHandle)")
+                    }
+                    matches
                 } catch (ex: PackageManager.NameNotFoundException) {
+                    Log.d(LOG_TAG, "getForegroundApps: filtered out ${app.packageName} due to NameNotFoundException")
                     false
                 }
             }
             .toSet()
+        Log.d(LOG_TAG, "getForegroundApps: returning ${filtered.size} apps: $filtered")
+        return filtered
     }
 
     override fun getForegroundAppPermissionStatus(): RuntimePermissionStatus {

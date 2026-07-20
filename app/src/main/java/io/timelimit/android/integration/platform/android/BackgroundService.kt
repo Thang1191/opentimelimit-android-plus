@@ -31,8 +31,12 @@ import androidx.core.content.getSystemService
 import io.timelimit.android.R
 import io.timelimit.android.integration.platform.AppStatusMessage
 import io.timelimit.android.logic.DefaultAppLogic
+import io.timelimit.android.integration.lifeup.LifeUpBroadcastReceiver
+import android.content.IntentFilter
 
 class BackgroundService: Service() {
+    private var lifeUpReceiver: LifeUpBroadcastReceiver? = null
+
     companion object {
         private const val EXTRA_NOTIFICATION = "notification"
 
@@ -131,6 +135,15 @@ class BackgroundService: Service() {
 
         // create the channel
         NotificationChannels.createNotificationChannels(notificationManager, this)
+
+        // Dynamically register LifeUp receiver to catch implicit broadcasts reliably
+        lifeUpReceiver = LifeUpBroadcastReceiver()
+        val filter = IntentFilter().apply {
+            addAction("app.lifeup.item.countdown.start")
+            addAction("app.lifeup.item.countdown.stop")
+            addAction("app.lifeup.item.countdown.complete")
+        }
+        ContextCompat.registerReceiver(this, lifeUpReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -156,9 +169,17 @@ class BackgroundService: Service() {
 
     override fun onDestroy() {
         stopForeground(true)
-        didPostNotification = false
-
         super.onDestroy()
+        didPostNotification = false
+        
+        lifeUpReceiver?.let {
+            try {
+                unregisterReceiver(it)
+            } catch (e: Exception) {
+                // ignore
+            }
+            lifeUpReceiver = null
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder {

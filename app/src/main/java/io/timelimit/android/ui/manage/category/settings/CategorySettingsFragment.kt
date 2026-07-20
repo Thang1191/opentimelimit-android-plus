@@ -127,6 +127,14 @@ class CategorySettingsFragment : Fragment() {
                 fragmentManager = parentFragmentManager
         )
 
+        BlockingTechniqueView.bind(
+                binding = binding.blockingTechnique,
+                lifecycleOwner = this,
+                category = categoryEntry,
+                auth = auth,
+                categoryId = categoryId
+        )
+
         ParentCategoryView.bind(
                 binding = binding.parentCategory,
                 lifecycleOwner = this,

@@ -80,11 +80,18 @@ class AppLogic(
         SyncInstalledAppsLogic(this)
         WatchdogLogic(this)
         TimesWidgetProvider.triggerUpdates(context)
+
+        // Initialize Shizuku lifecycle listeners
+        io.timelimit.android.integration.platform.shizuku.ShizukuIntegration.init()
     }
 
     val manipulationLogic = ManipulationLogic(this)
     val suspendAppsLogic = SuspendAppsLogic(this)
+    val shizukuBlockingLogic = ShizukuBlockingLogic(this)
+    val workProfileBlockingLogic = WorkProfileBlockingLogic(this)
+    val dnsBlockingLogic = DnsBlockingLogic(this)
     val annoyLogic = AnnoyLogic(this)
+
 
     fun shutdown() {
         enable.value = false

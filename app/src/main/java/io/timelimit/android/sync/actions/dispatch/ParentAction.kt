@@ -165,6 +165,14 @@ object LocalDatabaseParentActionDispatcher {
                             newTitle = action.newTitle
                     )
                 }
+                is UpdateCategoryForceDnsHostnameAction -> {
+                    DatabaseValidation.assertCategoryExists(database, action.categoryId)
+
+                    database.category().updateCategoryForceDnsHostname(
+                            categoryId = action.categoryId,
+                            newHostname = action.newHostname
+                    )
+                }
                 is SetCategoryExtraTimeAction -> {
                     DatabaseValidation.assertCategoryExists(database, action.categoryId)
 
@@ -301,7 +309,8 @@ object LocalDatabaseParentActionDispatcher {
                         sessionDurationMilliseconds = action.sessionDurationMilliseconds,
                         sessionPauseMilliseconds = action.sessionPauseMilliseconds,
                         perDay = action.perDay,
-                        expiresAt = action.expiresAt
+                        expiresAt = action.expiresAt,
+                        lifeUpShopItemName = action.lifeUpShopItemName
                     )
 
                     if (fromChildSelfLimitAddChildUserId != null) {

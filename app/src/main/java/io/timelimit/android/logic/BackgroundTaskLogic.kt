@@ -269,11 +269,14 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
                 }
 
                 val foregroundAppsOrNullOnMissingPermission = try {
-                    appLogic.platformIntegration.getForegroundApps(
+                    val apps = appLogic.platformIntegration.getForegroundApps(
                         appLogic.getForegroundAppQueryInterval(),
                         deviceRelatedData.experimentalFlags
                     )
+                    Log.d(LOG_TAG, "foregroundAppsOrNullOnMissingPermission: $apps")
+                    apps
                 } catch (ex: SecurityException) {
+                    Log.e(LOG_TAG, "foregroundAppsOrNullOnMissingPermission SecurityException", ex)
                     lastLoopException.postValue(ex)
 
                     null

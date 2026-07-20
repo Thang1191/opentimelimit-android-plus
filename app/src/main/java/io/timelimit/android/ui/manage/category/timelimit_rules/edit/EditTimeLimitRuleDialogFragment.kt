@@ -141,6 +141,9 @@ class EditTimeLimitRuleDialogFragment : BottomSheetDialogFragment() {
                 view.expireDateText = DateUtil.formatAbsoluteDate(requireContext(), expiresAt)
             }
         }
+
+        view.lifeUpIntegrationEnabled = newRule.lifeUpShopItemName.isNotEmpty()
+        view.lifeUpShopItemName = newRule.lifeUpShopItemName
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -278,6 +281,15 @@ class EditTimeLimitRuleDialogFragment : BottomSheetDialogFragment() {
                 bindRule()
             }
 
+            override fun toggleLifeUpIntegration(enable: Boolean) {
+                if (enable) {
+                    newRule = newRule.copy(lifeUpShopItemName = "New Item")
+                } else {
+                    newRule = newRule.copy(lifeUpShopItemName = "")
+                }
+                bindRule()
+            }
+
             override fun updateExpireDate() {
                 val expiresAt = Instant.ofEpochMilli(newRule.expiresAt ?: 0).atZone(ZoneId.systemDefault())
 
@@ -293,6 +305,9 @@ class EditTimeLimitRuleDialogFragment : BottomSheetDialogFragment() {
                 view.timeSpan.clearNumberPickerFocus()
 
                 if (existingRule != null) {
+                    val currentShopItemName = if (view.lifeUpIntegrationEnabled) view.lifeupShopItemNameInput.text.toString() else ""
+                    newRule = newRule.copy(lifeUpShopItemName = currentShopItemName)
+                    
                     if (existingRule != newRule) {
                         val updateAction = UpdateTimeLimitRuleAction(
                             ruleId = newRule.id,
@@ -304,7 +319,8 @@ class EditTimeLimitRuleDialogFragment : BottomSheetDialogFragment() {
                             sessionDurationMilliseconds = newRule.sessionDurationMilliseconds,
                             sessionPauseMilliseconds = newRule.sessionPauseMilliseconds,
                             perDay = newRule.perDay,
-                            expiresAt = newRule.expiresAt
+                            expiresAt = newRule.expiresAt,
+                            lifeUpShopItemName = newRule.lifeUpShopItemName
                         )
 
                         if (!auth.tryDispatchParentAction(updateAction, allowAsChild = selfLimitMode)) {
@@ -314,6 +330,9 @@ class EditTimeLimitRuleDialogFragment : BottomSheetDialogFragment() {
 
                     listener.notifyRuleUpdated(existingRule!!, newRule)
                 } else {
+                    val currentShopItemName = if (view.lifeUpIntegrationEnabled) view.lifeupShopItemNameInput.text.toString() else ""
+                    newRule = newRule.copy(lifeUpShopItemName = currentShopItemName)
+                    
                     if (!auth.tryDispatchParentAction(
                                     action = CreateTimeLimitRuleAction(
                                             rule = newRule
@@ -487,6 +506,7 @@ interface Handlers {
     fun updateSessionBreak()
     fun updateExpireEnabled(enable: Boolean)
     fun updateExpireDate()
+    fun toggleLifeUpIntegration(enable: Boolean)
     fun onSaveRule()
     fun onDeleteRule()
 }

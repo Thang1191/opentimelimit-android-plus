@@ -28,6 +28,8 @@ import io.timelimit.android.extensions.takeDistributedElements
 import io.timelimit.android.livedata.mergeLiveDataWaitForValues
 import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.logic.DummyApps
+import io.timelimit.android.data.model.isWorkProfileBlocking
+import io.timelimit.android.data.model.isForceDns
 import java.util.*
 
 class AppsAndRulesModel(application: Application): AndroidViewModel(application) {
@@ -53,6 +55,12 @@ class AppsAndRulesModel(application: Application): AndroidViewModel(application)
             )
         }.map { usedTimes ->
             date to usedTimes
+        }
+    }
+
+    private val categoryLive = userIdLive.switchMap { childId ->
+        categoryIdLive.switchMap { categoryId ->
+            database.category().getCategoryByChildIdAndId(childId, categoryId)
         }
     }
 
@@ -130,20 +138,25 @@ class AppsAndRulesModel(application: Application): AndroidViewModel(application)
         apps.sortedBy { it.title.lowercase() }
     }
 
-    private val fullAppScreenContent = showAllAppsLive.switchMap { showAllApps ->
-        if (showAllApps)
-            appEntries.map { it + listOf(AppAndRuleItem.AddAppItem) }
-        else
+    private val fullAppScreenContent = mergeLiveDataWaitForValues(showAllAppsLive, categoryLive).switchMap { (showAllApps, category) ->
+        val disableAddingApps = category?.isWorkProfileBlocking == true || category?.isForceDns == true
+
+        if (showAllApps) {
+            appEntries.map { 
+                if (disableAddingApps) it else it + listOf(AppAndRuleItem.AddAppItem) 
+            }
+        } else {
             appEntries.map { entries ->
                 val maxSize = 3
 
-                if (entries.size > maxSize)
-                    entries.takeDistributedElements(maxSize) + listOf(
-                        AppAndRuleItem.ExpandAppsItem, AppAndRuleItem.AddAppItem
-                    )
-                else
-                    entries + listOf(AppAndRuleItem.AddAppItem)
+                if (entries.size > maxSize) {
+                    val elements = entries.takeDistributedElements(maxSize)
+                    if (disableAddingApps) elements else elements + listOf(AppAndRuleItem.ExpandAppsItem, AppAndRuleItem.AddAppItem)
+                } else {
+                    if (disableAddingApps) entries else entries + listOf(AppAndRuleItem.AddAppItem)
+                }
             }
+        }
     }
 
     val combinedList = fullAppScreenContent.switchMap { apps ->

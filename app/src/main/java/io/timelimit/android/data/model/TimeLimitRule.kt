@@ -58,7 +58,11 @@ data class TimeLimitRule(
         @ColumnInfo(name = "per_day")
         val perDay: Boolean,
         @ColumnInfo(name = "expires_at")
-        val expiresAt: Long?
+        val expiresAt: Long?,
+        @ColumnInfo(name = "lifeup_shop_item_name", defaultValue = "")
+        val lifeUpShopItemName: String = "",
+        @ColumnInfo(name = "lifeup_override_active", defaultValue = "0")
+        val lifeUpOverrideActive: Boolean = false
 ): Parcelable, JsonSerializable {
     companion object {
         private const val RULE_ID = "ruleId"
@@ -72,6 +76,8 @@ data class TimeLimitRule(
         private const val SESSION_PAUSE_MILLISECONDS = "pause"
         private const val PER_DAY = "perDay"
         private const val EXPIRES_AT = "e"
+        private const val LIFEUP_SHOP_ITEM_NAME = "lifeupName"
+        private const val LIFEUP_OVERRIDE_ACTIVE = "lifeupOverride"
 
         const val MIN_START_MINUTE = MinuteOfDay.MIN
         const val MAX_END_MINUTE = MinuteOfDay.MAX
@@ -88,6 +94,8 @@ data class TimeLimitRule(
             var sessionPauseMilliseconds = 0
             var perDay = false
             var expiresAt: Long? = null
+            var lifeUpShopItemName = ""
+            var lifeUpOverrideActive = false
 
             reader.beginObject()
 
@@ -104,6 +112,8 @@ data class TimeLimitRule(
                     SESSION_PAUSE_MILLISECONDS -> sessionPauseMilliseconds = reader.nextInt()
                     PER_DAY -> perDay = reader.nextBoolean()
                     EXPIRES_AT -> expiresAt = reader.nextLong()
+                    LIFEUP_SHOP_ITEM_NAME -> lifeUpShopItemName = reader.nextString()
+                    LIFEUP_OVERRIDE_ACTIVE -> lifeUpOverrideActive = reader.nextBoolean()
                     else -> reader.skipValue()
                 }
             }
@@ -121,7 +131,9 @@ data class TimeLimitRule(
                     sessionDurationMilliseconds = sessionDurationMilliseconds,
                     sessionPauseMilliseconds = sessionPauseMilliseconds,
                     perDay = perDay,
-                    expiresAt = expiresAt
+                    expiresAt = expiresAt,
+                    lifeUpShopItemName = lifeUpShopItemName,
+                    lifeUpOverrideActive = lifeUpOverrideActive
             )
         }
     }
@@ -181,6 +193,8 @@ data class TimeLimitRule(
 
         writer.name(PER_DAY).value(perDay)
         if (expiresAt != null) writer.name(EXPIRES_AT).value(expiresAt)
+        if (lifeUpShopItemName.isNotEmpty()) writer.name(LIFEUP_SHOP_ITEM_NAME).value(lifeUpShopItemName)
+        if (lifeUpOverrideActive) writer.name(LIFEUP_OVERRIDE_ACTIVE).value(lifeUpOverrideActive)
 
         writer.endObject()
     }

@@ -22,7 +22,7 @@ Integrate LifeUpCatcher's self-discipline features (Shizuku app disabling, LifeU
 
 ## Proposed Changes
 
-### Phase 1: Shizuku Infrastructure & App Disabling
+### Phase 1: Shizuku Infrastructure & App Disabling [COMPLETED]
 
 #### 1.1 [NEW] `app/src/main/java/io/timelimit/android/integration/platform/shizuku/ShizukuIntegration.kt`
 A singleton service that manages the Shizuku connection lifecycle, provides methods for:
@@ -98,7 +98,7 @@ Add Shizuku provider entry (required for Shizuku to work):
 
 ---
 
-### Phase 2: LifeUp Broadcast Receiver Integration
+### Phase 2: LifeUp Broadcast Receiver Integration [COMPLETED]
 
 #### 2.1 [NEW] `app/src/main/java/io/timelimit/android/integration/lifeup/LifeUpIntegration.kt`
 A class that manages the LifeUp broadcast receiver:
@@ -180,7 +180,7 @@ Already has `MODIFY_QUIET_MODE` permission? Check — if not, add it with `tools
 
 ---
 
-### Phase 4: Force DNS
+### Phase 4: Force DNS Integration [COMPLETED]
 
 #### 4.1 [NEW] `app/src/main/java/io/timelimit/android/logic/DnsBlockingLogic.kt`
 ```kotlin
@@ -213,7 +213,7 @@ Bind the DNS hostname input, save/load via `ConfigurationItem`.
 
 ---
 
-### Phase 5: Ensure Password Lock Compatibility
+### Phase 5: Ensure Password Lock Compatibility [COMPLETED]
 
 > [!NOTE]
 > OpenTimeLimit already has a robust password lock system with:

@@ -46,6 +46,7 @@ data class RemainingTime(val includingExtraTime: Long, val default: Long) {
 
         fun getRulesRelatedToDay(dayOfWeek: Int, minuteOfDay: Int, rules: List<TimeLimitRule>): List<TimeLimitRule> {
             return rules.filter {
+                !it.lifeUpOverrideActive &&
                 ((it.dayMask.toInt() and (1 shl dayOfWeek)) != 0) &&
                         minuteOfDay >= it.startMinuteOfDay && minuteOfDay <= it.endMinuteOfDay
             }

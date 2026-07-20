@@ -44,6 +44,9 @@ abstract class CategoryDao {
     @Query("UPDATE category SET title = :newTitle WHERE id = :categoryId")
     abstract fun updateCategoryTitle(categoryId: String, newTitle: String)
 
+    @Query("UPDATE category SET force_dns_hostname = :newHostname WHERE id = :categoryId")
+    abstract fun updateCategoryForceDnsHostname(categoryId: String, newHostname: String)
+
     @Query("UPDATE category SET extra_time = :newExtraTime, extra_time_day = :extraTimeDay WHERE id = :categoryId")
     abstract fun updateCategoryExtraTime(categoryId: String, newExtraTime: Long, extraTimeDay: Int)
 

@@ -66,7 +66,9 @@ data class Category(
         @ColumnInfo(name = "flags", defaultValue = "0")
         val flags: Long,
         @ColumnInfo(name = "block_notification_delay", defaultValue = "0")
-        val blockNotificationDelay: Long
+        val blockNotificationDelay: Long,
+        @ColumnInfo(name = "force_dns_hostname", defaultValue = "")
+        val forceDnsHostname: String = ""
 ): JsonSerializable {
     companion object {
         const val MINUTES_PER_DAY = 60 * 24
@@ -90,6 +92,7 @@ data class Category(
         private const val DISABLE_LIMIITS_UNTIL = "dlu"
         private const val FLAGS = "flags"
         private const val BLOCK_NOTIFICATION_DELAY = "bnd"
+        private const val FORCE_DNS_HOSTNAME = "forceDns"
 
         fun parse(reader: JsonReader): Category {
             var id: String? = null
@@ -110,6 +113,7 @@ data class Category(
             var disableLimitsUntil = 0L
             var flags = 0L
             var blockNotificationDelay = 0L
+            var forceDnsHostname = ""
 
             reader.beginObject()
 
@@ -132,6 +136,7 @@ data class Category(
                     DISABLE_LIMIITS_UNTIL -> disableLimitsUntil = reader.nextLong()
                     FLAGS -> flags = reader.nextLong()
                     BLOCK_NOTIFICATION_DELAY -> blockNotificationDelay = reader.nextLong()
+                    FORCE_DNS_HOSTNAME -> forceDnsHostname = reader.nextString()
                     else -> reader.skipValue()
                 }
             }
@@ -155,7 +160,8 @@ data class Category(
                     extraTimeDay = extraTimeDay,
                     disableLimitsUntil = disableLimitsUntil,
                     flags = flags,
-                    blockNotificationDelay = blockNotificationDelay
+                    blockNotificationDelay = blockNotificationDelay,
+                    forceDnsHostname = forceDnsHostname
             )
         }
     }
@@ -215,6 +221,7 @@ data class Category(
         writer.name(DISABLE_LIMIITS_UNTIL).value(disableLimitsUntil)
         writer.name(FLAGS).value(flags)
         writer.name(BLOCK_NOTIFICATION_DELAY).value(blockNotificationDelay)
+        if (forceDnsHostname.isNotEmpty()) writer.name(FORCE_DNS_HOSTNAME).value(forceDnsHostname)
 
         writer.endObject()
     }
@@ -238,8 +245,32 @@ object CategoryTimeWarnings {
 
 object CategoryFlags {
     const val HAS_BLOCKED_NETWROK_LIST = 1L
-    const val ALL = HAS_BLOCKED_NETWROK_LIST
+
+    // Blocking technique flags — bits 1-3 (mask covers values 2, 4, 6)
+    const val BLOCKING_TYPE_MASK = 0b1110L          // bits 1-3
+    const val BLOCKING_TYPE_NORMAL = 0L              // default — normal lock overlay
+    const val BLOCKING_TYPE_SHIZUKU_DISABLE = 2L     // Shizuku app disabling (pm disable-user)
+    const val BLOCKING_TYPE_WORK_PROFILE = 4L        // Work profile quiet mode
+    const val BLOCKING_TYPE_FORCE_DNS = 6L           // Force Private DNS hostname
+
+    const val ALL = HAS_BLOCKED_NETWROK_LIST or BLOCKING_TYPE_MASK
 }
+
+/** Returns the blocking type value from the category flags (masked). */
+val Category.blockingType: Long get() = flags and CategoryFlags.BLOCKING_TYPE_MASK
+
+/** True if this category uses Shizuku app disabling for blocking. */
+val Category.isShizukuDisableBlocking: Boolean
+    get() = blockingType == CategoryFlags.BLOCKING_TYPE_SHIZUKU_DISABLE
+
+/** True if this category uses work profile quiet mode for blocking. */
+val Category.isWorkProfileBlocking: Boolean
+    get() = blockingType == CategoryFlags.BLOCKING_TYPE_WORK_PROFILE
+
+/** True if this category uses forced Private DNS for blocking. */
+val Category.isForceDns: Boolean
+    get() = blockingType == CategoryFlags.BLOCKING_TYPE_FORCE_DNS
+
 
 fun ImmutableBitmask.withConfigCopiedToOtherDates(sourceDay: Int, targetDays: Set<Int>): ImmutableBitmask {
     val result = dataNotToModify.clone() as BitSet
