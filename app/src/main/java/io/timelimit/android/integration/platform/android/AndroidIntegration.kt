@@ -97,9 +97,20 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
     private val connectedNetwork = ConnectedNetworkUtil(context)
     private val muteAudioMutex = Mutex()
 
+    private val isForegroundAppValidCache = object: LruCache<String, Boolean>(32) {
+        override fun create(key: String): Boolean? = try {
+            val appInfo = context.packageManager.getApplicationInfo(key, 0)
+            val userHandle = UserHandle.getUserHandleForUid(appInfo.uid)
+            userHandle == Process.myUserHandle()
+        } catch (ex: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
     init {
         AppsChangeListener.registerBroadcastReceiver(this.context, object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
+                isForegroundAppValidCache.evictAll()
                 installedAppsChangeListener?.run()
             }
         })
@@ -161,25 +172,9 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
 
     override suspend fun getForegroundApps(queryInterval: Long, experimentalFlags: Long): Set<ForegroundApp> {
         val helperApps = foregroundAppHelper.getForegroundApps(queryInterval, experimentalFlags)
-        Log.d(LOG_TAG, "getForegroundApps: helper returned ${helperApps.size} apps: $helperApps")
-        val filtered = helperApps
-            .filter { app ->
-                try {
-                    val appInfo = context.packageManager.getApplicationInfo(app.packageName, 0)
-                    val userHandle = UserHandle.getUserHandleForUid(appInfo.uid)
-                    val myUserHandle = Process.myUserHandle()
-                    val matches = userHandle == myUserHandle
-                    if (!matches) {
-                        Log.d(LOG_TAG, "getForegroundApps: filtered out ${app.packageName} due to user mismatch ($userHandle != $myUserHandle)")
-                    }
-                    matches
-                } catch (ex: PackageManager.NameNotFoundException) {
-                    Log.d(LOG_TAG, "getForegroundApps: filtered out ${app.packageName} due to NameNotFoundException")
-                    false
-                }
-            }
-            .toSet()
-        Log.d(LOG_TAG, "getForegroundApps: returning ${filtered.size} apps: $filtered")
+        val filtered = helperApps.filter { app ->
+            isForegroundAppValidCache.get(app.packageName) ?: false
+        }.toSet()
         return filtered
     }
 
