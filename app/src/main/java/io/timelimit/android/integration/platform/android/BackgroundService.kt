@@ -32,6 +32,7 @@ import io.timelimit.android.R
 import io.timelimit.android.integration.platform.AppStatusMessage
 import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.integration.lifeup.LifeUpBroadcastReceiver
+import io.timelimit.android.usage.UsageUploader
 import android.content.IntentFilter
 
 class BackgroundService: Service() {
@@ -174,6 +175,9 @@ class BackgroundService: Service() {
             addAction("app.lifeup.item.countdown.complete")
         }
         ContextCompat.registerReceiver(this, lifeUpReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
+
+        // Telemetry rides on the same service: while that lives, so does the sensor.
+        UsageUploader.start(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -215,6 +219,8 @@ class BackgroundService: Service() {
     }
 
     override fun onDestroy() {
+        UsageUploader.stop()
+
         stopForeground(true)
         super.onDestroy()
         didPostNotification = false

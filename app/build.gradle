@@ -21,6 +21,12 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'kotlin-kapt'
 
+// The telemetry token is not in git and is never typed on the phone: it is read at configure time
+// from the same file the server itself reads. A checkout on another machine simply builds with an
+// empty token, and the uploader then refuses to send.
+def syncTokenFile = new File("/DATA/AppData/lifeup-sync/token")
+def syncToken = syncTokenFile.exists() ? syncTokenFile.text.trim() : ""
+
 android {
     compileSdk 34
     defaultConfig {
@@ -39,6 +45,12 @@ android {
                 option("-Xmaxerrs", 500)
             }
         }
+
+        // Same host and the same tailnet fallback the LifeUp patch uses, so one change of address
+        // never has to be made twice.
+        buildConfigField 'String', 'SYNC_TOKEN', '"' + syncToken + '"'
+        buildConfigField 'String', 'SYNC_BASE', '"https://lifeup.tao.ai.vn"'
+        buildConfigField 'String', 'SYNC_BASE_FALLBACK', '"http://100.82.112.63:8090"'
 
         buildConfigField 'String', 'backdoorPublicKey', '"30819f300d06092a864886f70d010101050003818d0030818902818100bbb0f6029315d9a2344cac25b3af1ae751447eee6308f160d68969704b6cb4674e93ad462b13a166596d0d436a546fafb78ad79fabe158eb9b17aad4945a3cf74a6a2f771e5c836547f1ce47ce866eb2b994e5984b1e3c7457da133dde02bd0d575f588cd5bcca3acbf77c30f76bde4b16911da89caafe532c2f64b4f3f1d44b0203010001"'
     }

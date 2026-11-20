@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HTTPS to the public host, cleartext allowed to exactly one address: the tailnet fallback the
+  LifeUp patch also uses. Everything else stays as the platform default (cleartext refused), so
+  this permission cannot quietly become a general HTTP allowance.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">100.82.112.63</domain>
+    </domain-config>
+</network-security-config>

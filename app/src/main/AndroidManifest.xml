@@ -43,6 +43,10 @@
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.NFC" />
+    <!-- Telemetry uploads to the lifeup-sync server. The fork had no network permission at all
+         because it never talked to anything; this is the only use of it. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-feature android:name="android.software.leanback" android:required="false" />
@@ -56,6 +60,7 @@
         android:banner="@drawable/banner"
         android:name=".Application"
         android:allowBackup="false"
+        android:networkSecurityConfig="@xml/limited_network"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
