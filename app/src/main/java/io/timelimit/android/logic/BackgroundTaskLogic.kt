@@ -29,6 +29,7 @@ import io.timelimit.android.data.backup.DatabaseBackup
 import io.timelimit.android.data.model.ExperimentalFlags
 import io.timelimit.android.data.model.ManipulationFlag
 import io.timelimit.android.data.model.UserType
+import io.timelimit.android.integration.lifeup.LifeUpOverrideGuard
 import io.timelimit.android.data.model.derived.UserRelatedData
 import io.timelimit.android.date.DateInTimezone
 import io.timelimit.android.date.getMinuteOfWeek
@@ -60,6 +61,7 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
         private const val LOG_TAG = "BackgroundTaskLogic"
 
         private const val CHECK_PERMISSION_INTERVAL = 10 * 1000L        // all 10 seconds
+        private const val LIFEUP_RECONCILE_INTERVAL = 5 * 1000L          // all 5 seconds
 
         private const val BACKGROUND_SERVICE_INTERVAL_SHORT = 100L      // all 100 ms
         private const val MAX_USED_TIME_PER_ROUND_SHORT = 1000          // 1 second
@@ -161,9 +163,37 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
         }
     }
 
+    /**
+     * LifeUp does not broadcast every way a countdown can end (ending one early emits nothing), so a
+     * rule it suspended is restored here once its deadline has passed. Throttled: the loop runs every
+     * second, and reading the rule table that often is pointless.
+     */
+    private suspend fun reconcileLifeUpOverrides() {
+        val now = System.currentTimeMillis()
+
+        if (now - lastLifeUpReconcile < LIFEUP_RECONCILE_INTERVAL) return
+
+        lastLifeUpReconcile = now
+
+        try {
+            val restored = Threads.database.executeAndWait {
+                LifeUpOverrideGuard.reconcile(appLogic)
+            }
+
+            if (restored > 0 && BuildConfig.DEBUG) {
+                android.util.Log.d("BackgroundTaskLogic", "restored $restored expired LifeUp override(s)")
+            }
+        } catch (ex: Exception) {
+            android.util.Log.w("BackgroundTaskLogic", "LifeUp override reconcile failed", ex)
+        }
+    }
+
     private suspend fun commitUsedTimeUpdaters() {
         usedTimeUpdateHelper.flush()
     }
+
+    @Volatile
+    private var lastLifeUpReconcile = 0L
 
     private suspend fun backgroundServiceLoop() {
         while (true) {
@@ -197,6 +227,8 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
             val userRelatedData = deviceAndUSerRelatedData?.userRelatedData
 
             setShowNotificationToRevokeTemporarilyAllowedApps(deviceRelatedData?.temporarilyAllowedApps?.isNotEmpty() ?: false)
+
+            reconcileLifeUpOverrides()
 
             // device must be used by a child
             if (deviceRelatedData == null || userRelatedData == null || userRelatedData.user.type != UserType.Child) {

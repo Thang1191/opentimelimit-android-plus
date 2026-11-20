@@ -132,6 +132,33 @@ D LifeUpIntegration: app.lifeup.item.countdown.stop 'VexProbe' -> overrideActive
 Extras the item name can arrive in: `name` on current LifeUp (plus `item`/`title` in other versions),
 and the event also carries `shop_item_id`-style numeric extras, `service_type`, `duration`, `remaining`.
 
+### What LifeUp actually broadcasts (measured, 20/11/2026)
+
+For one item, with developer-mode broadcasts enabled, the complete event stream was:
+
+- start / resume / **add time** -> `app.lifeup.item.countdown.start`, extras `{name, time_left, item_id}`
+- pause -> `app.lifeup.item.countdown.stop`, extras carry the leftover `time_left`
+- **end / abandon -> nothing at all.** `app.lifeup.item.countdown.complete` never fired once.
+
+That is why "pause" restored blocking but "end" and "add time" left the rule suspended: there was no
+event to react to. Events for *other* items also arrive (e.g. `Sample: Watch a movie` with
+`time_left=0`), so matching by name is required - dropping the name filter would suspend the wrong rule.
+
+The fix is [LifeUpOverrideGuard]: every event carries `time_left`, so a suspension stores
+`now + time_left` as a deadline and the background loop restores the rule once it passes. Verified:
+
+```
+start time_left=15000, no further broadcast
+t+4s  override flag = 1, profile unlocked
+t+26s override flag = 0, profile locked
+      D BackgroundTaskLogic: restored 1 expired LifeUp override(s)
+      D WorkProfileBlockingLogic: Setting work profile quiet mode to true
+```
+
+Consequence: normal completion is exact (the deadline *is* the end), pausing is instant, and ending a
+countdown early is noticed at the original deadline - i.e. up to the leftover time late. Instant
+end-detection would need polling LifeUp's `net.sarasarasa.lifeup.provider.api` content provider.
+
 Gotcha for the UI: the rule dialog writes the literal placeholder `New Item` when the integration toggle
 is switched on. A rule whose name stays `New Item` never matches a real LifeUp item - the item name has
 to be typed exactly as LifeUp shows it.
