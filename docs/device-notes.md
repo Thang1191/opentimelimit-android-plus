@@ -1,0 +1,112 @@
+# Device notes — Ace (Chinese ROM) / Shizuku
+
+Field notes from wiring the blocker to a OnePlus Ace running ColorOS/Oplus software. Everything here
+was observed on the device with `adb` (serial `100.127.53.38:5555`, model `PLR110`, Android 14). Keep it
+in sync when the phone or Shizuku changes.
+
+## Device owner is not available on this phone
+
+`dpm set-device-owner` fails, and it is not a bug in Limited:
+
+```
+IllegalStateException: Not allowed to set the device owner because there are
+already several users on the device.
+    at DevicePolicyManagerService.enforceCanSetDeviceOwnerLocked(...)
+```
+
+`pm list users` shows user 0 (Owner) + **user 10 (Island)**. `enforceCanSetDeviceOwnerLocked` requires a
+single user, so any managed profile — Island, Shelter, Island-style cloning, or a real work profile —
+blocks device-owner provisioning outright. There is no flag or override.
+
+Options, decided 20/11/2026: **keep Island, skip device owner, enforce through Shizuku.**
+Consequences to live with:
+
+- No `DevicePolicyManager` blocking APIs. Enforcement is shell-level (`pm disable-user` via Shizuku),
+  which is weaker than DO's `setPackagesSuspended`.
+- Device-owner-only features stay off: uninstall protection, device-wide policy, factory-reset guard.
+- If the answer ever changes: destroy the work profile (that wipes it), reboot, then
+  `adb shell dpm set-device-owner t1191.limited.com/io.timelimit.android.integration.platform.android.AdminReceiver`
+
+Do note that the app **is** a registered device admin for user 0 (`dumpsys device_policy` lists the
+`AdminReceiver`), which is what the "simple device admin" protection level uses — that half works.
+
+## Shizuku lifecycle
+
+- Runs as uid `shell` (`shizuku_server`, started over adb/wireless debugging). That is enough to
+  `pm disable-user` / `pm enable` other apps.
+- **It dies on reboot.** After every phone restart it has to be re-started — wireless debugging
+  re-pair, or root. Budget for it; a blocker that silently loses its shell is a blocker that stops
+  blocking.
+- The app attaches cleanly. Verified from logcat after a force-stop/restart:
+  `ShizukuServerLog: attachApplication from t1191.limited.com` and
+  `ShizukuIntegration: Shizuku binder received`.
+- `ShizukuIntegration` invokes Shizuku's **private** `newProcess` through reflection
+  (`getDeclaredMethod("newProcess", ...)`). Fragile twice over: it breaks on a Shizuku version bump
+  (13.1.5 here) and R8 can strip or rename it in a release build, failing silently.
+
+## The `getTopApplicationInfo` denials are Shizuku's own, not Limited's
+
+logcat fills up with this roughly once a second:
+
+```
+Permission Denial: getTopApplicationInfo from pid=26828, uid=10492
+  requires oplus.permission.OPLUS_COMPONENT_SAFE
+```
+
+`10492` / pid 26828 is `moe.shizuku.privileged.api` — **the Shizuku manager app itself**, polling the
+top app for its own UI. ColorOS gates that call behind an OPPO-only permission, so Shizuku's own
+foreground display is refused. It does not mean our blocking is failing.
+
+**Correction worth keeping:** this was first read as Limited's foreground detection being refused.
+It is not. `CompatForegroundAppHelper` (which *does* call `ActivityManager.getRunningTasks`) is only
+instantiated below API 21; on this device the chain is
+`QForegroundAppHelper → {LollipopForegroundAppHelper | InstanceIdForegroundAppHelper}`, both built on
+`UsageStatsManager` events, which only need the usage-stats permission the app already holds
+(`current_usage_stats_permission: granted`). Foreground detection is **not** blocked by ColorOS.
+
+## Foreground detection: a debugging hack shipped in the fork
+
+`QForegroundAppHelper` was upstream:
+
+```kotlin
+val canUseModern = DirectUsageStatsReader.instanceIdSupported
+```
+
+and the fork (`d0d80b5` "VERY BIG CHANGE", thang1191) replaced it with:
+
+```kotlin
+val canUseModern = false // FORCE LEGACY HELPER FOR DEBUGGING
+```
+
+So every API 29+ device — including this one, which does expose instance ids — was pinned to the legacy
+usage-events path. Restored on 20/11/2026 as "instance-id helper when supported, legacy on any failure",
+which is upstream behaviour plus a safety net rather than a blank fallback.
+
+Proven on the Ace after install (`logcat -s QForegroundApp`, debug build):
+
+```
+D QForegroundApp: instance-id helper reported 2 app(s)
+D QForegroundApp: instance-id helper reported 1 app(s)
+```
+
+So instance ids *are* supported on this ROM — the hack was hiding a working path, and the helper was
+answering from the legacy path this whole time. Zero crashes after the switch.
+
+## What works from `adb shell` on this ROM
+
+Verified working (used for checks above):
+
+- `dumpsys activity activities` → `topResumedActivity` (an alternative foreground source if usage stats
+  ever break)
+- `dumpsys device_policy`, `dpm list-owners`, `pm list users`, `pm list packages --user N`
+- `run-as t1191.limited.com` — the DB is at `databases/db` (SQLite, no extension) and the app list cache
+  at `databases/config.json`
+- `run-as ... cat` for pulling the DB; the app runs as a notification listener (`NotificationListenerLog`)
+
+## Good to know
+
+- The DB records `enable_activity_level_blocking: 0` and `current_protection_level: simple device admin`
+  — activity-level blocking is off, which is the cheap safe default on a ROM this aggressive.
+- `AndroidManifest` declares `AdminReceiver` with `BIND_DEVICE_ADMIN` + `@xml/admin`, and the debug APK
+  carries no `testOnly` flag (`flags=[DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA]`), so nothing in the
+  build blocks device-owner provisioning — only Island does.
