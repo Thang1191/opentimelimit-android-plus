@@ -133,6 +133,28 @@ D LifeUpIntegration: app.lifeup.item.countdown.stop 'VexProbe' -> overrideActive
 Extras the item name can arrive in: `name` on current LifeUp (plus `item`/`title` in other versions),
 and the event also carries `shop_item_id`-style numeric extras, `service_type`, `duration`, `remaining`.
 
+## Suspension instead of disabling (greyed icon, no overlay)
+
+`pm disable-user` makes the icon disappear on most launchers. `pm suspend` keeps it where it is and
+greys it out, refuses to start the app, and reverses exactly - so the Shizuku technique now suspends:
+
+    pm suspend --user 0 <pkg>; am force-stop <pkg>
+    pm unsuspend --user 0 <pkg>
+
+The `am force-stop` is deliberate: it kills the process, so a floating window of a blocked app dies
+instead of hovering over everything, which is what a ColorOS float does to an overlay.
+`pm disable-user` / `pm enable` stay as the fallback for ROMs that refuse to suspend.
+
+Tracked packages are persisted in `shared_prefs/shizuku_blocking.xml`. That matters: a suspension
+survives a reboot while the app process does not, so without it the apps a previous run blocked would
+stay suspended forever and never be released. On start the list is adopted and reconciled like any
+other blocking decision.
+
+Verified end to end on the Ace (temporarily pointing the Shizuku technique at a test category):
+`dumpsys package <pkg> | grep suspended` went `false -> true` on block and back to `false` on unblock,
+the persisted set filled and emptied with it, and both test packages ended up `suspended=false` and
+enabled again.
+
 ## Blocking ColourOS floating windows without accessibility
 
 `showAppLockScreen()` opens a plain full-screen activity and `OverlayUtil` adds a

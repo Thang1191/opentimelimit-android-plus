@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.logic
 
+import android.content.Context
 import android.util.Log
 import io.timelimit.android.BuildConfig
 import io.timelimit.android.async.Threads
@@ -38,13 +39,48 @@ import io.timelimit.android.integration.platform.shizuku.ShizukuIntegration
 class ShizukuBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
     companion object {
         private const val LOG_TAG = "ShizukuBlockingLogic"
+        private const val PREFS_NAME = "shizuku_blocking"
+        private const val KEY_BLOCKED = "blocked_packages"
     }
 
-    // Tracks packages currently disabled by this logic (to avoid redundant calls)
+    // Tracks packages currently blocked by this logic (to avoid redundant calls)
     private val disabledPackages = mutableSetOf<String>()
 
+    private val prefs by lazy {
+        appLogic.context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    }
+
     init {
+        // A suspension survives a reboot while this process does not, so adopt whatever a previous run
+        // left behind - otherwise those apps would stay blocked forever and never be released.
+        disabledPackages.addAll(prefs.getStringSet(KEY_BLOCKED, emptySet()) ?: emptySet())
+
         startObserving()
+    }
+
+    private fun persist() {
+        prefs.edit().putStringSet(KEY_BLOCKED, disabledPackages.toSet()).apply()
+    }
+
+    /**
+     * Suspension is preferred over disabling: the icon stays where it is and goes grey, the app cannot
+     * be started, and it reverses exactly. `pm disable-user` remains the fallback for ROMs that refuse
+     * to suspend, where the icon disappears instead.
+     */
+    private fun block(packageName: String): Boolean {
+        if (ShizukuIntegration.suspendPackage(packageName)) return true
+
+        if (BuildConfig.DEBUG) {
+            Log.w(LOG_TAG, "suspend refused for $packageName, falling back to disable-user")
+        }
+
+        return ShizukuIntegration.disablePackage(packageName)
+    }
+
+    private fun unblock(packageName: String): Boolean {
+        if (ShizukuIntegration.unsuspendPackage(packageName)) return true
+
+        return ShizukuIntegration.enablePackage(packageName)
     }
 
     override fun onShizukuAvailable() {
@@ -118,40 +154,44 @@ class ShizukuBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
         var disabledCount = 0
         for (pkg in toDisable) {
             if (BuildConfig.DEBUG) {
-                Log.d(LOG_TAG, "Disabling package: $pkg")
+                Log.d(LOG_TAG, "Blocking package: $pkg")
             }
-            if (ShizukuIntegration.disablePackage(pkg)) {
+            if (block(pkg)) {
                 disabledPackages.add(pkg)
                 disabledCount++
             } else {
                 if (BuildConfig.DEBUG) {
-                    Log.w(LOG_TAG, "Failed to disable package: $pkg")
+                    Log.w(LOG_TAG, "Failed to block package: $pkg")
                 }
             }
         }
         if (disabledCount > 0) {
+            persist()
+
             android.os.Handler(android.os.Looper.getMainLooper()).post {
-                android.widget.Toast.makeText(appLogic.context, "Disabled $disabledCount app(s) via Shizuku", android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(appLogic.context, "Blocked $disabledCount app(s)", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
 
         var enabledCount = 0
         for (pkg in toEnable) {
             if (BuildConfig.DEBUG) {
-                Log.d(LOG_TAG, "Enabling package: $pkg")
+                Log.d(LOG_TAG, "Unblocking package: $pkg")
             }
-            if (ShizukuIntegration.enablePackage(pkg)) {
+            if (unblock(pkg)) {
                 disabledPackages.remove(pkg)
                 enabledCount++
             } else {
                 if (BuildConfig.DEBUG) {
-                    Log.w(LOG_TAG, "Failed to enable package: $pkg")
+                    Log.w(LOG_TAG, "Failed to unblock package: $pkg")
                 }
             }
         }
         if (enabledCount > 0) {
+            persist()
+
             android.os.Handler(android.os.Looper.getMainLooper()).post {
-                android.widget.Toast.makeText(appLogic.context, "Enabled $enabledCount app(s) via Shizuku", android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(appLogic.context, "Unblocked $enabledCount app(s)", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -171,14 +211,19 @@ class ShizukuBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
         }
 
         val iterator = disabledPackages.iterator()
+        var changed = false
+
         while (iterator.hasNext()) {
             val pkg = iterator.next()
             if (BuildConfig.DEBUG) {
                 Log.d(LOG_TAG, "Re-enabling package: $pkg")
             }
-            if (ShizukuIntegration.enablePackage(pkg)) {
+            if (unblock(pkg)) {
                 iterator.remove()
+                changed = true
             }
         }
+
+        if (changed) persist()
     }
 }

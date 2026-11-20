@@ -316,6 +316,41 @@ object ShizukuIntegration {
 
 
     /**
+     * Suspends a package for user 0: the icon stays where it is but goes grey (the launcher shows it as
+     * suspended), the app cannot be started, and `pm unsuspend` puts it back - unlike `pm disable-user`,
+     * which makes the icon disappear on most launchers.
+     *
+     * The running process is killed afterwards, so a floating window of a blocked app dies instead of
+     * hovering over everything (ColorOS floats survive an overlay).
+     *
+     * @return true if the package really went into the suspended state
+     */
+    fun suspendPackage(packageName: String): Boolean {
+        if (BuildConfig.DEBUG) {
+            Log.d(LOG_TAG, "suspendPackage: $packageName")
+        }
+
+        val result = executeCommand("pm suspend --user 0 $packageName; am force-stop $packageName")
+
+        return result != null && result.contains("new suspended state: true")
+    }
+
+    /**
+     * Reverses [suspendPackage].
+     *
+     * @return true if the package really left the suspended state
+     */
+    fun unsuspendPackage(packageName: String): Boolean {
+        if (BuildConfig.DEBUG) {
+            Log.d(LOG_TAG, "unsuspendPackage: $packageName")
+        }
+
+        val result = executeCommand("pm unsuspend --user 0 $packageName")
+
+        return result != null && result.contains("new suspended state: false")
+    }
+
+    /**
      * Disables a package for user 0 using `pm disable-user`.
      * @param packageName The package to disable
      * @return true if the command succeeded
