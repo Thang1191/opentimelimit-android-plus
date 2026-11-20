@@ -27,5 +27,10 @@ class Application : Application() {
 
         // Apply Material You Dynamic Colors
         DynamicColors.applyToActivitiesIfAvailable(this)
+
+        // Arm the resurrection chain: heartbeat alarm + persisted job + restart hooks in the service.
+        // ColorOS stops this package from its own battery machinery, so something outside the process
+        // has to be able to bring it back.
+        io.timelimit.android.integration.platform.android.KeepAlive.start(this)
     }
 }

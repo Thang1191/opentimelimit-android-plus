@@ -133,6 +133,49 @@ D LifeUpIntegration: app.lifeup.item.countdown.stop 'VexProbe' -> overrideActive
 Extras the item name can arrive in: `name` on current LifeUp (plus `item`/`title` in other versions),
 and the event also carries `shop_item_id`-style numeric extras, `service_type`, `duration`, `remaining`.
 
+## Surviving ColorOS (o-stop)
+
+`dumpsys activity exit-info` shows how this package dies: `reason=13 (OTHER KILLS BY SYSTEM)` with
+`description=stop t1191.limited.com due to o-stop(40)`, and the kernel log agrees
+(`am_kill : [0,<pid>,t1191.limited.com,200,stop t1191.limited.com due to o-stop(40)]`). It is not the
+LMK and not an ANR - it is ColorOS's own battery machinery. Battery optimisation was *already* exempt
+(doze whitelist entry + standby bucket `5`), and the foreground service was already running with
+`specialUse`, so neither was the missing piece.
+
+What was missing is a way to come back, because a dead process cannot restart itself. `KeepAlive` adds
+three independent paths:
+
+- **Self-repeating alarm** (`setRepeating`, 2 min, `USE_EXACT_ALARM` declared and granted) into
+  `KeepAliveReceiver`, which restarts the foreground service. A one-shot alarm that is re-armed from
+  every service start *never fires*: each start pushes the next delivery two minutes out, so a
+  frequently restarted process starves its own watchdog. Measured that mistake: alarm stats sat at
+  "1 wakeup" for ten minutes while the pending alarm kept sliding forward. `setRepeating` lets
+  AlarmManager own the schedule; a 60s timestamp guard stops repeated calls re-basing it.
+- **Persisted job** (`4711`, 15 min, `setPersisted(true)`) - survives reboot and timer wipes.
+- **Chained job** (`4714`, one-shot re-scheduling itself every 2 min) - a second path that does not
+  depend on any alarm bookkeeping.
+
+Plus restart hooks for the in-process cases: `START_STICKY`, `onTaskRemoved` and `onDestroy` all ask for
+an early restart, but only when the stop was not requested by the app itself (blocking switched off must
+not be undone). `onStartCommand` no longer crashes when it is restarted without a status: it was calling
+`getParcelableExtra(...)!!` and would have died with `ForegroundServiceDidNotStartInTimeException`
+because it never reached `startForeground`.
+
+Restarting a foreground service from the background is normally forbidden since Android 12; this app is
+exempt because it holds the "draw over other apps" permission, and every attempt is wrapped so a refusal
+cannot take the receiver down with it.
+
+Verified on the Ace: `repeatInterval=120000` in `dumpsys alarm` with the wakeup counter climbing every
+two minutes, both jobs present in `dumpsys jobscheduler`, and a deliberately crashed process coming back
+within seconds. Not verified: revival from a process that has been dead for a long time, because a kill
+of a running foreground service cannot be produced from `adb shell` without root (`kill -9` ->
+`Operation not permitted`, `am stop-service` -> refused). Note that `am crash` is a poor stand-in: after
+repeated crashes the framework suppresses restarts for that package and the alarm fires into nothing.
+
+ColourOS's own log line is worth knowing: `OsenseKillAction: don't check adj for non perceptible fgs
+app: ... oom:FGS/76/200/fg-service` - their killer skips a perceptible foreground service, so the app
+mostly needs to stay one.
+
 ## Suspension instead of disabling (greyed icon, no overlay)
 
 `pm disable-user` makes the icon disappear on most launchers. `pm suspend` keeps it where it is and

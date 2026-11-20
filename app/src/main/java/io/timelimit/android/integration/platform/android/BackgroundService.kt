@@ -40,6 +40,13 @@ class BackgroundService: Service() {
     companion object {
         private const val EXTRA_NOTIFICATION = "notification"
 
+        /**
+         * Set when the app itself stops the service (blocking switched off). A teardown that was asked
+         * for must not be undone by the keep-alive restart hooks.
+         */
+        @Volatile
+        private var stopRequested = false
+
         fun setStatusMessage(status: AppStatusMessage?, context: Context) {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val intent = Intent(context, BackgroundService::class.java)
@@ -56,6 +63,8 @@ class BackgroundService: Service() {
                     )
                 }
             } else {
+                stopRequested = true
+
                 context.stopService(intent)
 
                 if (isBackgroundActivityRestricted(context)) {
@@ -83,6 +92,27 @@ class BackgroundService: Service() {
 
             return false
         }
+
+        /**
+         * Shown when the service is restarted without a status. Says nothing about blocking state on
+         * purpose: the real notification is posted on the next blocking tick.
+         */
+        private fun buildPlaceholderNotification(context: Context) = NotificationCompat.Builder(context, NotificationChannels.APP_STATUS)
+            .setSmallIcon(R.drawable.ic_stat_timelapse)
+            .setContentTitle(context.getString(R.string.app_name))
+            .setContentText(context.getString(R.string.keepalive_placeholder_text))
+            .setContentIntent(BackgroundActionService.getOpenAppIntent(context))
+            .setWhen(0)
+            .setShowWhen(false)
+            .setSound(null)
+            .setOnlyAlertOnce(true)
+            .setLocalOnly(true)
+            .setAutoCancel(false)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .build()
 
         private fun buildNotification(appStatusMessage: AppStatusMessage, context: Context) = NotificationCompat.Builder(context, NotificationChannels.APP_STATUS)
             .setSmallIcon(R.drawable.ic_stat_timelapse)
@@ -147,31 +177,53 @@ class BackgroundService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent != null) {
-            val appStatusMessage = intent.getParcelableExtra<AppStatusMessage>(EXTRA_NOTIFICATION)!!
+        val appStatusMessage = intent?.getParcelableExtra<AppStatusMessage>(EXTRA_NOTIFICATION)
 
-            val notification = buildNotification(appStatusMessage, this)
-
-            if (didPostNotification) {
-                notificationManager.notify(NotificationIds.APP_STATUS, notification)
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    startForeground(NotificationIds.APP_STATUS, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
-                } else {
-                    startForeground(NotificationIds.APP_STATUS, notification)
-                }
-                didPostNotification = true
-            }
+        // A service started with startForegroundService has five seconds to call startForeground. The
+        // keep-alive restart and the system's own restart both arrive without a status, and dying with
+        // ForegroundServiceDidNotStartInTimeException is exactly the outcome this is here to prevent.
+        val notification = if (appStatusMessage != null) {
+            buildNotification(appStatusMessage, this)
+        } else {
+            buildPlaceholderNotification(this)
         }
 
-        return START_REDELIVER_INTENT
+        if (didPostNotification) {
+            notificationManager.notify(NotificationIds.APP_STATUS, notification)
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(NotificationIds.APP_STATUS, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+            } else {
+                startForeground(NotificationIds.APP_STATUS, notification)
+            }
+            didPostNotification = true
+        }
+
+        stopRequested = false
+
+        // Alarms are one-shot: every start re-arms the next heartbeat.
+        KeepAlive.scheduleHeartbeat(this)
+
+        return START_STICKY
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+
+        // Swiping the app out of Recents is enough to get the process torn down on some ROMs.
+        KeepAlive.restartSoon(this)
     }
 
     override fun onDestroy() {
         stopForeground(true)
         super.onDestroy()
         didPostNotification = false
-        
+
+        if (!stopRequested) {
+            // Killed rather than stopped: ask for a restart before the process is gone.
+            KeepAlive.restartSoon(this)
+        }
+
         lifeUpReceiver?.let {
             try {
                 unregisterReceiver(it)
