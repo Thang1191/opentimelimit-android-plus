@@ -24,7 +24,8 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdk 34
     defaultConfig {
-        applicationId "io.timelimit.android.open"
+        // fork identity: installs beside upstream Open TimeLimit, own update channel
+        applicationId "t1191.limited.com"
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 217

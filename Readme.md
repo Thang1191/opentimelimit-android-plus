@@ -19,4 +19,4 @@ Open it with Android Studio and press the Run button.
 
 ### Enabling the device owner permission
 
-```adb shell dpm set-device-owner io.timelimit.android.open/io.timelimit.android.integration.platform.android.AdminReceiver```
+```adb shell dpm set-device-owner t1191.limited.com/io.timelimit.android.integration.platform.android.AdminReceiver```
