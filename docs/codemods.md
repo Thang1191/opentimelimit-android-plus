@@ -37,13 +37,34 @@ resurrect the script.
 - **They shadow the build.** A `fix_*.gradle` sitting at the root reads like part of the build to
   anyone new; the real build config is `app/build.gradle` and nothing else.
 
-## Remaining work carried into phase 2
+## Phase 2 outcome (20/11/2026)
 
-Fix by hand, in one reviewed commit:
+The migration the codemods left half-finished was completed by hand. What changed:
 
-1. The 9 layouts still using `@color/text_red`, `@color/orange_text`, `@color/text_green`,
-   `@color/orange_background` — apply the `fixMaterialColors` mapping above, per-view, choosing
-   `?attr/colorError` vs `?attr/colorErrorContainer` by whether the colour is text or a surface.
-2. The single layout on `@color/colorPrimary` → `?attr/colorPrimary`.
-3. The 2 layouts with a bare `<RadioButton` → `MaterialRadioButton`.
-4. The single `outerCircleColor(R.color.colorAccent)` call site → the Material attribute.
+- **22 colour references across 9 layouts.** `@color/text_red` and `@color/orange_text` →
+  `?attr/colorError`; `@color/text_green` → `?attr/colorPrimary`. Files: `fragment_setup_device_permissions`,
+  `manage_device_permissions_fragment`, `notify_permission_card`, `manage_notification_filter_dialog_fragment`,
+  `fragment_edit_time_limit_rule_dialog`, `fragment_overview_device_item`, plus the three alert cards.
+- **The three alert cards** (`manage_device_manipulation_view`, `manage_child_manipulation_warning`,
+  `missing_permission_view`) use `?attr/colorError`, **not** `?attr/colorErrorContainer` as the old
+  codemod intended. Deliberate: each card sets `android:theme="@style/AppThemeDarkOverlay"` and hardcodes
+  `android:textColor="@color/white"` on its children, so a light container colour would put white text on
+  a light surface. `colorError` keeps the white-on-red contrast in both light and dark themes. If the cards
+  are ever restyled, switch the text to `?attr/colorOnErrorContainer` first, then to the container colour.
+- **Two bare `<RadioButton>`** in `manage_category_networks_view.xml` → `MaterialRadioButton`.
+- **Five now-dead colours removed** from `values/colors.xml`: `text_red`, `text_green`, `orange_text`,
+  `orange_background`, `background_red` — zero references left anywhere in `app/src/main`. `white`, `gray`
+  and the `blockedtimes_*` trio are still in use and stay.
+- **`outerCircleColor` needed nothing.** The file already calls
+  `outerCircleColorInt(MaterialColors.getColor(fab, R.attr.colorSecondary))`; the earlier grep was matching
+  that identifier's prefix, so `fix_fab` landed semantically.
+
+One deliberate non-change: `fragment_blocked_time_areas_minute_tile.xml` keeps `@color/colorPrimary` inside a
+data-binding expression (`@{safeUnbox(selected) ? @color/colorPrimary : ...}`). A `?attr/` theme attribute
+cannot appear inside a binding expression, so theming it means resolving the colour in the adapter
+(`MaterialColors.getColor(view, R.attr.colorPrimary)`). Left alone; `colorPrimary` stays in `colors.xml` for
+this and for `styles.xml`.
+
+Verified: `./gradlew assembleDebug` → BUILD SUCCESSFUL, and `grep` for all five retired colour names returns
+zero hits in `res/layout`.
+

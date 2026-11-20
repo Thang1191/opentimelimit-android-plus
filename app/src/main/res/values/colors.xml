@@ -26,11 +26,6 @@
     <color name="transparent">#00000000</color>
     <color name="gray">#9E9E9E</color>
     <color name="white">#FFF</color>
-    <color name="text_green">#0a0</color>
-    <color name="text_red">#a00</color>
-    <color name="background_red">#a00</color>
-    <color name="orange_background">#E64A19</color>
-    <color name="orange_text">#E64A19</color>
     <color name="blockedtimes_yellow">#cccc00</color>
     <color name="blockedtimes_green">#0a0</color>
     <color name="blockedtimes_red">#a00</color>

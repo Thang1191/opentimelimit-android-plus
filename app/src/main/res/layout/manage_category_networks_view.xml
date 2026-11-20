@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp">
 
-                <RadioButton
+                <com.google.android.material.radiobutton.MaterialRadioButton
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:text="@string/category_networks_type_allow_list"
@@ -86,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <RadioButton
+                <com.google.android.material.radiobutton.MaterialRadioButton
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:text="@string/category_networks_type_block_list"

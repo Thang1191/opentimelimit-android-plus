@@ -59,7 +59,7 @@
             <TextView
                 android:visibility="@{showMissingPermissionText ? View.VISIBLE : View.GONE}"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="@color/orange_text"
+                android:textColor="?attr/colorError"
                 android:text="@string/category_notification_filter_missing_permission"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -17,7 +17,7 @@
 <com.google.android.material.card.MaterialCardView
     android:theme="@style/AppThemeDarkOverlay"
     style="?attr/materialCardViewFilledStyle"
-    app:cardBackgroundColor="@color/orange_background"
+    app:cardBackgroundColor="?attr/colorError"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"

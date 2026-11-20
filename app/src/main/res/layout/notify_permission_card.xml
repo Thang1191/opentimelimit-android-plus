@@ -64,7 +64,7 @@
             <TextView
                 android:visibility="@{showGrantedMessage ? View.VISIBLE : View.GONE}"
                 android:gravity="center"
-                android:textColor="@color/text_green"
+                android:textColor="?attr/colorPrimary"
                 android:text="@string/notify_permission_text_granted"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:layout_marginTop="16dp"

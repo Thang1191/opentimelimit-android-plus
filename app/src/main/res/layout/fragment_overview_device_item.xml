@@ -87,8 +87,8 @@
                 <TextView
                     tools:ignore="UnusedAttribute"
                     android:layout_marginTop="16dp"
-                    android:drawableTint="@color/orange_text"
-                    android:textColor="@color/orange_text"
+                    android:drawableTint="?attr/colorError"
+                    android:textColor="?attr/colorError"
                     android:drawablePadding="16dp"
                     android:gravity="center_vertical"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -101,8 +101,8 @@
                 <TextView
                     tools:ignore="UnusedAttribute"
                     android:layout_marginTop="16dp"
-                    android:drawableTint="@color/orange_text"
-                    android:textColor="@color/orange_text"
+                    android:drawableTint="?attr/colorError"
+                    android:textColor="?attr/colorError"
                     android:drawablePadding="16dp"
                     android:gravity="center_vertical"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
