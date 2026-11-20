@@ -34,9 +34,10 @@ Do note that the app **is** a registered device admin for user 0 (`dumpsys devic
 
 - Runs as uid `shell` (`shizuku_server`, started over adb/wireless debugging). That is enough to
   `pm disable-user` / `pm enable` other apps.
-- **It dies on reboot.** After every phone restart it has to be re-started — wireless debugging
-  re-pair, or root. Budget for it; a blocker that silently loses its shell is a blocker that stops
-  blocking.
+- **Stock Shizuku dies on reboot** — it has to be re-started (wireless debugging re-pair, or root), and
+  a blocker that silently loses its shell is a blocker that stops blocking. This device does not run
+  stock Shizuku: it runs a forked build that re-arms itself after boot, so no manual step is needed
+  here. Do not assume that for other devices.
 - The app attaches cleanly. Verified from logcat after a force-stop/restart:
   `ShizukuServerLog: attachApplication from t1191.limited.com` and
   `ShizukuIntegration: Shizuku binder received`.
