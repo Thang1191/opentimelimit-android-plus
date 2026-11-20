@@ -155,9 +155,26 @@ t+26s override flag = 0, profile locked
       D WorkProfileBlockingLogic: Setting work profile quiet mode to true
 ```
 
-Consequence: normal completion is exact (the deadline *is* the end), pausing is instant, and ending a
-countdown early is noticed at the original deadline - i.e. up to the leftover time late. Instant
-end-detection would need polling LifeUp's `net.sarasarasa.lifeup.provider.api` content provider.
+Deadlines alone were not good enough: `time_left` is the *remaining* time, so a countdown extended by
+"add time" (observed 47601 -> 117744) pushed the deadline minutes or hours out, and ending it early
+still left the profile unlocked until then.
+
+Ending a countdown does tear down LifeUp's countdown service (`CommonCountDownTimerService` /
+`CountDownTimerService`), so the guard now asks the device instead of guessing:
+
+    dumpsys activity services net.sarasarasa.lifeup | grep -c CountDownTimerService || true
+
+run through the Shizuku shell UserService, throttled to one call per 10s and skipped for the first 15s
+after a start (the service may still be coming up). Service gone + rule still suspended -> restore.
+
+Order of trust:
+1. `stop` event -> instant (pause)
+2. countdown service gone -> within ~10s (end / abandon / task kill)
+3. deadline from `time_left` -> exact for a countdown that just runs out, and the safety net when
+   Shizuku is unavailable (the probe is optimistic: no answer means "assume still running").
+
+Verified: a rule suspended with a deadline 20 minutes out was restored as soon as the probe ran, and
+the profile returned to QUIET_MODE.
 
 Gotcha for the UI: the rule dialog writes the literal placeholder `New Item` when the integration toggle
 is switched on. A rule whose name stays `New Item` never matches a real LifeUp item - the item name has
