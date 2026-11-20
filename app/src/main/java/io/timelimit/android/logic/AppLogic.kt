@@ -16,6 +16,7 @@
 package io.timelimit.android.logic
 
 import android.content.Context
+import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
@@ -23,6 +24,7 @@ import androidx.lifecycle.switchMap
 import io.timelimit.android.data.Database
 import io.timelimit.android.data.model.Device
 import io.timelimit.android.data.model.User
+import io.timelimit.android.integration.lifeup.LifeUpBroadcastReceiver
 import io.timelimit.android.integration.platform.PlatformIntegration
 import io.timelimit.android.integration.time.TimeApi
 import io.timelimit.android.livedata.ignoreUnchanged
@@ -74,6 +76,8 @@ class AppLogic(
     val defaultUserLogic = DefaultUserLogic(this)
     val realTimeLogic = RealTimeLogic(this)
     val backgroundTaskLogic = BackgroundTaskLogic(this)
+
+    private var lifeUpReceiver: LifeUpBroadcastReceiver? = null
     val appSetupLogic = AppSetupLogic(this)
 
     init {
@@ -83,6 +87,33 @@ class AppLogic(
 
         // Initialize Shizuku lifecycle listeners
         io.timelimit.android.integration.platform.shizuku.ShizukuIntegration.init()
+
+        registerLifeUpReceiver()
+    }
+
+    /**
+     * LifeUp broadcasts the item countdown implicitly (no package set). Since API 26 an implicit
+     * broadcast does not reach a manifest-registered receiver, so the manifest entry alone silently
+     * drops every "countdown stopped" event - the rule stayed suspended and blocking never came back.
+     * A runtime registration is not subject to that restriction.
+     */
+    private fun registerLifeUpReceiver() {
+        if (lifeUpReceiver != null) return
+
+        try {
+            val receiver = LifeUpBroadcastReceiver()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.registerReceiver(receiver, LifeUpBroadcastReceiver.intentFilter(), Context.RECEIVER_EXPORTED)
+            } else {
+                @Suppress("UnspecifiedRegisterReceiverFlag")
+                context.registerReceiver(receiver, LifeUpBroadcastReceiver.intentFilter())
+            }
+
+            lifeUpReceiver = receiver
+        } catch (ex: Exception) {
+            android.util.Log.w("AppLogic", "failed to register LifeUp receiver", ex)
+        }
     }
 
     val manipulationLogic = ManipulationLogic(this)

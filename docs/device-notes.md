@@ -108,6 +108,34 @@ D QForegroundApp: instance-id helper reported 1 app(s)
 So instance ids *are* supported on this ROM — the hack was hiding a working path, and the helper was
 answering from the legacy path this whole time. Zero crashes after the switch.
 
+## LifeUp countdown bridge: implicit broadcasts get dropped
+
+LifeUp sends its countdown events from `datasource/repository/impl/b` (`sendBoardCastEvent`) with a
+plain `Context.sendBroadcast(intent)` - **no package, no component**. Since API 26 an implicit broadcast
+does not reach a *manifest*-registered receiver, so `LifeUpBroadcastReceiver`'s manifest entry only
+worked sometimes (delivery depends on the app's temporary-allowlist state), which looked like "the
+first countdown works and later ones do not".
+
+The fix is a runtime registration in `AppLogic.registerLifeUpReceiver()` (plus keeping the manifest entry
+for older builds). Both paths now fire - visible in logcat as two handling lines per broadcast, the
+second reporting `0 rule(s) updated` because the state is already correct.
+
+Verified with a probe rule (`lifeup_shop_item_name='VexProbe'`, huge `max_time` so it can never block):
+
+```
+D LifeUpIntegration: broadcast action=app.lifeup.item.countdown.start item=VexProbe extras=Bundle[{name=VexProbe}]
+D LifeUpIntegration: app.lifeup.item.countdown.start 'VexProbe' -> overrideActive=true, 1 rule(s) updated
+D LifeUpIntegration: broadcast action=app.lifeup.item.countdown.stop item=VexProbe extras=Bundle[{name=VexProbe}]
+D LifeUpIntegration: app.lifeup.item.countdown.stop 'VexProbe' -> overrideActive=false, 1 rule(s) updated
+```
+
+Extras the item name can arrive in: `name` on current LifeUp (plus `item`/`title` in other versions),
+and the event also carries `shop_item_id`-style numeric extras, `service_type`, `duration`, `remaining`.
+
+Gotcha for the UI: the rule dialog writes the literal placeholder `New Item` when the integration toggle
+is switched on. A rule whose name stays `New Item` never matches a real LifeUp item - the item name has
+to be typed exactly as LifeUp shows it.
+
 ## What works from `adb shell` on this ROM
 
 Verified working (used for checks above):
