@@ -61,7 +61,7 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
         private const val LOG_TAG = "BackgroundTaskLogic"
 
         private const val CHECK_PERMISSION_INTERVAL = 10 * 1000L        // all 10 seconds
-        private const val LIFEUP_RECONCILE_INTERVAL = 5 * 1000L          // all 5 seconds
+        private const val LIFEUP_RECONCILE_INTERVAL = 1000L             // all 1s, it is a cheap table read
 
         /** How long a blocked app may stay in front before the lock screen counts as having failed. */
         private const val DEVICE_LOCK_GRACE = 1500L

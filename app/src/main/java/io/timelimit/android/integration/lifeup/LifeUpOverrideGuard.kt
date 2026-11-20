@@ -44,8 +44,11 @@ object LifeUpOverrideGuard {
     /** Used when a start arrives without `time_left`, so a rule can still never be suspended forever. */
     private const val UNKNOWN_DURATION_FALLBACK = 4 * 60 * 60 * 1000L
 
-    /** One shell call per 10s at most; the reconcile pass itself runs every 5s. */
-    private const val SERVICE_CHECK_INTERVAL = 10 * 1000L
+    /**
+     * The probe is ~40ms, so it can run on every reconcile pass: ending a countdown early broadcasts
+     * nothing and this probe is the only thing that notices, so the cadence *is* the responsiveness.
+     */
+    private const val SERVICE_CHECK_INTERVAL = 1000L
 
     /**
      * Counts LifeUp's countdown services. `|| true` because grep exits 1 on zero matches and the
@@ -55,7 +58,7 @@ object LifeUpOverrideGuard {
         "dumpsys activity services net.sarasarasa.lifeup | grep -c CountDownTimerService || true"
 
     /** A countdown that just started may not have its service up yet - don't judge it too early. */
-    private const val SERVICE_CHECK_GRACE = 15 * 1000L
+    private const val SERVICE_CHECK_GRACE = 5 * 1000L
 
     @Volatile
     private var lastServiceCheck = 0L

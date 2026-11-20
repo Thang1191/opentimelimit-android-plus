@@ -19,6 +19,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import io.timelimit.android.BuildConfig
 import io.timelimit.android.logic.DefaultAppLogic
@@ -65,6 +67,18 @@ class LifeUpBroadcastReceiver : BroadcastReceiver() {
             .map { it.trim() }
             .firstOrNull { it.isNotEmpty() }
 
+        /**
+         * Adding time to a running countdown makes LifeUp emit stop and then start about a second
+         * apart. Restoring blocking on that stop alone makes the block flicker off and straight back
+         * on, so a stop only counts once this long has passed without a start for the same item.
+         */
+        private const val RESTORE_DEBOUNCE_MS = 1500L
+
+        private val mainHandler = Handler(Looper.getMainLooper())
+
+        /** Item name -> the restore that is waiting out the debounce. */
+        private val pendingRestores = mutableMapOf<String, Runnable>()
+
         /** Milliseconds left in the countdown; LifeUp sends it on every countdown event. */
         private fun timeLeftOf(intent: Intent): Long? = when (val value = intent.extras?.get("time_left")) {
             is Long -> value
@@ -110,17 +124,55 @@ class LifeUpBroadcastReceiver : BroadcastReceiver() {
             return
         }
 
+        val appContext = context.applicationContext
+        val key = itemName.lowercase()
+
+        // A start for the same item means the stop right before it was not the end of the countdown.
+        pendingRestores.remove(key)?.let {
+            mainHandler.removeCallbacks(it)
+
+            if (BuildConfig.DEBUG) {
+                Log.d(LOG_TAG, "$action '$itemName' cancelled the pending restore")
+            }
+        }
+
         // A countdown that runs out or is abandoned may never send another broadcast, so the
         // suspension gets a deadline derived from time_left; LifeUpOverrideGuard.reconcile() restores
         // the rule once that deadline passes.
         if (overrideActive) {
-            LifeUpOverrideGuard.remember(context, itemName, timeLeftOf(intent))
-        } else {
-            LifeUpOverrideGuard.forget(context, itemName)
-        }
+            LifeUpOverrideGuard.remember(appContext, itemName, timeLeftOf(intent))
 
+            applyOverride(appContext, action, itemName, true, goAsync())
+        } else {
+            val restore = Runnable {
+                pendingRestores.remove(key)
+
+                LifeUpOverrideGuard.forget(appContext, itemName)
+
+                applyOverride(appContext, action, itemName, false, null)
+            }
+
+            pendingRestores[key] = restore
+            mainHandler.postDelayed(restore, RESTORE_DEBOUNCE_MS)
+
+            if (BuildConfig.DEBUG) {
+                Log.d(LOG_TAG, "$action '$itemName' -> restore in ${RESTORE_DEBOUNCE_MS}ms")
+            }
+        }
+    }
+
+    /**
+     * @param pendingResult only set when called straight from [onReceive]; a debounced restore runs
+     *        long after the broadcast finished and has nothing to report back.
+     */
+    private fun applyOverride(
+        context: Context,
+        action: String,
+        itemName: String,
+        overrideActive: Boolean,
+        pendingResult: PendingResult?
+    ) {
         val appLogic = DefaultAppLogic.with(context.applicationContext)
-        val pendingResult = goAsync()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -151,6 +203,10 @@ class LifeUpBroadcastReceiver : BroadcastReceiver() {
     }
 
     private fun restoreAllLifeUpRules(context: Context, action: String) {
+        // Nothing is left to wait for: this restore covers every item anyway.
+        pendingRestores.values.forEach { mainHandler.removeCallbacks(it) }
+        pendingRestores.clear()
+
         val appLogic = DefaultAppLogic.with(context.applicationContext)
         val pendingResult = goAsync()
 

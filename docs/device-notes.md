@@ -229,11 +229,28 @@ Ending a countdown does tear down LifeUp's countdown service (`CommonCountDownTi
 run through the Shizuku shell UserService, throttled to one call per 10s and skipped for the first 15s
 after a start (the service may still be coming up). Service gone + rule still suspended -> restore.
 
-Order of trust:
-1. `stop` event -> instant (pause)
-2. countdown service gone -> within ~10s (end / abandon / task kill)
+Order of trust, with the measured latency of each (see the responsiveness section below):
+1. `stop` event -> a pause restores blocking after `RESTORE_DEBOUNCE_MS`
+2. countdown service gone -> within ~1-2s of the countdown actually ending (end / abandon / kill)
 3. deadline from `time_left` -> exact for a countdown that just runs out, and the safety net when
    Shizuku is unavailable (the probe is optimistic: no answer means "assume still running").
+
+### Responsiveness (20/11/2026)
+
+The first version felt slow because relevance was polled too rarely and because "add time" was handled
+as an end. Both are fixed and measured on the Ace:
+
+- `LIFEUP_RECONCILE_INTERVAL` 5s -> 1s and `SERVICE_CHECK_INTERVAL` 10s -> 1s. The probe costs ~40ms,
+  so the cadence *is* the responsiveness of end-detection.
+- `SERVICE_CHECK_GRACE` 15s -> 5s: a countdown's service is up well within a second.
+- **`RESTORE_DEBOUNCE_MS` = 1.5s on a stop.** Adding time to a countdown makes LifeUp emit stop and
+  then start about a second apart, so restoring on the stop alone made blocking flicker off and on.
+  A start for the same item cancels the pending restore.
+
+Measured: add-time (stop, start 1.0s later) never leaves the suspended state; a plain stop restores
+blocking after ~2.2s (1.5s debounce + apply); a countdown that ends with no broadcast at all is caught
+by the probe ~1-2s after the service goes away (5.8s when there is no real countdown, i.e. grace + the
+first probe).
 
 Verified: a rule suspended with a deadline 20 minutes out was restored as soon as the probe ran, and
 the profile returned to QUIET_MODE.
