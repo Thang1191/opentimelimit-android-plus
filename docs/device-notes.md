@@ -148,13 +148,29 @@ If the app is still reported blocked 5s later the lock screen demonstrably lost,
 locked with the device-admin `force-lock` policy (`<force-lock/>` was already declared in
 `res/xml/admin.xml`, so no re-activation of the admin was needed). Nothing floats above a keyguard.
 
-- `DEVICE_LOCK_GRACE` (5s): usage-stats foreground reporting lags a couple of seconds after our own
-  activity appears, so a tight grace would lock the screen on a device where blocking works.
+- `DEVICE_LOCK_GRACE` (1.5s): fast, because the block is what traps the user; the false-lock risk is
+  handled by the focus probe below instead of by waiting.
 - `DEVICE_LOCK_COOLDOWN` (10s): a float that survives the unlock must not become a lock loop.
 - Skipped for soft blocking (experimental flag), where apps are deliberately not blocked.
 
-Not yet verified against a real float: the plumbing is built and installed, and the log line
-`escalateToDeviceLock: '<pkg>' still blocked after <n>ms` proves it fired.
+### The soft lock, and why the first version caused it
+
+First attempt waited 5s before locking. The user floated a blocked app: the overlay *did* cover the
+float, but `openLockscreen()` runs every tick, so `LockActivity` was re-launched once per second, each
+launch stealing focus back from the home gesture - and a full screen `TYPE_APPLICATION_OVERLAY` swallows
+the edge-swipe itself. Nothing could be dismissed; the phone had to be restarted. Three fixes:
+
+1. **One launch, not one per tick** - `LOCK_SCREEN_RELAUNCH_INTERVAL` (4s) guards `showAppLockScreen`.
+2. **Escape hatch** - if the same app stays blocked for `BLOCK_RELEASE_TIMEOUT` (30s), blocking releases
+   itself: overlay hidden, `LockActivity.currentInstances` finished, and nothing re-blocks for
+   `BLOCK_RELEASE_COOLDOWN` (120s). An imperfect block always beats a device the user cannot use.
+3. **Focus probe instead of guessing** - `PlatformIntegration.isOwnLockScreenInFocus()` runs
+   `dumpsys window displays | grep -m1 -E 'mCurrentFocus|mFocusedApp'` through the Shizuku shell (~30ms;
+   usage stats lag seconds and cannot answer this). If our own `LockActivity` holds focus the report is
+   stale and no lock happens; `null` (cannot tell) is never read as "no".
+
+Log lines: `escalateToDeviceLock: '<pkg>' still blocked after <n>ms` on a lock,
+`releaseBlocking: '<pkg>' blocked for <n>ms without resolving` when the escape hatch fires.
 
 ### What LifeUp actually broadcasts (measured, 20/11/2026)
 

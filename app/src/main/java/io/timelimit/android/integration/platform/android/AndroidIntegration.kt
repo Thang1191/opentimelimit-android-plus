@@ -56,6 +56,7 @@ import io.timelimit.android.extensions.registerNotExportedReceiver
 import io.timelimit.android.integration.platform.*
 import io.timelimit.android.integration.platform.android.foregroundapp.ForegroundAppHelper
 import io.timelimit.android.ui.homescreen.HomescreenActivity
+import io.timelimit.android.integration.platform.shizuku.ShizukuIntegration
 import io.timelimit.android.ui.lock.LockActivity
 import io.timelimit.android.ui.manage.device.manage.permission.AdbDeviceAdminDialogFragment
 import io.timelimit.android.ui.manage.device.manage.permission.AdbUsageStatsDialogFragment
@@ -92,6 +93,13 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
     private val activityManager = this.context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     private val notificationManager = this.context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val deviceAdmin = ComponentName(context.applicationContext, AdminReceiver::class.java)
+
+    /**
+     * The focused window, straight from the window manager (~30ms through the Shizuku shell). Usage
+     * stats lag by a couple of seconds, which is useless when the question is "did my lock screen
+     * actually come to the front".
+     */
+    private val FOCUS_PROBE = "dumpsys window displays | grep -m1 -E 'mCurrentFocus|mFocusedApp'"
     private val overlay = OverlayUtil(context as Application)
     private val battery = BatteryStatusUtil(context)
     private val connectedNetwork = ConnectedNetworkUtil(context)
@@ -292,6 +300,12 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
 
     override fun showAppLockScreen(currentPackageName: String, currentActivityName: String?) {
         LockActivity.start(context, currentPackageName, currentActivityName)
+    }
+
+    override fun isOwnLockScreenInFocus(): Boolean? {
+        val output = ShizukuIntegration.executeCommand(FOCUS_PROBE) ?: return null
+
+        return output.contains(BuildConfig.APPLICATION_ID) && output.contains("LockActivity")
     }
 
     override fun lockScreenForBlocking() {

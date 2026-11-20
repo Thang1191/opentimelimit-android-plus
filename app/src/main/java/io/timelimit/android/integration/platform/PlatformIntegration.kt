@@ -51,6 +51,12 @@ abstract class PlatformIntegration(
      * vendor floating window (ColorOS), which nothing an ordinary app can draw stays above.
      */
     open fun lockScreenForBlocking() = Unit
+
+    /**
+     * Whether our own lock screen is the focused window. `null` means "cannot tell", which must
+     * never be read as "no".
+     */
+    open fun isOwnLockScreenInFocus(): Boolean? = null
     abstract fun showAnnoyScreen()
     // true = success
     abstract suspend fun muteAudioIfPossible(packageName: String): Boolean

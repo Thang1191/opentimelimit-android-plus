@@ -64,10 +64,19 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
         private const val LIFEUP_RECONCILE_INTERVAL = 5 * 1000L          // all 5 seconds
 
         /** How long a blocked app may stay in front before the lock screen counts as having failed. */
-        private const val DEVICE_LOCK_GRACE = 5 * 1000L
+        private const val DEVICE_LOCK_GRACE = 1500L
 
         /** A float that survives the unlock must not turn into a lock loop. */
         private const val DEVICE_LOCK_COOLDOWN = 10 * 1000L
+
+        /** Don't re-open the lock screen once per second; that steals the focus back from the user. */
+        private const val LOCK_SCREEN_RELAUNCH_INTERVAL = 4 * 1000L
+
+        /** A block that never resolves releases itself after this long, whatever the reason. */
+        private const val BLOCK_RELEASE_TIMEOUT = 30 * 1000L
+
+        /** How long a released block stays hands-off before blocking tries again. */
+        private const val BLOCK_RELEASE_COOLDOWN = 120 * 1000L
 
         private const val BACKGROUND_SERVICE_INTERVAL_SHORT = 100L      // all 100 ms
         private const val MAX_USED_TIME_PER_ROUND_SHORT = 1000          // 1 second
@@ -133,6 +142,12 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
     private val isChromeOs = appLogic.context.packageManager.hasSystemFeature(PackageManager.FEATURE_PC)
 
     private suspend fun openLockscreen(blockedAppPackageName: String, blockedAppActivityName: String?, enableSoftBlocking: Boolean) {
+        val now = appLogic.timeApi.getCurrentUptimeInMillis()
+
+        // A previous release already gave up on this block so the user could escape. Stay hands-off
+        // for a while rather than starting another round of full screen overlays.
+        if (now < releaseBlockingUntil) return
+
         if (enableSoftBlocking) {
             appLogic.platformIntegration.setShowBlockingOverlay(false)
         } else {
@@ -157,13 +172,26 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
             }
         }
 
-        appLogic.platformIntegration.showAppLockScreen(blockedAppPackageName, blockedAppActivityName)
+        // Re-launching this every second steals focus back from the home gesture and soft locks the
+        // device: on a floating window the blocked app stays "foreground", so the loop never settles.
+        val lastLaunch = lastLockScreenLaunch
+
+        if (lastLaunch == null ||
+            lastLaunch.first != blockedAppPackageName ||
+            now - lastLaunch.second > LOCK_SCREEN_RELAUNCH_INTERVAL
+        ) {
+            lastLockScreenLaunch = blockedAppPackageName to now
+
+            appLogic.platformIntegration.showAppLockScreen(blockedAppPackageName, blockedAppActivityName)
+        }
 
         escalateToDeviceLock(blockedAppPackageName, enableSoftBlocking)
     }
 
     private var stillBlockedApp: Pair<String, Long>? = null
     private var lastDeviceLockAt = 0L
+    private var lastLockScreenLaunch: Pair<String, Long>? = null
+    private var releaseBlockingUntil = 0L
 
     /**
      * ColorOS floating windows (小窗) sit in a layer above both LockActivity and any
@@ -190,8 +218,26 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
 
         val blockedFor = now - watch.second
 
+        // Escape hatch. A full screen overlay swallows the home gesture, so a block that cannot
+        // resolve itself must let go instead of trapping the user - restarting the phone is not an
+        // acceptable failure mode.
+        if (blockedFor > BLOCK_RELEASE_TIMEOUT) {
+            releaseBlocking(now, packageName, blockedFor)
+
+            return
+        }
+
         if (blockedFor < DEVICE_LOCK_GRACE) return
         if (now - lastDeviceLockAt < DEVICE_LOCK_COOLDOWN) return
+
+        // Usage stats lag by a couple of seconds: if our own lock screen really holds the focus then
+        // this is a stale report, not a floating window, and locking the device would punish a block
+        // that is working.
+        if (appLogic.platformIntegration.isOwnLockScreenInFocus() == true) {
+            stillBlockedApp = packageName to now
+
+            return
+        }
 
         lastDeviceLockAt = now
         stillBlockedApp = packageName to now
@@ -201,6 +247,20 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
         }
 
         appLogic.platformIntegration.lockScreenForBlocking()
+    }
+
+    private fun releaseBlocking(now: Long, packageName: String, blockedFor: Long) {
+        Log.w(
+            LOG_TAG,
+            "releaseBlocking: '$packageName' blocked for ${blockedFor}ms without resolving, releasing the overlay"
+        )
+
+        stillBlockedApp = null
+        lastLockScreenLaunch = null
+        releaseBlockingUntil = now + BLOCK_RELEASE_COOLDOWN
+
+        appLogic.platformIntegration.setShowBlockingOverlay(false)
+        LockActivity.currentInstances.forEach { it.finish() }
     }
 
     private var showNotificationToRevokeTemporarilyAllowedApps: Boolean? = null
