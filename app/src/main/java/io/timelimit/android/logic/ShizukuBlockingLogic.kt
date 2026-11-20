@@ -24,9 +24,6 @@ import io.timelimit.android.data.model.CategoryFlags
 import io.timelimit.android.data.model.UserType
 import io.timelimit.android.data.model.blockingType
 import io.timelimit.android.integration.platform.shizuku.ShizukuIntegration
-import io.timelimit.android.logic.blockingreason.CategoryHandlingCache
-import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Logic class that handles app disabling/enabling via Shizuku for categories
@@ -38,52 +35,25 @@ import java.util.concurrent.atomic.AtomicBoolean
  * - Applies changes via [ShizukuIntegration]
  * - Tracks last applied state to avoid redundant operations
  */
-class ShizukuBlockingLogic(private val appLogic: AppLogic) {
+class ShizukuBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
     companion object {
         private const val LOG_TAG = "ShizukuBlockingLogic"
     }
 
     // Tracks packages currently disabled by this logic (to avoid redundant calls)
     private val disabledPackages = mutableSetOf<String>()
-    private val categoryHandlingCache = CategoryHandlingCache()
-    private val pendingSync = AtomicBoolean(true)
-    private val executor = Executors.newSingleThreadExecutor()
-
-    private val userAndDeviceRelatedDataLive = appLogic.database.derivedDataDao().getUserAndDeviceRelatedDataLive()
-    private var didLoadData = false
-
-    private val backgroundRunnable = Runnable {
-        while (pendingSync.getAndSet(false)) {
-            updateBlockingSync()
-            Thread.sleep(500)
-        }
-    }
-
-    private fun triggerUpdate() {
-        pendingSync.set(true)
-        executor.submit(backgroundRunnable)
-    }
 
     init {
-        appLogic.platformIntegration.getBatteryStatusLive().observeForever { triggerUpdate() }
-        appLogic.realTimeLogic.registerTimeModificationListener { triggerUpdate() }
-        userAndDeviceRelatedDataLive.observeForever {
-            didLoadData = true
-            triggerUpdate()
-        }
+        startObserving()
+    }
 
-        // Listen for Shizuku state changes to re-apply when it becomes available
-        ShizukuIntegration.registerStateListener { available ->
-            if (available) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(LOG_TAG, "Shizuku became available, re-applying blocking")
-                }
-                triggerUpdate()
-            }
+    override fun onShizukuAvailable() {
+        if (BuildConfig.DEBUG) {
+            Log.d(LOG_TAG, "Shizuku became available, re-applying blocking")
         }
     }
 
-    private fun updateBlockingSync() {
+    override fun updateBlockingSync() {
         if (!didLoadData) return
 
         // Check if Shizuku is available

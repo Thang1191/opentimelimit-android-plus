@@ -26,15 +26,12 @@ import io.timelimit.android.data.model.CategoryFlags
 import io.timelimit.android.data.model.UserType
 import io.timelimit.android.data.model.blockingType
 import io.timelimit.android.integration.platform.shizuku.ShizukuIntegration
-import io.timelimit.android.logic.blockingreason.CategoryHandlingCache
-import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Logic class that handles enforcing a specific Private DNS hostname for categories
  * with BLOCKING_TYPE_FORCE_DNS.
  */
-class DnsBlockingLogic(private val appLogic: AppLogic) {
+class DnsBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
     companion object {
         private const val LOG_TAG = "DnsBlockingLogic"
         private const val PREFS_NAME = "dns_logic_prefs"
@@ -43,22 +40,8 @@ class DnsBlockingLogic(private val appLogic: AppLogic) {
         private const val PREF_IS_OVERRIDDEN = "is_dns_overridden"
     }
 
-    private val categoryHandlingCache = CategoryHandlingCache()
-    private val pendingSync = AtomicBoolean(true)
-    private val executor = Executors.newSingleThreadExecutor()
-
-    private val userAndDeviceRelatedDataLive = appLogic.database.derivedDataDao().getUserAndDeviceRelatedDataLive()
-    private var didLoadData = false
-    
     private val prefs = appLogic.context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     private var targetDnsHostname: String? = null
-
-    private val backgroundRunnable = Runnable {
-        while (pendingSync.getAndSet(false)) {
-            updateBlockingSync()
-            Thread.sleep(500)
-        }
-    }
 
     private val dnsObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
         override fun onChange(selfChange: Boolean) {
@@ -66,32 +49,16 @@ class DnsBlockingLogic(private val appLogic: AppLogic) {
         }
     }
 
-    private fun triggerUpdate() {
-        pendingSync.set(true)
-        executor.submit(backgroundRunnable)
-    }
-
     init {
-        appLogic.platformIntegration.getBatteryStatusLive().observeForever { triggerUpdate() }
-        appLogic.realTimeLogic.registerTimeModificationListener { triggerUpdate() }
-        userAndDeviceRelatedDataLive.observeForever {
-            didLoadData = true
-            triggerUpdate()
-        }
+        startObserving()
 
-        // Listen for Shizuku state changes
-        ShizukuIntegration.registerStateListener { available ->
-            if (available) {
-                triggerUpdate()
-            }
-        }
-
+        // Someone may change Private DNS behind our back; converge again when they do.
         appLogic.context.contentResolver.registerContentObserver(
             Settings.Global.CONTENT_URI, true, dnsObserver
         )
     }
 
-    private fun updateBlockingSync() {
+    override fun updateBlockingSync() {
         if (!didLoadData) return
         if (!ShizukuIntegration.isShizukuAvailable()) return
 

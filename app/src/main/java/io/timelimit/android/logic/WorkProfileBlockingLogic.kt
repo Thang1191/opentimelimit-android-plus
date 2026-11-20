@@ -30,9 +30,6 @@ import io.timelimit.android.data.model.CategoryFlags
 import io.timelimit.android.data.model.UserType
 import io.timelimit.android.data.model.blockingType
 import io.timelimit.android.integration.platform.shizuku.ShizukuIntegration
-import io.timelimit.android.logic.blockingreason.CategoryHandlingCache
-import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicBoolean
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
@@ -41,25 +38,12 @@ import android.widget.Toast
  * Logic class that handles work profile quiet mode toggling for categories
  * with BLOCKING_TYPE_WORK_PROFILE.
  */
-class WorkProfileBlockingLogic(private val appLogic: AppLogic) {
+class WorkProfileBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
     companion object {
         private const val LOG_TAG = "WorkProfileBlockingLogic"
     }
 
     private var workProfileUserHandle: UserHandle? = null
-    private val categoryHandlingCache = CategoryHandlingCache()
-    private val pendingSync = AtomicBoolean(true)
-    private val executor = Executors.newSingleThreadExecutor()
-
-    private val userAndDeviceRelatedDataLive = appLogic.database.derivedDataDao().getUserAndDeviceRelatedDataLive()
-    private var didLoadData = false
-
-    private val backgroundRunnable = Runnable {
-        while (pendingSync.getAndSet(false)) {
-            updateBlockingSync()
-            Thread.sleep(500)
-        }
-    }
 
     private val workProfileStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -67,26 +51,8 @@ class WorkProfileBlockingLogic(private val appLogic: AppLogic) {
         }
     }
 
-    private fun triggerUpdate() {
-        pendingSync.set(true)
-        executor.submit(backgroundRunnable)
-    }
-
     init {
-        appLogic.platformIntegration.getBatteryStatusLive().observeForever { triggerUpdate() }
-        appLogic.realTimeLogic.registerTimeModificationListener { triggerUpdate() }
-        userAndDeviceRelatedDataLive.observeForever {
-            didLoadData = true
-            triggerUpdate()
-        }
-
-        // Listen for Shizuku state changes to attempt permission grant
-        ShizukuIntegration.registerStateListener { available ->
-            if (available) {
-                ensurePermissionGrantedViaShizuku()
-                triggerUpdate()
-            }
-        }
+        startObserving()
 
         val workProfileFilter = IntentFilter().apply {
             addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE)
@@ -98,6 +64,10 @@ class WorkProfileBlockingLogic(private val appLogic: AppLogic) {
             workProfileFilter,
             ContextCompat.RECEIVER_EXPORTED
         )
+    }
+
+    override fun onShizukuAvailable() {
+        ensurePermissionGrantedViaShizuku()
     }
 
     private fun ensurePermissionGrantedViaShizuku() {
@@ -114,7 +84,7 @@ class WorkProfileBlockingLogic(private val appLogic: AppLogic) {
         workProfileUserHandle = userManager.userProfiles.find { it.hashCode() != 0 }
     }
 
-    private fun updateBlockingSync() {
+    override fun updateBlockingSync() {
         if (!didLoadData) return
 
         if (ContextCompat.checkSelfPermission(appLogic.context, "android.permission.MODIFY_QUIET_MODE") != PackageManager.PERMISSION_GRANTED) {
