@@ -40,9 +40,25 @@ Do note that the app **is** a registered device admin for user 0 (`dumpsys devic
 - The app attaches cleanly. Verified from logcat after a force-stop/restart:
   `ShizukuServerLog: attachApplication from t1191.limited.com` and
   `ShizukuIntegration: Shizuku binder received`.
-- `ShizukuIntegration` invokes Shizuku's **private** `newProcess` through reflection
-  (`getDeclaredMethod("newProcess", ...)`). Fragile twice over: it breaks on a Shizuku version bump
-  (13.1.5 here) and R8 can strip or rename it in a release build, failing silently.
+- Commands now run through a **Shizuku UserService** (`ShellUserService`, AIDL `IUserService`), which
+  Shizuku starts in its own process as uid shell. That is the documented replacement for the private
+  `newProcess` call the fork used to reach by reflection; Shizuku has announced `newProcess` will be
+  removed. The reflection path survives only as a fallback for the window before the service connects.
+
+  Verified on the Ace after install:
+
+  ```
+  I ShizukuServerLog: attachApplication from t1191.limited.com
+  D ShizukuIntegration: Shizuku binder received
+  D ShizukuIntegration: user service connected: uid=2000
+  ```
+
+  `uid=2000` is `id -u` executed *inside* the service, i.e. a real shell identity - so `pm disable-user`
+  and `settings put global` have the privileges they need.
+
+- **Nothing used to request Shizuku permission.** `requestPermission()` existed and was never called, so
+  `isShizukuAvailable()` was permanently false and every command silently returned null. Now requested
+  once per process when the binder arrives, and the granted callback re-binds the service.
 
 ## The `getTopApplicationInfo` denials are Shizuku's own, not Limited's
 

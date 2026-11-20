@@ -15,7 +15,10 @@
  */
 package io.timelimit.android.integration.platform.shizuku
 
+import android.content.ComponentName
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.os.IBinder
 import android.util.Log
 import io.timelimit.android.BuildConfig
 import rikka.shizuku.Shizuku
@@ -37,10 +40,53 @@ object ShizukuIntegration {
 
     private val stateListeners = mutableListOf<(Boolean) -> Unit>()
 
+    /**
+     * Bound Shizuku UserService. Null until Shizuku has handed us the binder and the service is up.
+     * Every command goes through this; [executeCommandReflected] is only a compatibility fallback.
+     */
+    @Volatile
+    private var userService: IUserService? = null
+
+    private var permissionRequested = false
+
+    private val userServiceArgs = Shizuku.UserServiceArgs(
+        ComponentName(BuildConfig.APPLICATION_ID, ShellUserService::class.java.name)
+    )
+        .processNameSuffix("shell")
+        .tag("shell")
+        .version(BuildConfig.VERSION_CODE)
+        .debuggable(BuildConfig.DEBUG)
+        .daemon(false)
+
+    private val userServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+            userService = IUserService.Stub.asInterface(binder)
+
+            if (BuildConfig.DEBUG) {
+                Log.d(LOG_TAG, "user service connected: uid=${runUserService("id -u")}")
+            }
+
+            notifyStateListeners(true)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            userService = null
+
+            if (BuildConfig.DEBUG) {
+                Log.d(LOG_TAG, "user service disconnected")
+            }
+
+            notifyStateListeners(isShizukuAvailable())
+        }
+    }
+
     private val binderReceivedListener = Shizuku.OnBinderReceivedListener {
         if (BuildConfig.DEBUG) {
             Log.d(LOG_TAG, "Shizuku binder received")
         }
+
+        bindUserService()
+
         notifyStateListeners(true)
     }
 
@@ -48,6 +94,9 @@ object ShizukuIntegration {
         if (BuildConfig.DEBUG) {
             Log.d(LOG_TAG, "Shizuku binder dead")
         }
+
+        userService = null
+
         notifyStateListeners(false)
     }
 
@@ -57,6 +106,10 @@ object ShizukuIntegration {
             if (BuildConfig.DEBUG) {
                 Log.d(LOG_TAG, "Shizuku permission result: granted=$granted")
             }
+            if (granted) {
+                bindUserService()
+            }
+
             notifyStateListeners(granted && isShizukuAvailable())
         }
     }
@@ -69,10 +122,66 @@ object ShizukuIntegration {
             Shizuku.addBinderReceivedListenerSticky(binderReceivedListener)
             Shizuku.addBinderDeadListener(binderDeadListener)
             Shizuku.addRequestPermissionResultListener(permissionResultListener)
+
+            bindUserService()
         } catch (ex: Exception) {
             if (BuildConfig.DEBUG) {
                 Log.w(LOG_TAG, "Failed to initialize Shizuku listeners", ex)
             }
+        }
+    }
+
+    /**
+     * Binds the shell UserService. Safe to call repeatedly - Shizuku keys services by tag, and a
+     * second bind to a running service just re-delivers the binder.
+     */
+    private fun bindUserService() {
+        if (userService != null) return
+
+        try {
+            if (!Shizuku.pingBinder()) return
+
+            if (!hasPermission()) {
+                // Nothing used to call requestPermission() at all, so every command failed with
+                // "Shizuku not available" and the whole Shizuku blocking path was dead weight.
+                // Ask once per process; the result arrives in permissionResultListener.
+                if (!permissionRequested) {
+                    permissionRequested = true
+
+                    if (BuildConfig.DEBUG) {
+                        Log.d(LOG_TAG, "no Shizuku permission yet, requesting it")
+                    }
+
+                    Shizuku.requestPermission(SHIZUKU_PERMISSION_REQUEST_CODE)
+                }
+
+                return
+            }
+
+            Shizuku.bindUserService(userServiceArgs, userServiceConnection)
+        } catch (ex: Exception) {
+            if (BuildConfig.DEBUG) {
+                Log.w(LOG_TAG, "bindUserService failed", ex)
+            }
+        }
+    }
+
+    /** True once commands can actually run - the UI uses this to say "Shizuku ready". */
+    fun isUserServiceReady(): Boolean = userService != null
+
+    private fun runUserService(command: String): String? {
+        val service = userService ?: return null
+
+        return try {
+            service.runCommand(command)
+        } catch (ex: Exception) {
+            if (BuildConfig.DEBUG) {
+                Log.w(LOG_TAG, "user service command '$command' failed", ex)
+            }
+
+            userService = null
+
+            null
         }
     }
 
@@ -127,10 +236,12 @@ object ShizukuIntegration {
     }
 
     /**
-     * Executes a shell command via Shizuku with elevated (shell-level) privileges.
+     * Executes a shell command with Shizuku's (shell-level) privileges.
      *
-     * Uses reflection to access Shizuku's private newProcess method,
-     * which returns a standard java.lang.Process.
+     * Primary path is the bound [ShellUserService]: documented API, runs in Shizuku's own process,
+     * unaffected by R8 or by Shizuku version bumps. The reflected `newProcess` call below is kept
+     * only as a fallback for the window where the service has not connected yet - Shizuku's
+     * developers have announced its removal, so nothing new should depend on it.
      *
      * @param command The shell command to execute
      * @return The command's stdout output, or null on failure
@@ -141,6 +252,28 @@ object ShizukuIntegration {
                 Log.w(LOG_TAG, "executeCommand: Shizuku not available")
             }
             return null
+        }
+
+        runUserService(command)?.let { output ->
+            if (BuildConfig.DEBUG) {
+                Log.d(LOG_TAG, "executeCommand '$command' via user service -> $output")
+            }
+
+            return output
+        }
+
+        bindUserService()
+
+        return executeCommandReflected(command)
+    }
+
+    /**
+     * Fallback: reflects into Shizuku's private `newProcess`. Deprecated upstream - delete once the
+     * user service has proven itself on every device we care about.
+     */
+    private fun executeCommandReflected(command: String): String? {
+        if (BuildConfig.DEBUG) {
+            Log.d(LOG_TAG, "executeCommand '$command' falling back to reflected newProcess")
         }
 
         return try {

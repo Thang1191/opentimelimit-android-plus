@@ -46,6 +46,8 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        // AGP 8 disables AIDL by default; the Shizuku UserService needs it
+        aidl true
     }
 
     lint {
