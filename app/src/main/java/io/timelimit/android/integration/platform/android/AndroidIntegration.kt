@@ -294,6 +294,23 @@ class AndroidIntegration(context: Context): PlatformIntegration(maximumProtectio
         LockActivity.start(context, currentPackageName, currentActivityName)
     }
 
+    override fun lockScreenForBlocking() {
+        try {
+            if (!policyManager.isAdminActive(deviceAdmin)) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(LOG_TAG, "lockScreenForBlocking: not an active device admin, skipping")
+                }
+
+                return
+            }
+
+            policyManager.lockNow()
+        } catch (ex: SecurityException) {
+            // force-lock was never declared, or the admin was deactivated while we were running
+            Log.e(LOG_TAG, "lockScreenForBlocking failed", ex)
+        }
+    }
+
     override fun showAnnoyScreen() {
         AnnoyActivity.start(context)
     }

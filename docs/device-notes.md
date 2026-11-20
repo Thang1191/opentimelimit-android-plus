@@ -133,6 +133,29 @@ D LifeUpIntegration: app.lifeup.item.countdown.stop 'VexProbe' -> overrideActive
 Extras the item name can arrive in: `name` on current LifeUp (plus `item`/`title` in other versions),
 and the event also carries `shop_item_id`-style numeric extras, `service_type`, `duration`, `remaining`.
 
+## Blocking ColourOS floating windows without accessibility
+
+`showAppLockScreen()` opens a plain full-screen activity and `OverlayUtil` adds a
+`TYPE_APPLICATION_OVERLAY` view. A ColorOS floating window (小窗) lives in a layer above both, so on a
+floated app the lock screen is drawn *behind* the float and the app stays usable. Accessibility is not
+available on this device (banking apps refuse to run with it), and there is no window type a normal app
+can request above the vendor float layer.
+
+So the enforcement path escalates: `openLockscreen()` also calls `escalateToDeviceLock()`, which watches
+whether the *same* app is still reported blocked. That check is self-verifying - a lock screen that
+worked brings our own activity to the front, the blocked app stops being reported, and nothing happens.
+If the app is still reported blocked 5s later the lock screen demonstrably lost, and the device is
+locked with the device-admin `force-lock` policy (`<force-lock/>` was already declared in
+`res/xml/admin.xml`, so no re-activation of the admin was needed). Nothing floats above a keyguard.
+
+- `DEVICE_LOCK_GRACE` (5s): usage-stats foreground reporting lags a couple of seconds after our own
+  activity appears, so a tight grace would lock the screen on a device where blocking works.
+- `DEVICE_LOCK_COOLDOWN` (10s): a float that survives the unlock must not become a lock loop.
+- Skipped for soft blocking (experimental flag), where apps are deliberately not blocked.
+
+Not yet verified against a real float: the plumbing is built and installed, and the log line
+`escalateToDeviceLock: '<pkg>' still blocked after <n>ms` proves it fired.
+
 ### What LifeUp actually broadcasts (measured, 20/11/2026)
 
 For one item, with developer-mode broadcasts enabled, the complete event stream was:

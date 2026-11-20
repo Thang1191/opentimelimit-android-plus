@@ -45,6 +45,12 @@ abstract class PlatformIntegration(
     abstract fun showOverlayMessage(text: String)
 
     abstract fun showAppLockScreen(currentPackageName: String, currentActivityName: String?)
+
+    /**
+     * Last-resort enforcement: lock the whole device. Used when a lock screen provably lost to a
+     * vendor floating window (ColorOS), which nothing an ordinary app can draw stays above.
+     */
+    open fun lockScreenForBlocking() = Unit
     abstract fun showAnnoyScreen()
     // true = success
     abstract suspend fun muteAudioIfPossible(packageName: String): Boolean

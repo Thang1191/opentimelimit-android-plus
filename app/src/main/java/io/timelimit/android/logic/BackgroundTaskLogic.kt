@@ -63,6 +63,12 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
         private const val CHECK_PERMISSION_INTERVAL = 10 * 1000L        // all 10 seconds
         private const val LIFEUP_RECONCILE_INTERVAL = 5 * 1000L          // all 5 seconds
 
+        /** How long a blocked app may stay in front before the lock screen counts as having failed. */
+        private const val DEVICE_LOCK_GRACE = 5 * 1000L
+
+        /** A float that survives the unlock must not turn into a lock loop. */
+        private const val DEVICE_LOCK_COOLDOWN = 10 * 1000L
+
         private const val BACKGROUND_SERVICE_INTERVAL_SHORT = 100L      // all 100 ms
         private const val MAX_USED_TIME_PER_ROUND_SHORT = 1000          // 1 second
         private const val BACKGROUND_SERVICE_INTERVAL_LONG = 1000L      // every second
@@ -152,6 +158,49 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
         }
 
         appLogic.platformIntegration.showAppLockScreen(blockedAppPackageName, blockedAppActivityName)
+
+        escalateToDeviceLock(blockedAppPackageName, enableSoftBlocking)
+    }
+
+    private var stillBlockedApp: Pair<String, Long>? = null
+    private var lastDeviceLockAt = 0L
+
+    /**
+     * ColorOS floating windows (小窗) sit in a layer above both LockActivity and any
+     * TYPE_APPLICATION_OVERLAY view an ordinary app can create, so the lock screen can end up behind
+     * the float while the blocked app keeps running.
+     *
+     * This is self-verifying rather than vendor-specific: a lock screen that worked pushes our own
+     * activity to the front, so the blocked app stops being reported and this never fires. If the
+     * same app is still reported blocked a few seconds later, the lock screen demonstrably lost -
+     * lock the device instead, since nothing floats above a keyguard. The cooldown keeps a float
+     * that survives the unlock from turning into a lock loop.
+     */
+    private fun escalateToDeviceLock(packageName: String, enableSoftBlocking: Boolean) {
+        if (enableSoftBlocking) return
+
+        val now = appLogic.timeApi.getCurrentUptimeInMillis()
+        val watch = stillBlockedApp
+
+        if (watch == null || watch.first != packageName) {
+            stillBlockedApp = packageName to now
+
+            return
+        }
+
+        val blockedFor = now - watch.second
+
+        if (blockedFor < DEVICE_LOCK_GRACE) return
+        if (now - lastDeviceLockAt < DEVICE_LOCK_COOLDOWN) return
+
+        lastDeviceLockAt = now
+        stillBlockedApp = packageName to now
+
+        if (BuildConfig.DEBUG) {
+            Log.d(LOG_TAG, "escalateToDeviceLock: '$packageName' still blocked after ${blockedFor}ms")
+        }
+
+        appLogic.platformIntegration.lockScreenForBlocking()
     }
 
     private var showNotificationToRevokeTemporarilyAllowedApps: Boolean? = null
@@ -762,6 +811,8 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
                             enableSoftBlocking = deviceRelatedData.experimentalFlags and ExperimentalFlags.ENABLE_SOFT_BLOCKING == ExperimentalFlags.ENABLE_SOFT_BLOCKING
                     )
                 } else {
+                    stillBlockedApp = null
+
                     appLogic.platformIntegration.setShowBlockingOverlay(false)
                 }
 
