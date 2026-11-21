@@ -46,6 +46,20 @@ class ShizukuBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
     // Tracks packages currently blocked by this logic (to avoid redundant calls)
     private val disabledPackages = mutableSetOf<String>()
 
+    /**
+     * The agent's release lever. Set by [io.timelimit.android.agent.AgentCommands]; a suspension
+     * survives the process, so "released" has to mean the apps are actually unsuspended right now,
+     * not merely that this tick decided not to block again.
+     */
+    @Volatile
+    private var releaseUntilUptime = 0L
+
+    fun releaseFor(holdMillis: Long) {
+        releaseUntilUptime = appLogic.timeApi.getCurrentUptimeInMillis() + holdMillis
+        enableAllTrackedPackages()
+        triggerUpdate()
+    }
+
     private val prefs by lazy {
         appLogic.context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
@@ -91,6 +105,13 @@ class ShizukuBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
 
     override fun updateBlockingSync() {
         if (!didLoadData) return
+
+        // An agent release outranks the rules for its window, and re-applies on every tick so a
+        // Shizuku reconnect mid-window cannot quietly put the suspensions back.
+        if (appLogic.timeApi.getCurrentUptimeInMillis() < releaseUntilUptime) {
+            enableAllTrackedPackages()
+            return
+        }
 
         // Check if Shizuku is available
         if (!ShizukuIntegration.isShizukuAvailable()) {

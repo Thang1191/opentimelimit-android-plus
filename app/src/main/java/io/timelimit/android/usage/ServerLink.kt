@@ -110,8 +110,12 @@ object ServerLink {
         return null
     }
 
-    /** GET returning the body, for a debug read straight off the server. */
-    fun get(context: Context, path: String): String? {
+    /**
+     * GET returning the body. readTimeoutMs is a parameter because /v1/watch deliberately parks for
+     * longer than any upload: the default would cut a healthy long poll short and look like a dead
+     * server every time the phone had nothing to fetch.
+     */
+    fun get(context: Context, path: String, readTimeoutMs: Int = READ_TIMEOUT_MS): String? {
         val token = BuildConfig.SYNC_TOKEN
         for (host in listOf(BuildConfig.SYNC_BASE, BuildConfig.SYNC_BASE_FALLBACK)) {
             if (host.isEmpty()) {
@@ -120,7 +124,7 @@ object ServerLink {
             try {
                 val connection = URL(host + path).openConnection() as HttpURLConnection
                 connection.connectTimeout = CONNECT_TIMEOUT_MS
-                connection.readTimeout = READ_TIMEOUT_MS
+                connection.readTimeout = readTimeoutMs
                 if (token.isNotEmpty()) {
                     connection.setRequestProperty("Authorization", "Bearer $token")
                 }

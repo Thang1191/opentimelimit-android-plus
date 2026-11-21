@@ -32,6 +32,7 @@ import io.timelimit.android.R
 import io.timelimit.android.integration.platform.AppStatusMessage
 import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.integration.lifeup.LifeUpBroadcastReceiver
+import io.timelimit.android.agent.AgentCommands
 import io.timelimit.android.usage.UsageUploader
 import android.content.IntentFilter
 
@@ -178,6 +179,10 @@ class BackgroundService: Service() {
 
         // Telemetry rides on the same service: while that lives, so does the sensor.
         UsageUploader.start(this)
+
+        // The agent's levers ride it too. They only act when the server says so, and this service is
+        // the only place in the app that is guaranteed to still be running when it does.
+        AgentCommands.start(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
