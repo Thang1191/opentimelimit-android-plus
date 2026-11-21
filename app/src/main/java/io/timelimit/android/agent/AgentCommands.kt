@@ -10,6 +10,7 @@ package io.timelimit.android.agent
 import android.content.Context
 import android.util.Log
 import io.timelimit.android.BuildConfig
+import io.timelimit.android.async.Threads
 import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.usage.ServerLink
 import kotlinx.coroutines.CoroutineScope
@@ -86,7 +87,7 @@ object AgentCommands {
     }
 
     /** Applies everything pending for this phone. Oldest first, which is the order it was written. */
-    private fun drain(context: Context) {
+    private suspend fun drain(context: Context) {
         val body = ServerLink.get(context, "/v1/commands") ?: return
         val commands = runCatching {
             JSONObject(body).optJSONArray("commands")
@@ -99,7 +100,7 @@ object AgentCommands {
         }
     }
 
-    private fun applyOne(context: Context, command: JSONObject) {
+    private suspend fun applyOne(context: Context, command: JSONObject) {
         val id = command.optString("id")
         if (id.isEmpty()) {
             return
@@ -131,21 +132,37 @@ object AgentCommands {
     }
 
     /**
-     * Stops enforcing for the requested window. Both halves have to move: the lock loop would reopen
-     * its overlay on the next tick, and a Shizuku-suspended app stays greyed out until it is
-     * unsuspended -- a release that only did the first would report success while the apps stayed
-     * dead, which is the one thing an ack must never do.
+     * The parent's own unlock, borrowed.
+     *
+     * `release` dispatches [io.timelimit.android.sync.actions.SetUserDisableLimitsUntilAction] -- the
+     * app's "disable time limits until <time>" -- instead of holding a flag of our own. Every
+     * strategy already reads that timestamp (overlay, Shizuku suspend, DNS, work profile) and it
+     * expires by comparison with the clock, so the window ends on its own even if this process is
+     * dead by then, and the phone shows the override the user can see rather than a hidden state.
+     *
+     * The two calls after it are cleanup, not policy: an overlay already on screen would otherwise
+     * stay there until the next tick, and an annoy screen would keep its own countdown going.
      */
-    private fun release(context: Context, id: String, key: String, minutes: Int, note: String) {
-        val logic = DefaultAppLogic.with(context)
-        val holdMs = minutes.coerceIn(1, 1440).toLong() * 60_000L
+    private suspend fun release(context: Context, id: String, key: String, minutes: Int, note: String) {
+        val holdMinutes = minutes.coerceIn(1, 1440)
+        val until = System.currentTimeMillis() + holdMinutes.toLong() * 60_000L
 
-        logic.backgroundTaskLogic.releaseFor(holdMs)
-        logic.shizukuBlockingLogic.releaseFor(holdMs)
+        val result = ParentUnlock.disableLimitsUntil(context, until)
+
+        val logic = DefaultAppLogic.with(context)
+        logic.backgroundTaskLogic.dismissLockScreenNow()
+
+        // doParentTempUnlock pokes LiveData, which only accepts setValue from the main thread. A
+        // failure here must not cost the parent unlock that already landed, so it is fire-and-forget.
+        Threads.mainThreadHandler.post {
+            runCatching { logic.annoyLogic.doParentTempUnlock() }
+                .onFailure { Log.d(TAG, "agent: annoy unlock failed: $it") }
+        }
+
         markSeen(context, key)
 
         val reason = if (note.isEmpty()) "" else " ($note)"
-        ack(context, id, "applied", "enforcement off for ${minutes}m$reason")
+        ack(context, id, "applied", "$result, ${holdMinutes}m$reason")
     }
 
     private fun ack(context: Context, id: String, state: String, result: String) {

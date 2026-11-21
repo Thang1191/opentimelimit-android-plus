@@ -264,28 +264,19 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
     }
 
     /**
-     * The agent's release lever, from outside the app: stop enforcing for a while.
+     * Removes a lock screen that is already on the display.
      *
-     * Same machinery as the escape hatch on purpose -- one code path that gives up on a block and
-     * stays hands-off for a window, so a device released by the agent behaves exactly like one that
-     * escaped a float, and the next tick cannot re-block a second later.
-     *
-     * Returns the millisecond hold that is actually in force, so the caller can report it instead of
-     * claiming the number it asked for.
+     * Deliberately *not* a release: what stops the blocking is the parent's own expiring override
+     * (`user.disableLimitsUntil`, see ParentUnlock), which every strategy already reads. This only
+     * closes the window that the tick before it had already opened, so an agent unlock does not leave
+     * the user staring at a screen that says they are blocked.
      */
-    fun releaseFor(holdMillis: Long): Long {
-        val now = appLogic.timeApi.getCurrentUptimeInMillis()
-        val hold = holdMillis.coerceIn(0L, 24L * 60L * 60L * 1000L)
-
-        releaseBlockingUntil = maxOf(releaseBlockingUntil, now + hold)
-
+    fun dismissLockScreenNow() {
         stillBlockedApp = null
         lastLockScreenLaunch = null
 
         appLogic.platformIntegration.setShowBlockingOverlay(false)
         LockActivity.currentInstances.forEach { it.finish() }
-
-        return releaseBlockingUntil - now
     }
 
     private var showNotificationToRevokeTemporarilyAllowedApps: Boolean? = null
