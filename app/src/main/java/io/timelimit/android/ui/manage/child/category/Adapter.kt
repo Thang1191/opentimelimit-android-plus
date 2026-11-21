@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView
 import io.timelimit.android.R
 import io.timelimit.android.data.model.Category
 import io.timelimit.android.databinding.AddItemViewBinding
+import io.timelimit.android.agent.HardLockGuard
+import io.timelimit.android.data.model.isHardLock
 import io.timelimit.android.databinding.CategoryRichCardBinding
 import io.timelimit.android.databinding.IntroCardBinding
 import io.timelimit.android.ui.util.DateUtil
@@ -143,9 +145,21 @@ class Adapter: RecyclerView.Adapter<ViewHolder>() {
                 binding.card.setOnClickListener { handlers?.onCategoryClicked(item.category) }
 
                 val shouldBeChecked = item.mode == CategorySpecialMode.None
+
+                // A hard category's switch is not a switch here: the write is refused anyway, so
+                // letting it flip and snap back reads as a bug. Disabled and dimmed, it says "this one
+                // is not yours to toggle" before the tap instead of after it.
+                val switchLocked = item.category.isHardLock && HardLockGuard.isEnabled(context)
+
                 binding.categorySwitch.setOnCheckedChangeListener { _, _ ->  }
                 binding.categorySwitch.isChecked = shouldBeChecked
+                binding.categorySwitch.isEnabled = !switchLocked
+                binding.categorySwitch.alpha = if (switchLocked) 0.35f else 1f
                 binding.categorySwitch.setOnCheckedChangeListener { _, isChecked ->
+                    if (switchLocked) {
+                        binding.categorySwitch.isChecked = shouldBeChecked
+                        return@setOnCheckedChangeListener
+                    }
                     if (isChecked != shouldBeChecked) {
                         if (handlers?.onCategorySwitched(item, isChecked) != true)
                             binding.categorySwitch.isChecked = shouldBeChecked
