@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import io.timelimit.android.BuildConfig
+import io.timelimit.android.agent.HardLockGuard
 import io.timelimit.android.R
 import io.timelimit.android.coroutines.runAsync
 import io.timelimit.android.data.model.User
@@ -130,7 +131,25 @@ class ActivityViewModel(application: Application): AndroidViewModel(application)
 
         runAsync {
             try {
-                actions.forEach { action ->
+                for (action in actions) {
+                    // A hard category is not editable from this device, even with parent authority.
+                    // The edit never reaches the database; the agent's own path does not come through
+                    // here, which is exactly how opening one still works -- via the server.
+                    val lockedCategory = HardLockGuard.refusal(getApplication(), action)
+
+                    if (lockedCategory != null) {
+                        Toast.makeText(
+                                getApplication(),
+                                getApplication<Application>().getString(
+                                        R.string.hard_lock_category_is_locked,
+                                        lockedCategory
+                                ),
+                                Toast.LENGTH_LONG
+                        ).show()
+
+                        return@runAsync
+                    }
+
                     ApplyActionUtil.applyParentAction(
                             action = action,
                             database = database,

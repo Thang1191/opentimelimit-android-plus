@@ -103,6 +103,10 @@ object AgentCommands {
         val root = runCatching { JSONObject(body) }.getOrNull() ?: return
         val commands = root.optJSONArray("commands") ?: return
 
+        // Cache the kill switch for the write-path guard, which has to answer without a network call
+        // (it runs inside UI dispatches). Absent means enabled: the guard fails closed.
+        HardLockGuard.cacheServerValue(context, root.optBoolean("hard_lock", true))
+
         for (i in 0 until commands.length()) {
             val command = commands.optJSONObject(i) ?: continue
             runCatching { applyOne(context, command) }

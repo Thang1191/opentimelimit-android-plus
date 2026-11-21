@@ -25,6 +25,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
+import io.timelimit.android.agent.HardLockGuard
 import io.timelimit.android.async.Threads
 import io.timelimit.android.data.model.TemporarilyAllowedApp
 import io.timelimit.android.data.model.UserType
@@ -185,6 +186,13 @@ class LockModel(application: Application): AndroidViewModel(application) {
         // this accesses the database directly because it is not synced
         Threads.database.submit {
             try {
+                // The lock screen's own escape hatch is a second door into the same room: allowing an
+                // app temporarily exempts it without touching a category, so a hard category would
+                // otherwise be bypassable in two taps. Same rule, same refusal, no fight.
+                if (HardLockGuard.blocksTemporaryAllowance(getApplication(), packageAndActivityNameLiveInternal.value?.first)) {
+                    return@submit
+                }
+
                 logic.database.runInTransaction {
                     logic.database.config().getOwnDeviceIdSync()?.let { deviceId ->
                         logic.database.temporarilyAllowedApp().addTemporarilyAllowedAppSync(TemporarilyAllowedApp(
