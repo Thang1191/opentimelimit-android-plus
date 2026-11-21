@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import io.timelimit.android.R
+import io.timelimit.android.agent.HardLockUi
 import io.timelimit.android.async.Threads
 import io.timelimit.android.data.Database
 import io.timelimit.android.data.model.HintsToShow
@@ -89,6 +90,8 @@ abstract class CategoryAppsAndRulesFragment: Fragment(), Handlers, EditTimeLimit
                 }
             }
         }).attachToRecyclerView(binding.recycler)
+
+        HardLockUi.veilIfNeeded(this, categoryId, binding.root)
 
         return binding.root
     }

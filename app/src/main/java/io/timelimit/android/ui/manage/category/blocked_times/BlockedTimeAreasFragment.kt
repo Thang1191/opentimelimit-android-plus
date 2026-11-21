@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.google.android.material.snackbar.Snackbar
 import io.timelimit.android.R
+import io.timelimit.android.agent.HardLockUi
 import io.timelimit.android.async.Threads
 import io.timelimit.android.coroutines.runAsync
 import io.timelimit.android.data.Database
@@ -151,6 +152,8 @@ class BlockedTimeAreasFragment : Fragment(), CopyBlockedTimeAreasDialogFragmentL
                 currentData = category.map { it?.blockedMinutesInWeek },
                 lifecycleOwner = this
         )
+
+        HardLockUi.veilIfNeeded(this, categoryId, binding.root)
 
         return binding.root
     }

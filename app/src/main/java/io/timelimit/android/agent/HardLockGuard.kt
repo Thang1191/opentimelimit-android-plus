@@ -105,6 +105,19 @@ object HardLockGuard {
         return database.categoryApp().getCategoryAppSync(hardIds, packageName) != null
     }
 
+    /**
+     * The title if this one category is hard and the guard is on, else null.
+     *
+     * Call on the database thread. Used by [HardLockUi] to decide whether a screen gets veiled.
+     */
+    fun hardCategoryTitle(context: Context, categoryId: String): String? {
+        if (!isEnabled(context)) return null
+        val database = DefaultAppLogic.with(context).database
+        return database.category().getCategoryByIdSync(categoryId)
+            ?.takeIf { it.isHardLock }
+            ?.title
+    }
+
     /** Non-suspending core, for callers already on the database thread. */
     fun refusalSync(action: ParentAction, database: Database): String? {
         // Paged read rather than a new DAO query: the app already has a global page getter for its

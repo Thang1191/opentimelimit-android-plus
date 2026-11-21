@@ -28,6 +28,7 @@ import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import com.google.android.material.snackbar.Snackbar
 import io.timelimit.android.R
+import io.timelimit.android.agent.HardLockUi
 import io.timelimit.android.data.extensions.mapToTimezone
 import io.timelimit.android.databinding.FragmentCategorySettingsBinding
 import io.timelimit.android.date.DateInTimezone
@@ -247,6 +248,8 @@ class CategorySettingsFragment : Fragment() {
         binding.switchLimitExtraTimeToToday.setOnCheckedChangeListener { _, _ ->
             updateEditExtraTimeConfirmButtonVisibility()
         }
+
+        HardLockUi.veilIfNeeded(this, categoryId, binding.root)
 
         return binding.root
     }

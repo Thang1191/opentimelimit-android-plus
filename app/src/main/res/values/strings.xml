@@ -105,6 +105,8 @@
   <string name="annoy_timer">
         The device can be unlocked in %s.
     </string>
+  <string name="hard_lock_screen_locked">&quot;%1$s&quot; is locked by the server</string>
+  <string name="hard_lock_tap_hint">Only the agent can open &quot;%1$s&quot;. Ask it in chat.</string>
   <string name="hard_lock_category_is_locked">&quot;%1$s&quot; is locked by the server. Ask the agent to open it.</string>
   <string name="annoy_unlock_temp_button">Unlock for a moment</string>
   <string name="annoy_unlock_parent_button">Unlock a bit longer</string>
