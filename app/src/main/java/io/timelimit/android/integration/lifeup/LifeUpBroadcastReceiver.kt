@@ -19,6 +19,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -26,6 +28,7 @@ import io.timelimit.android.BuildConfig
 import io.timelimit.android.logic.DefaultAppLogic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import androidx.annotation.RequiresApi
 import kotlinx.coroutines.launch
 
 /**
@@ -55,7 +58,9 @@ class LifeUpBroadcastReceiver : BroadcastReceiver() {
         const val ACTION_STOP = "app.lifeup.item.countdown.stop"
         const val ACTION_COMPLETE = "app.lifeup.item.countdown.complete"
 
-        val ACTIONS = arrayOf(ACTION_START, ACTION_STOP, ACTION_COMPLETE)
+        private val ACTIONS = arrayOf(ACTION_START, ACTION_STOP, ACTION_COMPLETE)
+
+        private const val LIFEUP_PACKAGE = "net.sarasarasa.lifeup"
 
         fun intentFilter() = IntentFilter().apply {
             ACTIONS.forEach { addAction(it) }
@@ -90,6 +95,15 @@ class LifeUpBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action ?: return
+
+        if (!isFromLifeUp(context)) {
+            // Without this, anything that can send an intent on this device could name a shop item
+            // and switch its rule off -- which is exactly what the hard lock exists to prevent. It
+            // was reachable from `adb shell` before this check existed.
+            Log.w(LOG_TAG, "ignoring $action from an untrusted sender")
+            return
+        }
+
         val itemName = itemNameOf(intent)
 
         if (BuildConfig.DEBUG) {
@@ -159,6 +173,67 @@ class LifeUpBroadcastReceiver : BroadcastReceiver() {
                 Log.d(LOG_TAG, "$action '$itemName' -> restore in ${RESTORE_DEBOUNCE_MS}ms")
             }
         }
+    }
+
+    /**
+     * True only when the broadcast actually came from LifeUp.
+     *
+     * The receiver is exported because LifeUp is a separate app, and it is registered at runtime as
+     * exported for the same reason, so the platform does not restrict the sender for us. The UID is
+     * the only trustworthy part of a broadcast: the package name lives in an extra and extras are
+     * whatever the sender wants.
+     */
+    private fun isFromLifeUp(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            // Below API 34 a receiver cannot learn who sent a broadcast. Accepting keeps the
+            // integration working on older devices; the permanent fix is a signature-level
+            // permission on the receiver, which needs one uses-permission line in LifeUp's manifest
+            // (both apps are signed with the same key). Tracked in docs/android-audit.md.
+            if (BuildConfig.DEBUG) {
+                Log.w(LOG_TAG, "sender cannot be verified below API 34, accepting")
+            }
+
+            return true
+        }
+
+        return isFromLifeUpApi34(context)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    private fun isFromLifeUpApi34(context: Context): Boolean {
+        val senderUid = try {
+            sentFromUid
+        } catch (ex: Throwable) {
+            -1
+        }
+
+        if (senderUid <= 0) {
+            if (BuildConfig.DEBUG) {
+                Log.w(LOG_TAG, "broadcast has no sender uid, ignoring")
+            }
+
+            return false
+        }
+
+        val packageManager = context.packageManager
+        val lifeUpUid = try {
+            packageManager.getPackageUid(LIFEUP_PACKAGE, 0)
+        } catch (ex: PackageManager.NameNotFoundException) {
+            Log.w(LOG_TAG, "$LIFEUP_PACKAGE is not installed, ignoring LifeUp events")
+
+            return false
+        }
+
+        if (senderUid != lifeUpUid) {
+            if (BuildConfig.DEBUG) {
+                Log.w(LOG_TAG, "sender uid $senderUid is not LifeUp ($lifeUpUid), ignoring")
+            }
+
+            return false
+        }
+
+        // One uid can own several packages after an upgrade, so the uid alone is not the identity.
+        return packageManager.getPackagesForUid(senderUid)?.contains(LIFEUP_PACKAGE) == true
     }
 
     /**

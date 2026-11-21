@@ -83,6 +83,23 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        // What actually runs on the phone: not debuggable, but shareable with the debug install.
+        //
+        // The debug build left `adb shell run-as` open, which meant the hard lock could be undone by
+        // editing the database or flipping the agent's cached switch -- no tapping required. A real
+        // release keystore would force an uninstall (different certificate) and take the categories,
+        // rules and agent state with it, so this reuses the debug certificate on purpose: `install -r`
+        // upgrades in place, BuildConfig.DEBUG is false and run-as is closed.
+        //
+        // minify stays off for now. Turning R8 on is a separate pass with its own testing, not a
+        // side effect of making the build non-debuggable.
+        releaseSigned {
+            initWith release
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+        }
     }
 
     compileOptions {
