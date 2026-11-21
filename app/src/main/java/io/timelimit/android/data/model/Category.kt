@@ -253,8 +253,22 @@ object CategoryFlags {
     const val BLOCKING_TYPE_WORK_PROFILE = 4L        // Work profile quiet mode
     const val BLOCKING_TYPE_FORCE_DNS = 6L           // Force Private DNS hostname
 
-    const val ALL = HAS_BLOCKED_NETWROK_LIST or BLOCKING_TYPE_MASK
+    /**
+     * Bit 4: a category whose limits the agent owns.
+     *
+     * The flags column is the only per-category state the app already carries, so the soft/hard split
+     * lives here rather than in a pref file beside it. What makes a category *hard* is not enforced by
+     * the app -- every override is editable locally once you are authenticated -- it is that the
+     * phone's watcher re-asserts the wall unless the server granted the opening. See
+     * [io.timelimit.android.agent.HardLock].
+     */
+    const val HARD_LOCK = 0b10000L                    // bit 4
+
+    const val ALL = HAS_BLOCKED_NETWROK_LIST or BLOCKING_TYPE_MASK or HARD_LOCK
 }
+
+/** True if this category is hard-locked: only the agent may open it. */
+val Category.isHardLock: Boolean get() = flags and CategoryFlags.HARD_LOCK != 0L
 
 /** Returns the blocking type value from the category flags (masked). */
 val Category.blockingType: Long get() = flags and CategoryFlags.BLOCKING_TYPE_MASK
