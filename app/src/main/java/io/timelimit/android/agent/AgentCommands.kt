@@ -15,6 +15,7 @@ import io.timelimit.android.coroutines.executeAndWait
 import io.timelimit.android.data.model.CategoryFlags
 import io.timelimit.android.data.model.isHardLock
 import io.timelimit.android.logic.DefaultAppLogic
+import io.timelimit.android.sync.actions.SetCategoryExtraTimeAction
 import io.timelimit.android.sync.actions.UpdateCategoryFlagsAction
 import io.timelimit.android.sync.actions.dispatch.LocalDatabaseParentActionDispatcher
 import io.timelimit.android.usage.ServerLink
@@ -26,6 +27,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.time.LocalDate
+import java.util.TimeZone
 
 /**
  * The agent's levers, phone side.
@@ -155,6 +158,7 @@ object AgentCommands {
                 context, id, key, minutes, note,
                 command.optString("target"), command.optBoolean("permanent", false)
             )
+            "time" -> setTime(context, id, key, minutes, note, command.optString("target"))
             else -> ack(
                 context,
                 id,
@@ -298,6 +302,55 @@ object AgentCommands {
             "random-character unlock on (24), hard: " +
                 (marked.ifEmpty { listOf("none") }.joinToString(", "))
         )
+    }
+
+    /**
+     * Sets a category's extra time for today to exactly [minutes], taken away included.
+     *
+     * Not a lever: the agent has no business handing itself time, and the one reason this exists is
+     * to undo time it should never have granted. Absolute rather than incremental so the outcome is
+     * the number asked for, whatever the category was carrying.
+     */
+    private suspend fun setTime(
+        context: Context,
+        id: String,
+        key: String,
+        minutes: Int,
+        note: String,
+        target: String
+    ) {
+        if (target.isEmpty()) {
+            ack(context, id, "failed", "time needs a target")
+            return
+        }
+
+        val result = Threads.database.executeAndWait {
+            val database = DefaultAppLogic.with(context).database
+            val category = database.category().getCategoryByIdSync(target)
+                ?: throw IllegalStateException("category $target is not in the database")
+
+            val parentId = database.user().getParentUsersSync().firstOrNull()?.id
+            val day = LocalDate.now(TimeZone.getDefault().toZoneId()).toEpochDay().toInt()
+
+            database.runInTransaction {
+                LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
+                    SetCategoryExtraTimeAction(
+                        categoryId = target,
+                        newExtraTime = minutes.coerceAtLeast(0) * 60_000L,
+                        extraTimeDay = day
+                    ),
+                    database = database,
+                    fromChildSelfLimitAddChildUserId = null,
+                    parentUserId = parentId
+                )
+            }
+
+            "'${category.title}' now has ${minutes.coerceAtLeast(0)}m of extra time today"
+        }
+
+        markSeen(context, key)
+        val reason = if (note.isEmpty()) "" else " ($note)"
+        ack(context, id, "applied", "$result$reason")
     }
 
     private fun prefs(context: Context) =
