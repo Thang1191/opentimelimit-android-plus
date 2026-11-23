@@ -136,6 +136,9 @@ class Adapter: RecyclerView.Adapter<ViewHolder>() {
                         0
                 )
                 binding.isTemporarilyBlocked = item.mode is CategorySpecialMode.TemporarilyBlocked
+                // A hard category always shows the permanent wording: the timestamp underneath is the
+                // wall's rolling slice, and printing it read as "this expires in a minute".
+                binding.hardLocked = item.category.isHardLock && HardLockGuard.isEnabled(context)
                 binding.temporarilyBlockedUntil = if (item.mode is CategorySpecialMode.TemporarilyBlocked)
                     item.mode.endTime?.let {  DateUtil.formatAbsoluteDate(context, it) } else null
 

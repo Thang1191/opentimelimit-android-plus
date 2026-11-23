@@ -105,7 +105,7 @@
   <string name="annoy_timer">
         The device can be unlocked in %s.
     </string>
-  <string name="hard_lock_screen_locked">&quot;%1$s&quot; is locked by the server</string>
+  <string name="hard_lock_screen_locked">This category is hard locked by the server</string>
   <string name="hard_lock_tap_hint">Only the agent can open &quot;%1$s&quot;. Ask it in chat.</string>
   <string name="hard_lock_category_is_locked">&quot;%1$s&quot; is locked by the server. Ask the agent to open it.</string>
   <string name="annoy_unlock_temp_button">Unlock for a moment</string>
@@ -845,6 +845,9 @@
   <string name="overview_device_item_missing_permission">A required permission was not granted on this device</string>
   <string name="overview_user_item_temporarily_blocked">temporarily blocked</string>
   <string name="overview_user_item_temporarily_blocked_until">temporarily blocked until %s</string>
+  <!-- A hard category is not "temporarily blocked until": the wall renews itself forever, and the
+       only thing that moves is the slice that enforcement is written in. Say what it is. -->
+  <string name="overview_category_hard_locked">hard locked by the server</string>
   <string name="overview_user_item_temporarily_disabled">Time limits temporarily disabled</string>
   <string name="overview_user_item_temporarily_disabled_until">Time limits temporarily disabled until %s</string>
   <string name="overview_user_item_role_child">is restricted</string>
