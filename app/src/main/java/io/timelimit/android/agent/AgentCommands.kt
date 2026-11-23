@@ -195,13 +195,13 @@ object AgentCommands {
             // "Unlock" has to change what the user may do, not only what the wall does: the flag
             // itself comes off, so the category is soft -- switch enabled, no veil, random-character
             // prompt as the only friction. A temporary release is put back by HardLock.reassert.
+            // Hard and soft lock both block; they differ in who may lift the block. Moving a
+            // category back to soft is only that restriction moving hands, so it grants no time:
+            // a category whose budget is spent stays spent, exactly as it would on a soft lock.
             val softened = HardLock.soften(context, target, holdMinutes, permanent)
-            // And the wall is only half of what shuts a category; its own time budget is the other.
-            // Opening one on a category whose time is spent leaves the app just as blocked.
-            val time = CategoryTime.addToday(context, target, if (permanent) 30 else holdMinutes)
             markSeen(context, key)
             val reason = if (note.isEmpty()) "" else " ($note)"
-            ack(context, id, "applied", "$softened, $time$reason")
+            ack(context, id, "applied", "$softened$reason")
             return
         }
 
