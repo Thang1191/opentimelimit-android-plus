@@ -13,6 +13,8 @@ import io.timelimit.android.async.Threads
 import io.timelimit.android.coroutines.executeAndWait
 import io.timelimit.android.data.model.isHardLock
 import io.timelimit.android.logic.DefaultAppLogic
+import io.timelimit.android.data.model.CategoryFlags
+import io.timelimit.android.sync.actions.UpdateCategoryFlagsAction
 import io.timelimit.android.sync.actions.UpdateCategoryTemporarilyBlockedAction
 import io.timelimit.android.sync.actions.dispatch.LocalDatabaseParentActionDispatcher
 
@@ -41,6 +43,7 @@ object HardLock {
     private const val TAG = "limited-sync"
     private const val PREFS = "limited_agent"
     private const val KEY_GRANTS = "hard_grants"
+    private const val KEY_SOFTENED = "hard_softened"
 
     /**
      * How far ahead each reassert pushes the wall. Twice the watcher's cadence, so one slow poll does
@@ -67,6 +70,35 @@ object HardLock {
         val grants = grants(context)
         val now = System.currentTimeMillis()
         val changed = mutableListOf<String>()
+
+        // A released hard category is a soft one until its window ends. Putting the flag back is the
+        // other half of that promise: without it a temporary release would quietly become permanent
+        // and the wall would never come back.
+        val softenedNow = softened(context)
+        val stillSoft = mutableMapOf<String, Long>()
+        for ((softId, until) in softenedNow) {
+            if (until == 0L || until > now) {
+                stillSoft[softId] = until
+                continue
+            }
+            val category = database.category().getCategoryByIdSync(softId) ?: continue
+            if (!category.isHardLock) {
+                database.runInTransaction {
+                    LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
+                        UpdateCategoryFlagsAction(
+                            categoryId = softId,
+                            modifiedBits = CategoryFlags.HARD_LOCK,
+                            newValues = CategoryFlags.HARD_LOCK
+                        ),
+                        database = database,
+                        fromChildSelfLimitAddChildUserId = null,
+                        parentUserId = parentId
+                    )
+                }
+                changed += "hardened '${category.title}' again"
+            }
+        }
+        if (stillSoft.size != softenedNow.size) writeSoftened(context, stillSoft)
 
         val hardCategories = database.category().getCategoriesByChildIdSync(childId)
             .filter { it.isHardLock }
@@ -118,6 +150,79 @@ object HardLock {
             Log.d(TAG, "agent: hard lock ${changed.joinToString("; ")}")
         }
         changed
+    }
+
+    /**
+     * Turns a hard category into a soft one.
+     *
+     * The point is that "unlock" has to change what the user can do, not only what the wall does: a
+     * released category still showed the hard-locked label, kept its switch disabled and kept refusing
+     * edits, which is indistinguishable from a failed unlock. So the flag itself comes off -- the
+     * category becomes soft, the random-character prompt is the only friction -- and for a temporary
+     * release [reassert] puts the flag back when the window ends.
+     */
+    suspend fun soften(context: Context, categoryId: String, minutes: Int, permanent: Boolean): String =
+        Threads.database.executeAndWait {
+            val database = DefaultAppLogic.with(context).database
+            val category = database.category().getCategoryByIdSync(categoryId)
+                ?: throw IllegalStateException("category $categoryId is not in the database")
+
+            val parentId = database.user().getParentUsersSync().firstOrNull()?.id
+            database.runInTransaction {
+                // Drop the wall first: leaving a 60-second temporary block behind would keep the app
+                // shut for a minute after the user was told it was open.
+                LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
+                    UpdateCategoryTemporarilyBlockedAction(
+                        categoryId = categoryId, blocked = false, endTime = null
+                    ),
+                    database = database,
+                    fromChildSelfLimitAddChildUserId = null,
+                    parentUserId = parentId
+                )
+                if (category.isHardLock) {
+                    LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
+                        UpdateCategoryFlagsAction(
+                            categoryId = categoryId,
+                            modifiedBits = CategoryFlags.HARD_LOCK,
+                            newValues = 0
+                        ),
+                        database = database,
+                        fromChildSelfLimitAddChildUserId = null,
+                        parentUserId = parentId
+                    )
+                }
+            }
+
+            val until = if (permanent) 0L else System.currentTimeMillis() + minutes * 60_000L
+            val current = softened(context).toMutableMap()
+            current[categoryId] = until
+            writeSoftened(context, current)
+
+            if (permanent) "turned '${category.title}' into a soft lock permanently"
+            else "turned '${category.title}' into a soft lock for ${minutes}m"
+        }
+
+    private fun softened(context: Context): Map<String, Long> {
+        val raw = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(KEY_SOFTENED, "")
+            .orEmpty()
+        if (raw.isEmpty()) return emptyMap()
+
+        return raw.split(',')
+            .mapNotNull { entry ->
+                val id = entry.substringBefore(':')
+                val until = entry.substringAfter(':', "").toLongOrNull() ?: return@mapNotNull null
+                if (id.isEmpty()) null else id to until
+            }
+            .toMap()
+    }
+
+    private fun writeSoftened(context: Context, value: Map<String, Long>) {
+        val raw = value.entries.joinToString(",") { "${it.key}:${it.value}" }
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .edit()
+            .putString(KEY_SOFTENED, raw)
+            .apply()
     }
 
     /** Opens one category for `minutes`. Called when a `release` carries a target. */

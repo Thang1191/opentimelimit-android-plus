@@ -151,7 +151,10 @@ object AgentCommands {
         val note = command.optString("note")
 
         when (kind) {
-            "release" -> release(context, id, key, minutes, note, command.optString("target"))
+            "release" -> release(
+                context, id, key, minutes, note,
+                command.optString("target"), command.optBoolean("permanent", false)
+            )
             else -> ack(
                 context,
                 id,
@@ -179,7 +182,8 @@ object AgentCommands {
         key: String,
         minutes: Int,
         note: String,
-        target: String
+        target: String,
+        permanent: Boolean
     ) {
         val holdMinutes = minutes.coerceIn(1, 1440)
 
@@ -188,14 +192,16 @@ object AgentCommands {
         // opening a soft category never requires the agent, so nothing but a hard one arrives here
         // with a target.
         if (target.isNotEmpty()) {
-            HardLock.grant(context, target, holdMinutes)
-            // The wall is only half of what shuts a hard category: its own time budget is the other.
-            // Opening one on a category whose time is spent leaves the app just as blocked, which
-            // reads as "the unlock did nothing". A release hands out the same minutes as time.
-            val time = CategoryTime.addToday(context, target, holdMinutes)
+            // "Unlock" has to change what the user may do, not only what the wall does: the flag
+            // itself comes off, so the category is soft -- switch enabled, no veil, random-character
+            // prompt as the only friction. A temporary release is put back by HardLock.reassert.
+            val softened = HardLock.soften(context, target, holdMinutes, permanent)
+            // And the wall is only half of what shuts a category; its own time budget is the other.
+            // Opening one on a category whose time is spent leaves the app just as blocked.
+            val time = CategoryTime.addToday(context, target, if (permanent) 30 else holdMinutes)
             markSeen(context, key)
             val reason = if (note.isEmpty()) "" else " ($note)"
-            ack(context, id, "applied", "hard category $target opened for ${holdMinutes}m, $time$reason")
+            ack(context, id, "applied", "$softened, $time$reason")
             return
         }
 
