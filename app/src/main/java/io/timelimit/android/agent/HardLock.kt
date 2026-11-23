@@ -22,9 +22,9 @@ import io.timelimit.android.sync.actions.dispatch.LocalDatabaseParentActionDispa
  * The hard half of the soft/hard split.
  *
  * A hard category is marked with [io.timelimit.android.data.model.CategoryFlags.HARD_LOCK] and the
- * phone keeps a wall on it: a `temporarily_blocked` window that is renewed before it lapses. Opening
- * one locally still works -- the app has no way to forbid it, and pretending otherwise would be a
- * lie -- but the wall comes back within about half a minute unless the server granted the opening.
+ * phone keeps a wall on it: a `temporarily_blocked` window, renewed long before it could ever lapse.
+ * Opening one locally still works -- the app has no way to forbid it, and pretending otherwise would
+ * be a lie -- but the wall comes back within about half a minute unless the server granted opening.
  *
  * That is the whole design, and it is deliberately a fight rather than a lock: the point is that
  * giving in costs a visible round trip through the server, not that the tap fails. What keeps it from
@@ -46,13 +46,18 @@ object HardLock {
     private const val KEY_SOFTENED = "hard_softened"
 
     /**
-     * How far ahead each reassert pushes the wall. Twice the watcher's cadence, so one slow poll does
-     * not open a hole in the wall, while staying short enough that "unblocked" is never a fiction.
+     * How far ahead the wall is pushed: a day, and it is renewed well before it can lapse.
+     *
+     * The first version used sixty-second slices, which turned the wall into a heartbeat: every few
+     * minutes the slice either expired (activities briefly unblocked, apps were unsuspended) or got
+     * rewritten (every observer refires, the blocking logic reruns). Both sides of that alternation
+     * are visible work for Android, and together they were the periodic lag spike the user felt. A
+     * long-lived wall makes the block a fact in the database instead of a race against the ticker.
      */
-    private const val WALL_MS = 60_000L
+    private const val WALL_MS = 24L * 60 * 60_000L
 
-    /** Below this much remaining wall, refresh it early rather than wait for it to expire. */
-    private const val WALL_REFRESH_MS = 20_000L
+    /** Refresh the wall while this much lifetime remains, so it never reaches zero. */
+    private const val WALL_REFRESH_MS = 60 * 60_000L
 
     /**
      * Aligns the marked categories with the wall and with any grant. Returns one line per category it
