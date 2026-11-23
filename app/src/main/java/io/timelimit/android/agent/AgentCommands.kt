@@ -189,9 +189,13 @@ object AgentCommands {
         // with a target.
         if (target.isNotEmpty()) {
             HardLock.grant(context, target, holdMinutes)
+            // The wall is only half of what shuts a hard category: its own time budget is the other.
+            // Opening one on a category whose time is spent leaves the app just as blocked, which
+            // reads as "the unlock did nothing". A release hands out the same minutes as time.
+            val time = CategoryTime.addToday(context, target, holdMinutes)
             markSeen(context, key)
             val reason = if (note.isEmpty()) "" else " ($note)"
-            ack(context, id, "applied", "hard category $target opened for ${holdMinutes}m$reason")
+            ack(context, id, "applied", "hard category $target opened for ${holdMinutes}m, $time$reason")
             return
         }
 

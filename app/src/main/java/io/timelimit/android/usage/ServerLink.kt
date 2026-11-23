@@ -12,6 +12,7 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import io.timelimit.android.BuildConfig
+import io.timelimit.android.agent.SyncStatus
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.UUID
@@ -79,6 +80,7 @@ object ServerLink {
         } else {
             listOf(BuildConfig.SYNC_BASE)
         }
+        SyncStatus.recordAttempt()
         for (host in hosts) {
             if (host.isEmpty()) {
                 continue
@@ -102,11 +104,13 @@ object ServerLink {
                 val stream = if (status in 200..299) connection.inputStream else connection.errorStream
                 val text = stream?.bufferedReader()?.use { it.readText() }
                 connection.disconnect()
+                SyncStatus.recordAnswer()
                 return status to text
             } catch (t: Throwable) {
                 Log.d(TAG, "usage: $path via $host failed: $t")
             }
         }
+        SyncStatus.recordFailure("no host answered for $path")
         return null
     }
 
@@ -117,6 +121,7 @@ object ServerLink {
      */
     fun get(context: Context, path: String, readTimeoutMs: Int = READ_TIMEOUT_MS): String? {
         val token = BuildConfig.SYNC_TOKEN
+        SyncStatus.recordAttempt()
         for (host in listOf(BuildConfig.SYNC_BASE, BuildConfig.SYNC_BASE_FALLBACK)) {
             if (host.isEmpty()) {
                 continue
@@ -132,11 +137,13 @@ object ServerLink {
                 connection.setRequestProperty("X-Device-Label", label(context))
                 val text = connection.inputStream.bufferedReader().use { it.readText() }
                 connection.disconnect()
+                SyncStatus.recordAnswer()
                 return text
             } catch (t: Throwable) {
                 Log.d(TAG, "usage: get $path via $host failed: $t")
             }
         }
+        SyncStatus.recordFailure("no host answered for $path")
         return null
     }
 }

@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import io.timelimit.android.R
+import io.timelimit.android.agent.SyncStatus
 import io.timelimit.android.extensions.showSafe
 import io.timelimit.android.livedata.ignoreUnchanged
 import io.timelimit.android.livedata.liveDataFromNullableValue
@@ -92,6 +93,9 @@ class MainActivity : AppCompatActivity(), ActivityViewModelHolder, U2fManager.De
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // One dot, top-right: green/amber/red from the last answer the server gave. See SyncStatus.
+        SyncStatus.attach(this)
 
         U2fManager.setupActivity(this)
 
