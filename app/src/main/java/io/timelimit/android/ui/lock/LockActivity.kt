@@ -122,20 +122,6 @@ class LockActivity : AppCompatActivity(), ActivityViewModelHolder, U2fManager.De
         model.content.observe(this) {
             // The wall was met. This is the denominator behind every "how often" the agent asks;
             // it is written from the screen that actually appeared, not inferred later.
-            // The other half of the honesty metric: the user authorised their way past the wall.
-            // Close fires for every dismissal, so the signal that separates an escape from a block
-            // that simply expired is the authentication itself.
-            if (it is LockscreenContent.Close && activityModel.getAuthenticatedUser() != null) {
-                Interruptions.record(
-                    context = this,
-                    kind = "escape",
-                    outcome = "escaped",
-                    category = lastBlockedCategory,
-                    packageName = blockedPackageName,
-                    reason = "authorised"
-                )
-            }
-
             if (it is LockscreenContent.Blocked) {
                 val blocked = it as? LockscreenContent.Blocked.BlockedCategory
                 lastBlockedCategory = blocked?.appCategoryTitle

@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import io.timelimit.android.R
 import io.timelimit.android.data.extensions.sortedCategories
+import io.timelimit.android.agent.Interruptions
 import io.timelimit.android.data.model.derived.DeviceRelatedData
 import io.timelimit.android.data.model.derived.UserRelatedData
 import io.timelimit.android.databinding.LockActionFragmentBinding
@@ -54,6 +55,15 @@ class LockActionFragment : Fragment() {
     }
 
     private val auth: ActivityViewModel by lazy { getActivityViewModel(requireActivity()) }
+
+    /**
+     * Set when the user takes one of the ways past the wall, cleared when this screen goes away.
+     *
+     * The row is written when the lock screen actually closes, not when the button is pressed: the
+     * extra-time and disable-limits paths open a dialog first, and a cancelled dialog is not an
+     * escape. The reason says which door was used.
+     */
+    private var escapeReason: String? = null
     private lateinit var binding: LockActionFragmentBinding
     private val model: LockModel by activityViewModels()
 
@@ -74,10 +84,14 @@ class LockActionFragment : Fragment() {
             }
 
             override fun allowTemporarily() {
-                if (auth.requestAuthenticationOrReturnTrue()) model.allowAppTemporarily()
+                if (auth.requestAuthenticationOrReturnTrue()) {
+                    escapeReason = "allow_temporarily"
+                    model.allowAppTemporarily()
+                }
             }
 
             override fun disableTemporarilyLockForAllCategories() {
+                escapeReason = "disable_lock_all"
                 auth.tryDispatchParentActions(
                         userRelatedData.categories
                                 .filter { it.category.temporarilyBlocked }
@@ -94,6 +108,7 @@ class LockActionFragment : Fragment() {
             override fun disableTemporarilyLockForCurrentCategory() {
                 blockedCategoryId ?: return
 
+                escapeReason = "disable_lock_category"
                 auth.tryDispatchParentAction(
                         UpdateCategoryTemporarilyBlockedAction(
                                 categoryId = blockedCategoryId,
@@ -109,6 +124,7 @@ class LockActionFragment : Fragment() {
 
             override fun disableLimitsTemporarily() {
                 if (auth.requestAuthenticationOrReturnTrue()) {
+                    escapeReason = "disable_limits"
                     if (blockedCategoryId != null) {
                         SetCategorySpecialModeFragment.newInstance(
                             childId = userRelatedData.user.id,
@@ -158,6 +174,7 @@ class LockActionFragment : Fragment() {
                 val extraTimeToAdd = binding.extraTimeSelection.timeInMillis
 
                 if (extraTimeToAdd > 0) {
+                    escapeReason = "extra_time"
                     binding.extraTimeBtnOk.isEnabled = false
 
                     val date = DateInTimezone.newInstance(auth.logic.timeApi.getCurrentTimeInMillis(), timeZone)
@@ -217,6 +234,18 @@ class LockActionFragment : Fragment() {
         model.content.observe(viewLifecycleOwner) { content ->
             when (content) {
                 LockscreenContent.Close -> {
+                    escapeReason?.let { reason ->
+                        Interruptions.record(
+                            context = requireContext(),
+                            kind = "escape",
+                            outcome = "escaped",
+                            category = binding.appCategoryTitle,
+                            packageName = model.packageAndActivityNameLive.value?.first,
+                            reason = reason
+                        )
+                        escapeReason = null
+                    }
+
                     binding.reason = BlockingReason.None
                     binding.handlers = null
 
