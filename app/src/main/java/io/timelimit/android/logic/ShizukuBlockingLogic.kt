@@ -24,6 +24,7 @@ import io.timelimit.android.data.model.CategoryApp
 import io.timelimit.android.data.model.CategoryFlags
 import io.timelimit.android.data.model.UserType
 import io.timelimit.android.data.model.blockingType
+import io.timelimit.android.agent.Interruptions
 import io.timelimit.android.integration.platform.shizuku.ShizukuIntegration
 
 /**
@@ -132,6 +133,7 @@ class ShizukuBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
 
         // Determine which packages should be disabled
         val shouldBeDisabled = mutableSetOf<String>()
+        val categoryByPackage = mutableMapOf<String, String>()
 
         for (categoryData in shizukuCategories) {
             val categoryId = categoryData.category.id
@@ -144,6 +146,11 @@ class ShizukuBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
                     .map { it.appSpecifier.packageName }
 
                 shouldBeDisabled.addAll(categoryApps)
+                categoryApps.forEach { packageName ->
+                    // A package can sit in more than one blocked category; the first name is enough
+                    // to say what the user was blocked by, and guessing deeper buys nothing.
+                    categoryByPackage.putIfAbsent(packageName, categoryData.category.title)
+                }
             }
         }
 
@@ -159,6 +166,18 @@ class ShizukuBlockingLogic(appLogic: AppLogic) : BlockingStrategy(appLogic) {
             if (block(pkg)) {
                 disabledPackages.add(pkg)
                 disabledCount++
+
+                // This is where the wall actually lands on this device -- a suspended app never shows
+                // our lock screen, Android shows its own page instead -- so it is also the only place
+                // that can say the wall was met for real.
+                Interruptions.record(
+                    context = appLogic.context,
+                    kind = "block",
+                    outcome = "suspended",
+                    category = categoryByPackage[pkg],
+                    packageName = pkg,
+                    reason = "suspended"
+                )
             } else {
                 if (BuildConfig.DEBUG) {
                     Log.w(LOG_TAG, "Failed to block package: $pkg")
