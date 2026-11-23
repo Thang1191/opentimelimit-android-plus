@@ -60,10 +60,12 @@ object AgentCommands {
     /** Enough to survive an ack lost in a tunnel, small enough to stay a prefs string. */
     private const val SEEN_KEEP = 40
 
-    private const val KEY_BOOTSTRAPPED = "soft_hard_bootstrapped"
+    // Bumped when the list below grows: the migration only runs once per install, so a new hard
+    // category needs a new key or it would never be applied on a phone that already bootstrapped.
+    private const val KEY_BOOTSTRAPPED = "soft_hard_bootstrapped_2"
 
     /** The categories the user named as hard. Applied once; the flags are the truth afterwards. */
-    private val HARD_CATEGORY_TITLES = setOf("tets")
+    private val HARD_CATEGORY_TITLES = setOf("tets", "addiction")
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
