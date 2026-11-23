@@ -202,6 +202,42 @@ object HardLock {
             else "turned '${category.title}' into a soft lock for ${minutes}m"
         }
 
+    /**
+     * Makes a category hard for good: the flag goes on and stays on, and any release window still
+     * running is dropped, because "hard" and "temporarily soft" cannot both be true.
+     *
+     * Without this the only way to harden a category was editing HARD_CATEGORY_TITLES and rebuilding
+     * the APK -- which is a poor lever, since the whole point of the split is that the server decides.
+     */
+    suspend fun harden(context: Context, categoryId: String): String =
+        Threads.database.executeAndWait {
+            val database = DefaultAppLogic.with(context).database
+            val category = database.category().getCategoryByIdSync(categoryId)
+                ?: throw IllegalStateException("category $categoryId is not in the database")
+
+            val soft = softened(context).toMutableMap()
+            if (soft.remove(categoryId) != null) writeSoftened(context, soft)
+
+            if (category.isHardLock) {
+                "'${category.title}' was already hard locked"
+            } else {
+                val parentId = database.user().getParentUsersSync().firstOrNull()?.id
+                database.runInTransaction {
+                    LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
+                        UpdateCategoryFlagsAction(
+                            categoryId = categoryId,
+                            modifiedBits = CategoryFlags.HARD_LOCK,
+                            newValues = CategoryFlags.HARD_LOCK
+                        ),
+                        database = database,
+                        fromChildSelfLimitAddChildUserId = null,
+                        parentUserId = parentId
+                    )
+                }
+                "'${category.title}' is now hard locked by the server"
+            }
+        }
+
     private fun softened(context: Context): Map<String, Long> {
         val raw = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .getString(KEY_SOFTENED, "")

@@ -87,6 +87,8 @@ object AgentCommands {
             // Seed the counter without parking: wait=0 asks "where are we now" instead of waiting.
             var seq = watchSeq(app, -1L, 0) ?: 0L
             while (isActive) {
+                runCatching { flushInterruptions(app) }
+                    .onFailure { Log.d(TAG, "agent: interruption flush failed: $it") }
                 runCatching { drain(app) }.onFailure { Log.d(TAG, "agent: drain failed: $it") }
                 val next = watchSeq(app, seq, WATCH_WAIT_S)
                 if (next == null) {
@@ -103,6 +105,15 @@ object AgentCommands {
     }
 
     /** Applies everything pending for this phone. Oldest first, which is the order it was written. */
+    private suspend fun flushInterruptions(context: Context) {
+        try {
+            val sent = Interruptions.flush(context)
+            if (sent > 0) Log.d(TAG, "interruptions uploaded: $sent")
+        } catch (e: Exception) {
+            Log.d(TAG, "interruption flush failed: ${e.message}")
+        }
+    }
+
     private suspend fun drain(context: Context) {
         val body = ServerLink.get(context, "/v1/commands") ?: return
         val root = runCatching { JSONObject(body) }.getOrNull() ?: return
@@ -159,6 +170,7 @@ object AgentCommands {
                 command.optString("target"), command.optBoolean("permanent", false)
             )
             "time" -> setTime(context, id, key, minutes, note, command.optString("target"))
+            "harden" -> harden(context, id, key, note, command.optString("target"))
             else -> ack(
                 context,
                 id,
@@ -348,6 +360,19 @@ object AgentCommands {
             "'${category.title}' now has ${minutes.coerceAtLeast(0)}m of extra time today"
         }
 
+        markSeen(context, key)
+        val reason = if (note.isEmpty()) "" else " ($note)"
+        ack(context, id, "applied", "$result$reason")
+    }
+
+    /** The other half of `release`: the server puts a category under its own control. */
+    private suspend fun harden(context: Context, id: String, key: String, note: String, target: String) {
+        if (target.isEmpty()) {
+            ack(context, id, "failed", "harden needs a target")
+            return
+        }
+
+        val result = HardLock.harden(context, target)
         markSeen(context, key)
         val reason = if (note.isEmpty()) "" else " ($note)"
         ack(context, id, "applied", "$result$reason")

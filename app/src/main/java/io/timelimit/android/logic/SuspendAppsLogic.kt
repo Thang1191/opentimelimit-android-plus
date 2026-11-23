@@ -15,6 +15,7 @@
  */
 package io.timelimit.android.logic
 
+import io.timelimit.android.agent.Interruptions
 import io.timelimit.android.data.invalidation.Observer
 import io.timelimit.android.data.invalidation.Table
 import io.timelimit.android.data.model.CategoryApp
@@ -241,6 +242,22 @@ class SuspendAppsLogic(private val appLogic: AppLogic): Observer {
             val appsToNotBlock = allApps.subtract(packageNames)
 
             appLogic.platformIntegration.setSuspendedApps(appsToNotBlock.toList(), false)
+
+            // A suspended app never reaches our lock screen -- Android shows its own "suspended" page
+            // instead -- so this is the only point where the phone can say the wall was applied. The
+            // count is per transition, not per launch: one row the first time an app goes behind the
+            // wall, which is what "how often does this get reopened" needs as a denominator.
+            (packageNames - lastSuspendedApps.orEmpty().toSet()).forEach { packageName ->
+                Interruptions.record(
+                    context = appLogic.context,
+                    kind = "block",
+                    outcome = "suspended",
+                    category = null,
+                    packageName = packageName,
+                    reason = "suspended"
+                )
+            }
+
             appLogic.platformIntegration.setSuspendedApps(packageNames, true)
             lastSuspendedApps = packageNames
         }

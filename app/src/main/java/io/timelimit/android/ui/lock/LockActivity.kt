@@ -25,6 +25,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
+import io.timelimit.android.agent.Interruptions
 import io.timelimit.android.databinding.LockActivityBinding
 import io.timelimit.android.extensions.showSafe
 import io.timelimit.android.logic.BlockingReason
@@ -116,6 +117,20 @@ class LockActivity : AppCompatActivity(), ActivityViewModelHolder, U2fManager.De
         binding.tabs.setupWithViewPager(binding.pager)
 
         model.content.observe(this) {
+            // The wall was met. This is the denominator behind every "how often" the agent asks;
+            // it is written from the screen that actually appeared, not inferred later.
+            if (it is LockscreenContent.Blocked) {
+                val blocked = it as? LockscreenContent.Blocked.BlockedCategory
+                Interruptions.record(
+                    context = this,
+                    kind = "block",
+                    outcome = "shown",
+                    category = blocked?.appCategoryTitle,
+                    packageName = blockedPackageName,
+                    reason = blocked?.blockingHandling?.activityBlockingReason?.name
+                )
+            }
+
             val isTimeOver = it is LockscreenContent.Blocked.BlockedCategory && it.blockingHandling.activityBlockingReason == BlockingReason.TimeOver
 
             adapter.showTasksFragment = isTimeOver
