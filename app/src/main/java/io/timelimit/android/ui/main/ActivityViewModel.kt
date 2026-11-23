@@ -26,6 +26,8 @@ import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
 import io.timelimit.android.BuildConfig
 import io.timelimit.android.agent.HardLockGuard
+import io.timelimit.android.agent.Interruptions
+import io.timelimit.android.ui.lock.LockActivity
 import io.timelimit.android.R
 import io.timelimit.android.coroutines.runAsync
 import io.timelimit.android.data.model.User
@@ -38,6 +40,18 @@ import io.timelimit.android.sync.actions.apply.ApplyActionUtil
 class ActivityViewModel(application: Application): AndroidViewModel(application) {
     companion object {
         private const val LOG_TAG = "ActivityViewModel"
+
+        /**
+         * Actions that hand time or freedom back. The challenge that guards them is a fixed string
+         * anyone can type, so passing it from the app's own screens is just as much an escape as
+         * passing it at the wall -- the difference is only which door was used.
+         */
+        private val WEAKENING_ACTIONS = setOf(
+                "IncrementCategoryExtraTimeAction",
+                "SetCategoryExtraTimeAction",
+                "UpdateCategoryTemporarilyBlockedAction",
+                "SetUserDisableLimitsUntilAction"
+        )
     }
 
     val logic = DefaultAppLogic.with(application)
@@ -156,6 +170,24 @@ class ActivityViewModel(application: Application): AndroidViewModel(application)
                             platformIntegration = logic.platformIntegration,
                             fromChildSelfLimitAddChildUserId = if (allowAsChild && status.type == UserType.Child) status.id else null,
                             parentUserId = if (status.type == UserType.Parent) status.id else null
+                    )
+                }
+
+                // The other half of the honesty metric: a change made while the wall is frontmost is
+                // the user getting past it. Recording here rather than on each button means a door
+                // added later is counted without being taught to say its name.
+                val weakening = actions.map { it.javaClass.simpleName }.firstOrNull { name ->
+                    name in WEAKENING_ACTIONS || name.contains("SpecialMode")
+                }
+
+                if (weakening != null || LockActivity.resumed > 0) {
+                    Interruptions.record(
+                            context = getApplication(),
+                            kind = "escape",
+                            outcome = "escaped",
+                            category = null,
+                            packageName = null,
+                            reason = (if (LockActivity.resumed > 0) "wall:" else "app:") + (weakening ?: "action")
                     )
                 }
             } catch (ex: Exception) {

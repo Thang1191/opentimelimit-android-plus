@@ -46,6 +46,15 @@ class LockActivity : AppCompatActivity(), ActivityViewModelHolder, U2fManager.De
 
         val currentInstances = mutableSetOf<LockActivity>()
 
+        /**
+         * How many lock screens are in front of the user right now.
+         *
+         * A change the user makes while one of them is frontmost is a way past the wall, whatever the
+         * button was called; a change made from the manage screens is ordinary configuration.
+         */
+        var resumed = 0
+            private set
+
         fun start(context: Context, packageName: String, activityName: String?) {
             context.startActivity(
                     Intent(context, LockActivity::class.java)
@@ -160,12 +169,16 @@ class LockActivity : AppCompatActivity(), ActivityViewModelHolder, U2fManager.De
     override fun onResume() {
         super.onResume()
 
+        resumed++
+
         lockTaskModeWorkaround()
         U2fManager.with(this).registerListener(this)
     }
 
     override fun onPause() {
         super.onPause()
+
+        if (resumed > 0) resumed--
 
         lockTaskModeWorkaround()
         U2fManager.with(this).unregisterListener(this)
