@@ -1,31 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+  Two exits, deliberately unequal.
+
+  Closing is the easy one: full width, filled, pinned at the top, impossible to miss. Continuing is a
+  small unadorned line at the bottom, so the path of least resistance through this screen leads out
+  of the app rather than into it. Neither exit can end up below the fold: the close button sits
+  outside the scrolling area, and Continue sits outside it too.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#050208">
+    android:orientation="vertical"
+    android:background="#050208"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="24dp"
+    android:paddingBottom="16dp">
+
+    <Button
+        android:id="@+id/pause_close"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:text="Close"
+        android:textSize="18sp"
+        android:textColor="#12061C"
+        android:backgroundTint="#C7A6F2"
+        app:cornerRadius="18dp" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:paddingHorizontal="24dp"
-            android:paddingTop="32dp"
-            android:paddingBottom="32dp">
+            android:gravity="center_horizontal">
 
-            <!-- The picture *is* the check-in when the type is Pictures: it gets most of the screen and
-                 the words underneath are a caption. As a faint background it was decoration, and
+            <!-- When the check-in is Pictures the photo is the check-in: it gets the room, and the
+                 words underneath are a caption. As a faint background it was decoration, and
                  decoration is the one thing a speed bump cannot afford to be. -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/pause_image"
                 android:layout_width="match_parent"
-                android:layout_height="420dp"
+                android:layout_height="320dp"
+                android:layout_marginTop="20dp"
                 android:scaleType="centerCrop"
                 android:contentDescription="@null"
                 android:visibility="gone"
@@ -36,8 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="Pause Point"
-                android:textColor="#CDB8E8"
-                android:textSize="13sp"
+                android:textColor="#8A7C99"
+                android:textSize="12sp"
                 android:letterSpacing="0.18"
                 android:textAllCaps="true" />
 
@@ -45,38 +67,38 @@
                 android:id="@+id/pause_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="#8A7C99"
-                android:textSize="13sp" />
+                android:layout_marginTop="2dp"
+                android:textColor="#6E627E"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/pause_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="18dp"
                 android:gravity="center"
                 android:lineSpacingMultiplier="1.3"
                 android:textColor="#F2ECFA"
-                android:textSize="21sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/pause_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:textColor="#9C8DAE"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:visibility="gone" />
 
             <EditText
                 android:id="@+id/pause_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:hint="One line: what are you opening it for?"
                 android:textColor="#F2ECFA"
                 android:textColorHint="#6E627E"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:inputType="textCapSentences"
                 android:maxLines="3"
                 android:backgroundTint="#5A4B6E"
@@ -86,36 +108,26 @@
                 android:id="@+id/pause_countdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:textColor="#CDB8E8"
-                android:textSize="44sp"
+                android:textSize="46sp"
                 android:fontFamily="sans-serif-light" />
 
             <ProgressBar
                 android:id="@+id/pause_progress"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="140dp"
+                android:layout_width="120dp"
                 android:layout_height="3dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
                 android:max="100"
                 android:progressTint="#9C7BD6"
                 android:progressBackgroundTint="#33243F" />
-
-            <Button
-                android:id="@+id/pause_continue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="Continue"
-                android:textColor="#12061C"
-                android:backgroundTint="#C7A6F2"
-                android:visibility="invisible" />
 
             <LinearLayout
                 android:id="@+id/pause_timer_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="22dp"
                 android:orientation="horizontal"
                 android:visibility="gone">
 
@@ -125,8 +137,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="5 min"
-                    android:backgroundTint="#3A2B4C"
-                    android:textColor="#E8DCF6" />
+                    android:textSize="14sp"
+                    android:backgroundTint="#251C31"
+                    android:textColor="#B7A9C9" />
 
                 <Button
                     android:id="@+id/pause_timer_15"
@@ -135,8 +148,9 @@
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:text="15 min"
-                    android:backgroundTint="#3A2B4C"
-                    android:textColor="#E8DCF6" />
+                    android:textSize="14sp"
+                    android:backgroundTint="#251C31"
+                    android:textColor="#B7A9C9" />
 
                 <Button
                     android:id="@+id/pause_timer_30"
@@ -145,18 +159,31 @@
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:text="30 min"
-                    android:backgroundTint="#3A2B4C"
-                    android:textColor="#E8DCF6" />
+                    android:textSize="14sp"
+                    android:backgroundTint="#251C31"
+                    android:textColor="#B7A9C9" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/pause_close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Close"
-                android:textColor="#9C8DAE"
-                android:background="?attr/selectableItemBackgroundBorderless" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
         </LinearLayout>
     </ScrollView>
-</FrameLayout>
+
+    <!-- The way in: quiet, small, and pinned to the bottom where the eye has already stopped looking. -->
+    <Button
+        android:id="@+id/pause_continue"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:minWidth="0dp"
+        android:paddingHorizontal="20dp"
+        android:text="Continue anyway"
+        android:textSize="14sp"
+        android:textColor="#8A7C99"
+        android:backgroundTint="#00000000"
+        android:visibility="invisible"
+        app:strokeWidth="0dp" />
+</LinearLayout>
