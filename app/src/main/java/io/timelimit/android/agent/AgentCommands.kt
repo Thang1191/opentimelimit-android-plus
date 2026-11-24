@@ -207,6 +207,11 @@ object AgentCommands {
      * An increment, not a set: [setTime] is the absolute form and exists to take a grant back.
      * The expiry is the app's own -- extra time is stored against a day and stops counting when the
      * day rolls over -- so this cannot leave a budget behind that keeps growing tomorrow.
+     *
+     * On a hard category the wall comes down for the same window, because a hard category is
+     * suspended by its wall and the wall does not read the budget at all: minutes granted under a
+     * live wall are minutes nobody can spend. The ack says both things so the two numbers are never
+     * mistaken for each other.
      */
     private suspend fun allowance(
         context: Context,
@@ -223,10 +228,16 @@ object AgentCommands {
 
         val add = minutes.coerceIn(1, 1440)
 
-        val result = Threads.database.executeAndWait {
+        val outcome = Threads.database.executeAndWait {
             val database = DefaultAppLogic.with(context).database
             val category = resolveCategory(context, database, target)
             val day = today(context, database)
+            // A hard category is suspended by its wall, not by its budget, and the wall ignores
+            // budget entirely. Granting minutes there without lifting the wall is an ack that is
+            // true and useless at the same time -- the user sees "30 more minutes" and an app that
+            // will not open. So the wall comes down for the same window the budget covers.
+            val walled = category.isHardLock ||
+                (category.temporarilyBlocked && category.temporarilyBlockedEndTime > System.currentTimeMillis())
 
             val parentId = database.user().getParentUsersSync().firstOrNull()?.id
 
@@ -245,12 +256,27 @@ object AgentCommands {
 
             val total = category.getExtraTime(day) + add * 60_000L
 
-            "'${category.title}' +${add}m -> ${total / 60_000L}m extra today (resets at midnight)"
+            Triple(
+                "'${category.title}' +${add}m -> ${total / 60_000L}m extra today (resets at midnight)",
+                category.id,
+                walled
+            )
         }
 
+        val (result, categoryId, walled) = outcome
+        if (!walled) {
+            markSeen(context, key)
+            val reason = if (note.isEmpty()) "" else " ($note)"
+            ack(context, id, "applied", "$result$reason")
+            return
+        }
+
+        // Outside the transaction above on purpose: soften opens its own database thread and writes
+        // the softened map, and nesting the two would deadlock the database executor.
+        val wall = HardLock.soften(context, categoryId, add, permanent = false)
         markSeen(context, key)
         val reason = if (note.isEmpty()) "" else " ($note)"
-        ack(context, id, "applied", "$result$reason")
+        ack(context, id, "applied", "$result, $wall$reason")
     }
 
     /**
@@ -340,7 +366,12 @@ object AgentCommands {
             // Hard and soft lock both block; they differ in who may lift the block. Moving a
             // category back to soft is only that restriction moving hands, so it grants no time:
             // a category whose budget is spent stays spent, exactly as it would on a soft lock.
-            val softened = HardLock.soften(context, target, holdMinutes, permanent)
+            // The target is resolved the same way `allowance` resolves it, so a title out of a
+            // digest works here too -- and a wrong identifier is a failed ack, not a silent no-op.
+            val categoryId = Threads.database.executeAndWait {
+                resolveCategory(context, DefaultAppLogic.with(context).database, target).id
+            }
+            val softened = HardLock.soften(context, categoryId, holdMinutes, permanent)
             markSeen(context, key)
             val reason = if (note.isEmpty()) "" else " ($note)"
             ack(context, id, "applied", "$softened$reason")
@@ -493,11 +524,14 @@ object AgentCommands {
     /** The other half of `release`: the server puts a category under its own control. */
     private suspend fun harden(context: Context, id: String, key: String, note: String, target: String) {
         if (target.isEmpty()) {
-            ack(context, id, "failed", "harden needs a target")
+            ack(context, id, "failed", "harden needs a target: a category id, title or package")
             return
         }
 
-        val result = HardLock.harden(context, target)
+        val categoryId = Threads.database.executeAndWait {
+            resolveCategory(context, DefaultAppLogic.with(context).database, target).id
+        }
+        val result = HardLock.harden(context, categoryId)
         markSeen(context, key)
         val reason = if (note.isEmpty()) "" else " ($note)"
         ack(context, id, "applied", "$result$reason")
