@@ -126,21 +126,34 @@ object ServerLink {
             if (host.isEmpty()) {
                 continue
             }
+            var connection: HttpURLConnection? = null
             try {
-                val connection = URL(host + path).openConnection() as HttpURLConnection
-                connection.connectTimeout = CONNECT_TIMEOUT_MS
-                connection.readTimeout = readTimeoutMs
+                val conn = URL(host + path).openConnection() as HttpURLConnection
+                connection = conn
+                conn.connectTimeout = CONNECT_TIMEOUT_MS
+                conn.readTimeout = readTimeoutMs
                 if (token.isNotEmpty()) {
-                    connection.setRequestProperty("Authorization", "Bearer $token")
+                    conn.setRequestProperty("Authorization", "Bearer $token")
                 }
-                connection.setRequestProperty("X-Device", deviceId(context))
-                connection.setRequestProperty("X-Device-Label", label(context))
-                val text = connection.inputStream.bufferedReader().use { it.readText() }
-                connection.disconnect()
+                conn.setRequestProperty("X-Device", deviceId(context))
+                conn.setRequestProperty("X-Device-Label", label(context))
+
+                val status = conn.responseCode
+                // A 4xx/5xx is the server answering, and an answer is never retried through another
+                // door. Reading inputStream on an error status throws, which used to fall through to
+                // the fallback host: a 401 then cost a second request and looked like a dead host.
+                if (status !in 200..299) {
+                    SyncStatus.recordAnswer()
+                    Log.d(TAG, "usage: get $path answered $status")
+                    return null
+                }
+                val text = conn.inputStream.bufferedReader().use { it.readText() }
                 SyncStatus.recordAnswer()
                 return text
             } catch (t: Throwable) {
                 Log.d(TAG, "usage: get $path via $host failed: $t")
+            } finally {
+                connection?.disconnect()
             }
         }
         SyncStatus.recordFailure("no host answered for $path")

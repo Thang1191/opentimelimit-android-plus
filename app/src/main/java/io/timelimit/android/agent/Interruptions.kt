@@ -35,6 +35,17 @@ object Interruptions {
     private var lastAt = 0L
 
     /**
+     * One flush at a time.
+     *
+     * [record] flushes from its own thread and the agent loop flushes on its tick, so two of them can
+     * be in flight: both read the file, both post the same rows (the server dedupes those), then both
+     * re-read and drop their prefix. Interleaved with a new row appended in between, the second
+     * reader can drop past what it actually sent and the row is gone. A lock screen that fails to
+     * log is acceptable; one that is logged and then silently deleted is not.
+     */
+    private val flushing = java.util.concurrent.atomic.AtomicBoolean(false)
+
+    /**
      * Records one interruption. Safe from any thread, never throws: telemetry failing must never
      * affect enforcement, and a lock screen that fails to log is still a lock screen.
      */
@@ -92,6 +103,15 @@ object Interruptions {
      * the server keys on the row's own content.
      */
     fun flush(context: Context): Int {
+        if (!flushing.compareAndSet(false, true)) return 0
+        return try {
+            flushOnce(context)
+        } finally {
+            flushing.set(false)
+        }
+    }
+
+    private fun flushOnce(context: Context): Int {
         val file = file(context)
         if (!file.exists() || file.length() == 0L) return 0
 
