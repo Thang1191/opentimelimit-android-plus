@@ -15,12 +15,14 @@
  */
 package io.timelimit.android.ui.manage.category.settings
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -29,7 +31,11 @@ import androidx.lifecycle.switchMap
 import com.google.android.material.snackbar.Snackbar
 import io.timelimit.android.R
 import io.timelimit.android.agent.HardLockUi
+import io.timelimit.android.agent.PausePoint
+import io.timelimit.android.async.Threads
 import io.timelimit.android.data.extensions.mapToTimezone
+import io.timelimit.android.data.model.CategoryPauseConfig
+import io.timelimit.android.ui.pause.PauseActivity
 import io.timelimit.android.databinding.FragmentCategorySettingsBinding
 import io.timelimit.android.date.DateInTimezone
 import io.timelimit.android.livedata.*
@@ -66,6 +72,30 @@ class CategorySettingsFragment : Fragment() {
     private val categoryId: String get() = requireArguments().getString(CATEGORY_ID)!!
 
     private val timeWarningStatus = MutableLiveData<CategoryTimeWarningStatus>()
+
+    /**
+     * The picture folder is chosen with the system picker, not typed in: the app holds no storage
+     * permission, and the tree grant survives reboots so the pause can read the folder later
+     * without asking again.
+     */
+    private val pauseFolderPicker = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri == null) return@registerForActivityResult
+
+        runCatching {
+            requireContext().contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        }
+
+        Threads.database.execute {
+            val database = appLogic.database
+            val existing = database.categoryPauseConfig().getByCategoryIdSync(categoryId)
+                ?: CategoryPauseConfig.default(categoryId)
+
+            database.categoryPauseConfig().insertOrReplaceSync(existing.copy(folderUri = uri.toString()))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,6 +206,15 @@ class CategorySettingsFragment : Fragment() {
                 categoryLive = categoryEntry
         )
 
+        CategoryPausePointView.bind(
+                binding = binding.pausePoint,
+                lifecycleOwner = viewLifecycleOwner,
+                database = appLogic.database,
+                categoryId = categoryId,
+                onChooseFolder = { pauseFolderPicker.launch(null) },
+                onPreview = { previewPause() }
+        )
+
         binding.btnDeleteCategory.setOnClickListener { deleteCategory() }
         binding.editCategoryTitleGo.setOnClickListener { renameCategory() }
         binding.addUsedTimeBtn.setOnClickListener { addUsedTime() }
@@ -252,6 +291,33 @@ class CategorySettingsFragment : Fragment() {
         HardLockUi.veilIfNeeded(this, categoryId, binding.root)
 
         return binding.root
+    }
+
+    private fun previewPause() {
+        val context = requireContext().applicationContext
+        val view = view ?: return
+
+        Threads.database.execute {
+            val database = appLogic.database
+            val config = database.categoryPauseConfig().getByCategoryIdSync(categoryId)
+                ?: CategoryPauseConfig.default(categoryId)
+            val title = database.category().getCategoryByIdSync(categoryId)?.title ?: ""
+
+            val gate = PausePoint.Gate(
+                packageName = context.packageName,
+                categoryId = categoryId,
+                categoryTitle = "$title (preview)",
+                waitSeconds = config.waitSeconds,
+                checkInType = config.checkInType,
+                folderUri = config.folderUri,
+                copy = config.copy,
+                quoteText = "Every hour you spend there is an hour you did not spend on your own work.",
+                quoteAuthor = "preview",
+                startedAt = DefaultAppLogic.with(context).timeApi.getCurrentUptimeInMillis()
+            )
+
+            view.post { runCatching { PauseActivity.start(context, gate) } }
+        }
     }
 
     private fun renameCategory() {

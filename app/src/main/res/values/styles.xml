@@ -77,6 +77,21 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <!-- The pause is a screen, not a page: no app bar, its own black, and nothing that looks like
+         the rest of Limited, because the point of the moment is that it is not the usual flow. -->
+    <style name="PauseTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowBackground">#050208</item>
+        <item name="android:statusBarColor">#050208</item>
+        <item name="android:navigationBarColor">#050208</item>
+        <item name="colorPrimary">#C7A6F2</item>
+        <item name="colorOnPrimary">#12061C</item>
+    </style>
+
+    <style name="PauseImageShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
     <style name="DangerButton" parent="Widget.Material3.Button">
         <item name="backgroundTint">?attr/colorError</item>
         <item name="android:textColor">?attr/colorOnError</item>

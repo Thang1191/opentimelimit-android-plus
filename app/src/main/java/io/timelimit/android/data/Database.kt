@@ -25,6 +25,8 @@ interface Database {
     fun app(): AppDao
     fun categoryApp(): CategoryAppDao
     fun category(): CategoryDao
+    fun categoryPauseConfig(): CategoryPauseConfigDao
+    fun pauseQuote(): PauseQuoteDao
     fun config(): ConfigDao
     fun device(): DeviceDao
     fun timeLimitRules(): TimeLimitRuleDao

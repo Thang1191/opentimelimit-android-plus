@@ -54,13 +54,16 @@ import java.util.concurrent.TimeUnit
     CategoryTimeWarning::class,
     UserU2FKey::class,
     WidgetCategory::class,
-    WidgetConfig::class
-], version = 34, autoMigrations = [
+    WidgetConfig::class,
+    CategoryPauseConfig::class,
+    PauseQuote::class
+], version = 35, autoMigrations = [
     AutoMigration(from = 29, to = 30),
     AutoMigration(from = 30, to = 31),
     AutoMigration(from = 31, to = 32),
     AutoMigration(from = 32, to = 33),
-    AutoMigration(from = 33, to = 34)
+    AutoMigration(from = 33, to = 34),
+    AutoMigration(from = 34, to = 35)
 ])
 abstract class RoomDatabase: RoomDatabase(), io.timelimit.android.data.Database {
     companion object {

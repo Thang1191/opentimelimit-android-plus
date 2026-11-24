@@ -43,7 +43,9 @@ import io.timelimit.android.logic.blockingreason.CategoryHandlingCache
 import io.timelimit.android.logic.blockingreason.CategoryItselfHandling
 import io.timelimit.android.sync.actions.UpdateDeviceStatusAction
 import io.timelimit.android.sync.actions.apply.ApplyActionUtil
+import io.timelimit.android.agent.PausePoint
 import io.timelimit.android.ui.lock.LockActivity
+import io.timelimit.android.ui.pause.PauseActivity
 import io.timelimit.android.util.AndroidVersion
 import io.timelimit.android.util.TimeTextUtil
 import kotlinx.coroutines.delay
@@ -189,6 +191,30 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
     }
 
     private var stillBlockedApp: Pair<String, Long>? = null
+    private var lastPauseLaunch: Pair<String, Long>? = null
+
+    /**
+     * Show the pause, at most once every [LOCK_SCREEN_RELAUNCH_INTERVAL] for the same package.
+     *
+     * The same rule as the wall, for the same reason: re-launching a full screen activity every tick
+     * steals focus back from the home gesture. The pause loses nothing by being slow to reappear —
+     * it is armed in [PausePoint] either way, so the next tick after the throttle window puts it
+     * back, and coming back from the launcher is always slower than four seconds.
+     */
+    private fun openPauseScreen(gate: PausePoint.Gate) {
+        val now = appLogic.timeApi.getCurrentUptimeInMillis()
+        val last = lastPauseLaunch
+
+        if (last != null && last.first == gate.packageName && now - last.second < LOCK_SCREEN_RELAUNCH_INTERVAL) {
+            return
+        }
+
+        lastPauseLaunch = gate.packageName to now
+
+        runCatching { PauseActivity.start(appLogic.context, gate) }
+            .onFailure { Log.w(LOG_TAG, "could not show the pause screen", it) }
+    }
+
     private var lastDeviceLockAt = 0L
     private var lastLockScreenLaunch: Pair<String, Long>? = null
     private var releaseBlockingUntil = 0L
@@ -890,6 +916,37 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
                     stillBlockedApp = null
 
                     appLogic.platformIntegration.setShowBlockingOverlay(false)
+
+                    // Pause Point, and only when nothing is blocking: a gate in front of an app that
+                    // is already walled would be a second overlay fighting the first, and on this
+                    // device that failure mode has soft-locked the phone before.
+                    //
+                    // It reads the same category list the blocking decision above just read, so
+                    // "blocked" and "paused" can never disagree about what a category is.
+                    PausePoint.warmUp(appLogic.context, appLogic.database)
+
+                    val pauseNow = appLogic.timeApi.getCurrentUptimeInMillis()
+                    var pauseGate: PausePoint.Gate? = null
+
+                    for ((foregroundApp, handling) in foregroundAppWithBaseHandlings) {
+                        if (PausePoint.isExempt(foregroundApp.packageName, appLogic.context.packageName)) continue
+
+                        val pauseCategoryId = handling
+                            .getCategories(AppBaseHandling.GetCategoriesPurpose.Blocking)
+                            .firstOrNull { PausePoint.isEnabled(it) } ?: continue
+
+                        pauseGate = PausePoint.gateFor(
+                            context = appLogic.context,
+                            now = pauseNow,
+                            packageName = foregroundApp.packageName,
+                            categoryId = pauseCategoryId,
+                            categoryTitle = userRelatedData.categoryById[pauseCategoryId]?.category?.title ?: ""
+                        )
+
+                        if (pauseGate != null) break
+                    }
+
+                    if (pauseGate != null && !PauseActivity.isShowing) openPauseScreen(pauseGate)
                 }
 
                 if (blockAudioPlayback && audioPlaybackPackageName != null) {

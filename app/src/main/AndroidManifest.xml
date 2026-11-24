@@ -91,6 +91,17 @@
             tools:ignore="UnusedAttribute" />
 
         <activity
+            android:name=".ui.pause.PauseActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:resizeableActivity="false"
+            android:supportsPictureInPicture="false"
+            android:taskAffinity=":pause"
+            android:theme="@style/PauseTheme"
+            tools:ignore="UnusedAttribute" />
+
+        <activity
             tools:ignore="UnusedAttribute"
             android:excludeFromRecents="true"
             android:autoRemoveFromRecents="true"

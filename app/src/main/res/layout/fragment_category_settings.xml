@@ -108,6 +108,9 @@
             <include android:id="@+id/networks"
                 layout="@layout/manage_category_networks_view" />
 
+            <include android:id="@+id/pause_point"
+                layout="@layout/category_pause_point_view" />
+
             <com.google.android.material.card.MaterialCardView
                 style="?attr/materialCardViewElevatedStyle"
                 android:layout_width="match_parent"
