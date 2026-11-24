@@ -926,27 +926,37 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
                     PausePoint.warmUp(appLogic.context, appLogic.database)
 
                     val pauseNow = appLogic.timeApi.getCurrentUptimeInMillis()
+
+                    // A launch, not a tick: the package in front has to have just changed. Being
+                    // foreground is not a launch — Treating it as one is what made a zero cool-down
+                    // re-pause the moment Continue was pressed.
+                    val justLaunched = PausePoint.noteForeground(
+                        foregroundAppWithBaseHandlings.firstOrNull()?.first?.packageName
+                    )
+
                     var pauseGate: PausePoint.Gate? = null
 
-                    for ((foregroundApp, handling) in foregroundAppWithBaseHandlings) {
-                        if (PausePoint.isExempt(foregroundApp.packageName, appLogic.context.packageName)) continue
+                    if (justLaunched) {
+                        for ((foregroundApp, handling) in foregroundAppWithBaseHandlings) {
+                            if (PausePoint.isExempt(foregroundApp.packageName, appLogic.context.packageName)) continue
 
-                        val pauseCategoryId = handling
-                            .getCategories(AppBaseHandling.GetCategoriesPurpose.Blocking)
-                            .firstOrNull { PausePoint.isEnabled(it) } ?: continue
+                            val pauseCategoryId = handling
+                                .getCategories(AppBaseHandling.GetCategoriesPurpose.Blocking)
+                                .firstOrNull { PausePoint.isEnabled(it) } ?: continue
 
-                        pauseGate = PausePoint.gateFor(
-                            context = appLogic.context,
-                            now = pauseNow,
-                            packageName = foregroundApp.packageName,
-                            categoryId = pauseCategoryId,
-                            categoryTitle = userRelatedData.categoryById[pauseCategoryId]?.category?.title ?: ""
-                        )
+                            pauseGate = PausePoint.gateFor(
+                                context = appLogic.context,
+                                now = pauseNow,
+                                packageName = foregroundApp.packageName,
+                                categoryId = pauseCategoryId,
+                                categoryTitle = userRelatedData.categoryById[pauseCategoryId]?.category?.title ?: ""
+                            )
 
-                        if (pauseGate != null) break
+                            if (pauseGate != null) break
+                        }
                     }
 
-                    if (pauseGate != null && !PauseActivity.isShowing) openPauseScreen(pauseGate)
+                    if (pauseGate != null) openPauseScreen(pauseGate)
                 }
 
                 if (blockAudioPlayback && audioPlaybackPackageName != null) {

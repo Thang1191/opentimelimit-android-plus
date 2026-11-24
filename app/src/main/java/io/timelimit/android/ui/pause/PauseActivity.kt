@@ -242,7 +242,7 @@ class PauseActivity : AppCompatActivity() {
      */
     private fun loadImage(folderUri: String?) {
         if (folderUri.isNullOrEmpty()) {
-            binding.pauseBody.text = "No folder picked yet."
+            showImageMissing("No picture folder picked yet.")
 
             return
         }
@@ -250,18 +250,25 @@ class PauseActivity : AppCompatActivity() {
         Threads.database.execute {
             val bitmap = runCatching { readImageFromFolder(folderUri) }.getOrNull()
 
-            if (bitmap != null) {
-                runOnUiThread { binding.pauseImage.setImageBitmap(bitmap) }
+            runOnUiThread {
+                if (bitmap != null) {
+                    binding.pauseImage.setImageBitmap(bitmap)
+                } else {
+                    showImageMissing("No pictures in that folder yet.")
+                }
             }
         }
+    }
+
+    private fun showImageMissing(message: String) {
+        binding.pauseImage.visibility = View.GONE
+        binding.pauseBody.text = intent.getStringExtra(EXTRA_COPY) ?: message
     }
 
     private fun readImageFromFolder(folderUri: String): Bitmap? {
         val folder = DocumentFile.fromTreeUri(this, Uri.parse(folderUri)) ?: return null
 
-        val images = folder.listFiles().filter { file ->
-            file.isFile && file.type?.startsWith("image/") == true
-        }
+        val images = collectImages(folder, depth = 0)
 
         if (images.isEmpty()) return null
 
@@ -279,6 +286,25 @@ class PauseActivity : AppCompatActivity() {
         val options = BitmapFactory.Options().apply { inSampleSize = sampleSize }
 
         return contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, options) }
+    }
+
+    /**
+     * Files are usually one level down: the picker hands back `DCIM`, and the pictures live in
+     * `DCIM/Camera`. So walk the tree a couple of levels instead of assuming the folder is flat.
+     */
+    private fun collectImages(folder: DocumentFile, depth: Int): List<DocumentFile> {
+        val images = mutableListOf<DocumentFile>()
+
+        runCatching {
+            folder.listFiles().forEach { child ->
+                when {
+                    child.isDirectory && depth < 2 -> images += collectImages(child, depth + 1)
+                    child.isFile && child.type?.startsWith("image/") == true -> images += child
+                }
+            }
+        }
+
+        return images
     }
 
     private fun continueToApp(minutes: Int?) {

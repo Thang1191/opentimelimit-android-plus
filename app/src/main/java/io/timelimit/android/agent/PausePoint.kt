@@ -66,6 +66,22 @@ object PausePoint {
     private var gate: Gate? = null
     private var enteredPackage: String? = null
     private var enteredUntil = 0L
+    private var currentForeground: String? = null
+
+    /**
+     * Pause Point is a launch gate, so it has to know what a launch is: the foreground package
+     * *changing* to something. Being foreground is not a launch, otherwise the loop would gate the
+     * same appearance over and over — which is what made a zero cool-down re-pause the instant
+     * Continue was pressed.
+     *
+     * Returns true only for the tick where the package in front is a different one from last tick.
+     */
+    fun noteForeground(packageName: String?): Boolean = synchronized(lock) {
+        val previous = currentForeground
+        currentForeground = packageName
+
+        packageName != null && packageName != previous
+    }
 
     /** True when this category has the rule switched on. Cheap: one map lookup, no SQLite. */
     fun isEnabled(categoryId: String): Boolean = configs[categoryId]?.enabled == true
@@ -183,6 +199,10 @@ object PausePoint {
             enteredPackage = packageName
             enteredUntil = now + cooldown * 60_000L
             gate = null
+
+            // The app is about to be the foreground package again; do not count that as a new
+            // launch, or a zero cool-down would pause the same appearance straight back.
+            currentForeground = packageName
 
             current
         }
