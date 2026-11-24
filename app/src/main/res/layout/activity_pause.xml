@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Two exits, deliberately unequal.
+  Two exits, stacked at the bottom, deliberately unequal.
 
-  Closing is the easy one: full width, filled, pinned at the top, impossible to miss. Continuing is a
-  small unadorned line at the bottom, so the path of least resistance through this screen leads out
-  of the app rather than into it. Neither exit can end up below the fold: the close button sits
-  outside the scrolling area, and Continue sits outside it too.
+  Close is the loud one: full width, filled, sitting directly above Continue. Continue is a small
+  unadorned line underneath it. Neither sits inside the scrolling area, so neither can be pushed
+  below the fold by a tall picture — which is what made Close unreachable on the image check-in.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,16 +15,6 @@
     android:paddingHorizontal="20dp"
     android:paddingTop="24dp"
     android:paddingBottom="16dp">
-
-    <Button
-        android:id="@+id/pause_close"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:text="Close"
-        android:textSize="18sp"
-        android:textColor="#12061C"
-        android:backgroundTint="#C7A6F2"
-        app:cornerRadius="18dp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -170,14 +159,26 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- The way in: quiet, small, and pinned to the bottom where the eye has already stopped looking. -->
+    <!-- The loud exit sits on top of the quiet one: Close above, Continue below. -->
+    <Button
+        android:id="@+id/pause_close"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_marginTop="12dp"
+        android:text="Close"
+        android:textSize="18sp"
+        android:textColor="#12061C"
+        android:backgroundTint="#C7A6F2"
+        app:cornerRadius="18dp" />
+
+    <!-- The way in: quiet, small, and underneath the way out. -->
     <Button
         android:id="@+id/pause_continue"
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
-        android:layout_height="44dp"
+        android:layout_height="42dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         android:minWidth="0dp"
         android:paddingHorizontal="20dp"
         android:text="Continue anyway"
