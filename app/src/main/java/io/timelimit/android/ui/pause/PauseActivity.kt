@@ -233,10 +233,15 @@ class PauseActivity : AppCompatActivity() {
             }
 
             CategoryPauseConfig.CHECK_IN_QUOTE -> {
-                binding.pauseBody.text = quoteText ?: copy ?: "Breathe out."
-                binding.pauseAuthor.text = quoteAuthor
+                // Ask for a fresh one every time the screen appears: the gate is reused when the
+                // user walks away without pressing Continue, so the quote baked into it would
+                // otherwise be the same line on every reopen.
+                val fresh = PausePoint.nextQuote()
+
+                binding.pauseBody.text = fresh?.text ?: quoteText ?: copy ?: "Breathe out."
+                binding.pauseAuthor.text = fresh?.author ?: quoteAuthor
                 binding.pauseAuthor.visibility =
-                    if (quoteAuthor.isNullOrBlank()) View.GONE else View.VISIBLE
+                    if ((fresh?.author ?: quoteAuthor).isNullOrBlank()) View.GONE else View.VISIBLE
             }
 
             CategoryPauseConfig.CHECK_IN_TIMER ->

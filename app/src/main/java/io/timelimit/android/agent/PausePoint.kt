@@ -61,7 +61,7 @@ object PausePoint {
     private val lock = Any()
 
     private var quotes: List<PauseQuote> = emptyList()
-    private var quoteIndex = 0
+    private var lastQuote: PauseQuote? = null
 
     private var gate: Gate? = null
     private var enteredPackage: String? = null
@@ -274,12 +274,23 @@ object PausePoint {
         }
     }
 
-    private fun nextQuote(): PauseQuote? {
+    /**
+     * A quote for the next pause: random rather than a fixed cycle, and never the same one twice
+     * running. Public because the pause screen asks again every time it appears — a gate the user
+     * walked away from and reopened must not greet them with the same line as if nothing happened.
+     */
+    fun nextQuote(): PauseQuote? = synchronized(lock) {
         val pool = quotes
-        if (pool.isEmpty()) return null
 
-        quoteIndex = (quoteIndex + 1) % pool.size
+        if (pool.isEmpty()) return@synchronized null
 
-        return pool[quoteIndex]
+        val picked = pool
+            .filter { it != lastQuote }
+            .ifEmpty { pool }
+            .random()
+
+        lastQuote = picked
+
+        picked
     }
 }

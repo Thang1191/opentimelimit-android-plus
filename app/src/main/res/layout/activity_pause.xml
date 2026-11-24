@@ -55,6 +55,17 @@
         android:visibility="gone"
         app:shapeAppearanceOverlay="@style/PausePointImageShape" />
 
+    <!-- Everything that isn't the picture lives here, and this block owns the leftover height. With
+         a picture the two split the screen; without one this takes all of it and its contents centre
+         vertically, so the content and the ring sit in thumb reach instead of hugging the top. -->
+    <LinearLayout
+        android:id="@+id/pause_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
     <TextView
         android:id="@+id/pause_body"
         android:layout_width="match_parent"
@@ -189,6 +200,7 @@
             android:textColor="#E9DDFF"
             android:backgroundTint="#453E58"
             app:cornerRadius="20dp" />
+    </LinearLayout>
     </LinearLayout>
 
     <!-- Close: ButtonMedium, 56dp, CornerFull, Primary / on Primary. -->
