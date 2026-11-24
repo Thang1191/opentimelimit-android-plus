@@ -16,17 +16,22 @@
 package io.timelimit.android.ui.manage.category.settings
 
 import android.net.Uri
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.slider.Slider
+import io.timelimit.android.R
 import io.timelimit.android.agent.PausePrompts
 import io.timelimit.android.async.Threads
 import io.timelimit.android.data.Database
 import io.timelimit.android.data.model.CategoryPauseConfig
 import io.timelimit.android.databinding.CategoryPausePointViewBinding
+import io.timelimit.android.databinding.ItemPauseLineBinding
 
 /**
  * The settings half of Pause Point, on the category's own page.
@@ -65,6 +70,39 @@ object CategoryPausePointView {
             }
         }
 
+        var pendingSave: Runnable? = null
+
+        // Every write goes to the live table the enforcement loop reads, so typing is debounced
+        // rather than saved per keystroke — which also stops the rows re-rendering under the caret.
+        fun commitLines() {
+            val lines = currentLines(binding)
+
+            // The built-ins, or nothing at all: store nothing, so the pause falls back to the shared
+            // list and later changes to that list reach this category too.
+            val stored = when {
+                lines.isEmpty() || lines == PausePrompts.DEFAULT_LINES -> null
+                else -> lines.joinToString("\n")
+            }
+
+            if (stored == current.copy) return
+
+            save { it.copy(copy = stored) }
+        }
+
+        fun scheduleSave() {
+            pendingSave?.let { binding.pauseLinesContainer.removeCallbacks(it) }
+
+            val runnable = Runnable { commitLines() }
+
+            pendingSave = runnable
+            binding.pauseLinesContainer.postDelayed(runnable, 600)
+        }
+
+        binding.pauseAddLine.setOnClickListener {
+            addRow(binding, "", focus = true, onChanged = { scheduleSave() }, onDelete = { scheduleSave() })
+            scheduleSave()
+        }
+
         fun render(config: CategoryPauseConfig) {
             rendering = true
 
@@ -82,9 +120,20 @@ object CategoryPausePointView {
             binding.pauseFolderValue.text = config.folderUri?.let { folderLabel(it) } ?: "No folder picked"
             binding.pauseFolderBtn.isEnabled = config.checkInType == CategoryPauseConfig.CHECK_IN_IMAGES
 
-            val lines = PausePrompts.editorText(config.copy)
+            val showsMessages = config.checkInType == CategoryPauseConfig.CHECK_IN_IMAGES
 
-            if (binding.pauseLines.text?.toString() != lines) binding.pauseLines.setText(lines)
+            binding.pauseLinesBlock.visibility = if (showsMessages) View.VISIBLE else View.GONE
+
+            if (showsMessages) {
+                val lines = PausePrompts.lines(config.copy)
+
+                // Rebuild only when the rows do not already say this, and never while one of them
+                // has focus: re-setting the text under the caret is what made the field reset as
+                // the user typed.
+                if (!hasFocusedRow(binding) && currentLines(binding) != lines) {
+                    buildRows(binding, lines, onChanged = { scheduleSave() }, onDelete = { scheduleSave() })
+                }
+            }
 
             rendering = false
         }
@@ -142,42 +191,67 @@ object CategoryPausePointView {
         binding.pauseFolderBtn.setOnClickListener { onChooseFolder() }
         binding.pausePreviewBtn.setOnClickListener { onPreview() }
 
-        // Typed lines save themselves: a debounce rather than a save-per-keystroke, because every
-        // write goes through the live table the enforcement loop is reading. A blank field stores
-        // null, which is what makes the pause fall back to its built-in lines.
-        var pendingSave: Runnable? = null
-
-        fun commitLines() {
-            val typed = binding.pauseLines.text?.toString()?.trim().orEmpty()
-
-            // Still the built-ins, or emptied out: store nothing, so the screen falls back to the
-            // shared list and later changes to it reach this category too.
-            val stored = if (typed.isBlank() || PausePrompts.isDefault(typed)) null else typed
-
-            if (stored == current.copy) return
-
-            save { it.copy(copy = stored) }
-        }
-
-        binding.pauseLines.doAfterTextChanged {
-            if (rendering) return@doAfterTextChanged
-
-            pendingSave?.let { binding.pauseLines.removeCallbacks(it) }
-
-            val save = Runnable { commitLines() }
-
-            pendingSave = save
-            binding.pauseLines.postDelayed(save, 700)
-        }
-
-        binding.pauseLines.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                pendingSave?.let { binding.pauseLines.removeCallbacks(it) }
-                commitLines()
-            }
-        }
-
         render(current)
+    }
+
+    /** The rows as they currently read, blank rows dropped. */
+    private fun currentLines(binding: CategoryPausePointViewBinding): List<String> =
+        (0 until binding.pauseLinesContainer.childCount).mapNotNull { index ->
+            binding.pauseLinesContainer.getChildAt(index)
+                .findViewById<EditText>(R.id.pause_line_input)
+                ?.text?.toString()?.trim()
+                ?.takeIf { it.isNotEmpty() }
+        }
+
+    /** True while the user is inside a row. Re-setting text under a caret is what broke editing. */
+    private fun hasFocusedRow(binding: CategoryPausePointViewBinding): Boolean =
+        (0 until binding.pauseLinesContainer.childCount).any { index ->
+            binding.pauseLinesContainer.getChildAt(index)
+                .findViewById<EditText>(R.id.pause_line_input)?.hasFocus() == true
+        }
+
+    private fun buildRows(
+        binding: CategoryPausePointViewBinding,
+        lines: List<String>,
+        onChanged: () -> Unit,
+        onDelete: () -> Unit
+    ) {
+        binding.pauseLinesContainer.removeAllViews()
+
+        lines.forEach { addRow(binding, it, focus = false, onChanged = onChanged, onDelete = onDelete) }
+    }
+
+    private fun addRow(
+        binding: CategoryPausePointViewBinding,
+        text: String,
+        focus: Boolean,
+        onChanged: () -> Unit,
+        onDelete: () -> Unit
+    ) {
+        val row = ItemPauseLineBinding.inflate(
+            LayoutInflater.from(binding.root.context),
+            binding.pauseLinesContainer,
+            false
+        )
+
+        row.pauseLineInput.setText(text)
+        row.pauseLineInput.doAfterTextChanged { onChanged() }
+
+        row.pauseLineDelete.setOnClickListener {
+            binding.pauseLinesContainer.removeView(row.root)
+
+            // Never leave the card with no rows at all: one empty row is what "nothing custom"
+            // looks like, and it keeps the add button from being the only thing left.
+            if (binding.pauseLinesContainer.childCount == 0) {
+                addRow(binding, "", focus = true, onChanged = onChanged, onDelete = onDelete)
+            }
+
+            onDelete()
+        }
+
+        binding.pauseLinesContainer.addView(row.root)
+
+        if (focus) row.pauseLineInput.requestFocus()
     }
 
     /** The tree URI is opaque, so show the part a human recognises: the last path segment. */

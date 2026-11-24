@@ -48,10 +48,4 @@ object PausePrompts {
 
         return parsed.ifEmpty { DEFAULT_LINES }
     }
-
-    /** What the settings field starts out showing. */
-    fun editorText(copy: String?): String = lines(copy).joinToString("\n")
-
-    /** True when the typed lines are still the built-ins, in which case there is nothing to store. */
-    fun isDefault(text: String): Boolean = text.lines().map { it.trim() }.filter { it.isNotEmpty() } == DEFAULT_LINES
 }
