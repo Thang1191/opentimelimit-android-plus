@@ -192,24 +192,29 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
 
     private var stillBlockedApp: Pair<String, Long>? = null
     private var lastPauseLaunch: Pair<String, Long>? = null
+    private var lastPauseGateStartedAt = 0L
 
     /**
-     * Show the pause, at most once every [LOCK_SCREEN_RELAUNCH_INTERVAL] for the same package.
+     * Show the pause, at most once every [LOCK_SCREEN_RELAUNCH_INTERVAL] for the same gate.
      *
-     * The same rule as the wall, for the same reason: re-launching a full screen activity every tick
-     * steals focus back from the home gesture. The pause loses nothing by being slow to reappear —
-     * it is armed in [PausePoint] either way, so the next tick after the throttle window puts it
-     * back, and coming back from the launcher is always slower than four seconds.
+     * The throttle exists to stop re-launching a full screen activity every tick, which steals focus
+     * back from the home gesture. It must not apply to a *new* gate: a fresh launch is a fresh ten
+     * seconds, and swallowing it because the last one was four seconds ago is exactly the bypass
+     * that made swiping home and straight back in work.
      */
     private fun openPauseScreen(gate: PausePoint.Gate) {
         val now = appLogic.timeApi.getCurrentUptimeInMillis()
         val last = lastPauseLaunch
 
-        if (last != null && last.first == gate.packageName && now - last.second < LOCK_SCREEN_RELAUNCH_INTERVAL) {
-            return
-        }
+        val sameGate = last != null &&
+            last.first == gate.packageName &&
+            gate.startedAt == lastPauseGateStartedAt &&
+            now - last.second < LOCK_SCREEN_RELAUNCH_INTERVAL
+
+        if (sameGate) return
 
         lastPauseLaunch = gate.packageName to now
+        lastPauseGateStartedAt = gate.startedAt
 
         runCatching { PauseActivity.start(appLogic.context, gate) }
             .onFailure { Log.w(LOG_TAG, "could not show the pause screen", it) }
@@ -936,24 +941,23 @@ class BackgroundTaskLogic(val appLogic: AppLogic) {
 
                     var pauseGate: PausePoint.Gate? = null
 
-                    if (justLaunched) {
-                        for ((foregroundApp, handling) in foregroundAppWithBaseHandlings) {
-                            if (PausePoint.isExempt(foregroundApp.packageName, appLogic.context.packageName)) continue
+                    for ((foregroundApp, handling) in foregroundAppWithBaseHandlings) {
+                        if (PausePoint.isExempt(foregroundApp.packageName, appLogic.context.packageName)) continue
+                        if (!PausePoint.shouldGate(foregroundApp.packageName, justLaunched)) continue
 
-                            val pauseCategoryId = handling
-                                .getCategories(AppBaseHandling.GetCategoriesPurpose.Blocking)
-                                .firstOrNull { PausePoint.isEnabled(it) } ?: continue
+                        val pauseCategoryId = handling
+                            .getCategories(AppBaseHandling.GetCategoriesPurpose.Blocking)
+                            .firstOrNull { PausePoint.isEnabled(it) } ?: continue
 
-                            pauseGate = PausePoint.gateFor(
-                                context = appLogic.context,
-                                now = pauseNow,
-                                packageName = foregroundApp.packageName,
-                                categoryId = pauseCategoryId,
-                                categoryTitle = userRelatedData.categoryById[pauseCategoryId]?.category?.title ?: ""
-                            )
+                        pauseGate = PausePoint.gateFor(
+                            context = appLogic.context,
+                            now = pauseNow,
+                            packageName = foregroundApp.packageName,
+                            categoryId = pauseCategoryId,
+                            categoryTitle = userRelatedData.categoryById[pauseCategoryId]?.category?.title ?: ""
+                        )
 
-                            if (pauseGate != null) break
-                        }
+                        if (pauseGate != null) break
                     }
 
                     if (pauseGate != null) openPauseScreen(pauseGate)

@@ -69,6 +69,16 @@ object PausePoint {
     private var currentForeground: String? = null
 
     /**
+     * Packages whose pause was walked away from without pressing Continue.
+     *
+     * This is a fact the screen knows for certain (its own lifecycle) and the enforcement loop can
+     * only guess at: a swipe home and a reopen inside one polling interval leaves no trace in the
+     * foreground list, so "did the app just launch" answers no and the gate never comes back. A
+     * pending package is gated on sight instead, whatever the foreground list thinks happened.
+     */
+    private val awaitingPause = mutableSetOf<String>()
+
+    /**
      * Pause Point is a launch gate, so it has to know what a launch is: the foreground package
      * *changing* to something. Being foreground is not a launch, otherwise the loop would gate the
      * same appearance over and over — which is what made a zero cool-down re-pause the instant
@@ -105,6 +115,14 @@ object PausePoint {
 
     fun isExempt(packageName: String, ownPackageName: String): Boolean =
         packageName == ownPackageName || packageName in NEVER_PAUSE
+
+    /**
+     * Gate this app now? Either it just came to the front, or its pause was walked away from and has
+     * not been satisfied yet. The second half is what closes the swipe-home-and-back hole.
+     */
+    fun shouldGate(packageName: String, justLaunched: Boolean): Boolean = synchronized(lock) {
+        justLaunched || awaitingPause.contains(packageName)
+    }
 
     /**
      * Called once from the enforcement loop. Watches the enabled rows so the settings page takes
@@ -152,6 +170,12 @@ object PausePoint {
         synchronized(lock) {
             if (enteredPackage == packageName && now < enteredUntil) return null
 
+            // A pause that was walked away from does not carry its countdown into the next launch:
+            // the whole cost of the gate is the wait, so it is paid again.
+            if (awaitingPause.contains(packageName)) {
+                gate = null
+            }
+
             gate?.let { existing ->
                 if (existing.packageName == packageName) return existing
             }
@@ -175,6 +199,7 @@ object PausePoint {
             )
 
             gate = created
+            awaitingPause.remove(packageName)
 
             Interruptions.record(
                 context = context,
@@ -203,6 +228,7 @@ object PausePoint {
             // The app is about to be the foreground package again; do not count that as a new
             // launch, or a zero cool-down would pause the same appearance straight back.
             currentForeground = packageName
+            awaitingPause.remove(packageName)
 
             current
         }
@@ -226,6 +252,8 @@ object PausePoint {
             // that every launch pays the wait: the next time the app comes up it is a new launch,
             // and a new launch starts the countdown from the top.
             gate = null
+            awaitingPause += packageName
+
             armed
         }
 
