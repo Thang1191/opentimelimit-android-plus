@@ -20,7 +20,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.slider.Slider
+import io.timelimit.android.agent.PausePrompts
 import io.timelimit.android.async.Threads
 import io.timelimit.android.data.Database
 import io.timelimit.android.data.model.CategoryPauseConfig
@@ -80,6 +82,10 @@ object CategoryPausePointView {
             binding.pauseFolderValue.text = config.folderUri?.let { folderLabel(it) } ?: "No folder picked"
             binding.pauseFolderBtn.isEnabled = config.checkInType == CategoryPauseConfig.CHECK_IN_IMAGES
 
+            val lines = PausePrompts.editorText(config.copy)
+
+            if (binding.pauseLines.text?.toString() != lines) binding.pauseLines.setText(lines)
+
             rendering = false
         }
 
@@ -135,6 +141,41 @@ object CategoryPausePointView {
 
         binding.pauseFolderBtn.setOnClickListener { onChooseFolder() }
         binding.pausePreviewBtn.setOnClickListener { onPreview() }
+
+        // Typed lines save themselves: a debounce rather than a save-per-keystroke, because every
+        // write goes through the live table the enforcement loop is reading. A blank field stores
+        // null, which is what makes the pause fall back to its built-in lines.
+        var pendingSave: Runnable? = null
+
+        fun commitLines() {
+            val typed = binding.pauseLines.text?.toString()?.trim().orEmpty()
+
+            // Still the built-ins, or emptied out: store nothing, so the screen falls back to the
+            // shared list and later changes to it reach this category too.
+            val stored = if (typed.isBlank() || PausePrompts.isDefault(typed)) null else typed
+
+            if (stored == current.copy) return
+
+            save { it.copy(copy = stored) }
+        }
+
+        binding.pauseLines.doAfterTextChanged {
+            if (rendering) return@doAfterTextChanged
+
+            pendingSave?.let { binding.pauseLines.removeCallbacks(it) }
+
+            val save = Runnable { commitLines() }
+
+            pendingSave = save
+            binding.pauseLines.postDelayed(save, 700)
+        }
+
+        binding.pauseLines.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                pendingSave?.let { binding.pauseLines.removeCallbacks(it) }
+                commitLines()
+            }
+        }
 
         render(current)
     }

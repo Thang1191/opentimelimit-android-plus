@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import io.timelimit.android.agent.Interruptions
 import io.timelimit.android.agent.PausePoint
+import io.timelimit.android.agent.PausePrompts
 import io.timelimit.android.async.Threads
 import io.timelimit.android.data.model.CategoryPauseConfig
 import io.timelimit.android.databinding.ActivityPauseBinding
@@ -70,25 +71,6 @@ class PauseActivity : AppCompatActivity() {
 
         /** The line under the picture last time, so the same prompt does not repeat back to back. */
         private var lastPicturePrompt: String? = null
-
-        /**
-         * What the picture check-in says under the photo, one line at a time.
-         *
-         * These are the pause's whole voice. The countdown alone is a delay; a sentence about the
-         * thing you are about to scroll past is the reason the delay is long enough to matter.
-         * Kept short enough to sit in two or three lines at 22sp on a phone.
-         */
-        private val picturePrompts = listOf(
-            "Remember this?",
-            "Remember this? You were happy here. Nothing about that has changed.",
-            "This was worth the day it took. The feed is not.",
-            "Whoever is in this picture would rather you came back to them.",
-            "Look at it for ten seconds. That is the whole ask.",
-            "You kept this on purpose. Keep it a moment longer.",
-            "The good part of today already happened, and it is in here.",
-            "Nothing you are about to open will be better than this.",
-            "You will not remember what you were about to look at."
-        )
 
         /** True while a pause is on screen; the loop uses it so it never re-launches over itself. */
         val isShowing: Boolean get() = synchronized(currentInstances) { currentInstances.isNotEmpty() }
@@ -246,7 +228,7 @@ class PauseActivity : AppCompatActivity() {
         when (checkInType) {
             CategoryPauseConfig.CHECK_IN_IMAGES -> {
                 binding.pauseImage.visibility = View.VISIBLE
-                binding.pauseBody.text = copy?.takeIf { it.isNotBlank() } ?: nextPicturePrompt()
+                binding.pauseBody.text = nextPicturePrompt(PausePrompts.lines(copy))
                 loadImage(intent.getStringExtra(EXTRA_FOLDER_URI))
             }
 
@@ -301,13 +283,13 @@ class PauseActivity : AppCompatActivity() {
     }
 
     /**
-     * One prompt per pause, never the same one twice running: with nine lines a plain random draw
-     * repeats often enough for the screen to feel like it is not paying attention.
+     * One prompt per pause, never the same one twice running: with a handful of lines a plain random
+     * draw repeats often enough for the screen to feel like it is not paying attention.
      */
-    private fun nextPicturePrompt(): String {
-        val picked = picturePrompts
+    private fun nextPicturePrompt(pool: List<String>): String {
+        val picked = pool
             .filter { it != lastPicturePrompt }
-            .ifEmpty { picturePrompts }
+            .ifEmpty { pool }
             .random()
 
         lastPicturePrompt = picked
