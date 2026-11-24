@@ -196,11 +196,16 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Close is the loud exit: full width, filled, tall, sitting directly on top of Continue. -->
+    <!-- Close is the loud exit: full width, filled, sitting directly on top of Continue.
+         From M3 (m3-expressive skill, component-tokens.md): ButtonMedium.ContainerHeight = 56dp,
+         ButtonMedium.ContainerShapeRound = CornerFull (= height/2 = 28dp).
+         My design decision (not in M3): a static 4dp elevation, since FilledButton's resting
+         elevation is Level0 (flat) and this sits on an otherwise flat black background with
+         nothing else to separate it from. -->
     <Button
         android:id="@+id/pause_close"
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="56dp"
         android:layout_marginTop="14dp"
         android:text="Close"
         android:textSize="18sp"
@@ -208,15 +213,16 @@
         android:fontFamily="sans-serif-black"
         android:textColor="#12061C"
         android:backgroundTint="#C7A6F2"
-        android:elevation="6dp"
-        app:cornerRadius="29dp" />
+        android:elevation="4dp"
+        app:cornerRadius="28dp" />
 
-    <!-- Continue is the quiet one: text only, small, muted, directly underneath. -->
+    <!-- Continue is the quiet one: text only, small, muted, directly underneath.
+         From M3: ButtonSmall.ContainerHeight = 40dp. -->
     <Button
         android:id="@+id/pause_continue"
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
-        android:layout_height="38dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="4dp"
         android:minWidth="0dp"
