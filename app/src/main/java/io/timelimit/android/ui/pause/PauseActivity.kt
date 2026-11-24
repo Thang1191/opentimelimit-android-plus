@@ -63,6 +63,9 @@ class PauseActivity : AppCompatActivity() {
 
         val currentInstances = mutableSetOf<PauseActivity>()
 
+        /** The picture shown last, so two pauses in a row do not land on the same one. */
+        private var lastPickedImage: Uri? = null
+
         /** True while a pause is on screen; the loop uses it so it never re-launches over itself. */
         val isShowing: Boolean get() = synchronized(currentInstances) { currentInstances.isNotEmpty() }
 
@@ -272,10 +275,15 @@ class PauseActivity : AppCompatActivity() {
 
         if (images.isEmpty()) return null
 
-        // Same picture all day, a different one tomorrow: enough variety to notice, not enough to
-        // become wallpaper.
-        val index = ((System.currentTimeMillis() / (24 * 60 * 60 * 1000)) % images.size).toInt()
-        val uri = images[index].uri
+        // Random each time, but not the same photo twice in a row: with a handful of pictures a
+        // plain random draw repeats often enough to look like a bug.
+        val picked = images
+            .filter { it.uri != lastPickedImage }
+            .ifEmpty { images }
+            .random()
+
+        lastPickedImage = picked.uri
+        val uri = picked.uri
 
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
