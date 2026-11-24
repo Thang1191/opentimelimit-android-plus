@@ -1,237 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Pause Point, rebuilt again. The first redesign reached for a kicker pill, a decorative glow
-  blob and a circular progress ring as the "hero" — three generic AI-dashboard moves the design
-  floor refuses outright (kicker above content, a ring standing in for content). It also never
-  fit on a real screen: a 300dp image plus a 132dp ring plus two cards plus the button stack
-  overflowed a normal phone's height, so the ring content sat partly below the fold.
+  Pause Point.
 
-  What stayed: the asymmetric shaped card and image corners (the real identity move, not
-  decoration-for-decoration), and the two-exit rule below. What's gone: the pill, the glow, the
-  ring. The timer is a real M3 LinearProgressIndicator doing its actual job, not a dashboard
-  widget borrowed for looks.
+  Rebuilt with two references in hand: Material 3 Expressive for every component and token decision
+  (m3-expressive skill: references/tokens.md, references/component-tokens.md,
+  references/components/feedback.md), and the craft floor for what to avoid (impeccable,
+  reference/craft-floor.md).
 
-  The exits are stacked at the bottom, Close directly above Continue, neither inside the scroll
-  so a tall picture can't push them off screen. Close is loud — full width, filled, tall.
-  Continue is quiet — small, text-only, muted.
+  What the composition is, top to bottom:
+
+  1. The picture. It is the check-in, not wallpaper behind one, so it takes every dp the rest of
+     the column does not need and is always the largest thing on screen.
+  2. One line under it. For the pictures check-in this is a prompt that rotates each pause
+     ("Remember this?") unless the category has its own copy set.
+  3. A circular countdown. A real M3 CircularProgressIndicator doing a real job: determinate,
+     Primary active indicator on a Secondary container track, 120dp indicator size (the component's
+     documented range is 24–240dp), 6dp track — thicker than the 4dp default, which is the
+     configurable track thickness M3 Expressive added. The craft floor refuses rings standing in for
+     content; this ring *is* the content, and the brief asked for it by name.
+  4. Both exits, stacked at the bottom. Close is the loud one — full width, filled, 56dp
+     (ButtonMedium) on CornerFull. Continue sits directly under it, text-only and 40dp
+     (ButtonSmall). Neither is a kicker: there is no small label floating above a heading, because
+     the picture is the heading.
+
+  No ScrollView. The column is laid out to fit a 363×800dp phone by construction — the picture
+  absorbs the slack through layout_weight, so there is nothing left to scroll and nothing can be
+  pushed off the bottom. A previous version put this inside a ScrollView, where a weighted child
+  measured against an unconstrained height and the countdown ended up clipped 283px past the
+  viewport.
+
+  Shape carries the expression instead of decoration: one 28dp CornerExtraLarge rectangle against
+  one full circle, and nothing else needs a gradient, a glow or an outlined pill.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#050208"
+    android:background="#0A0612"
     android:paddingHorizontal="20dp"
-    android:paddingTop="20dp"
-    android:paddingBottom="16dp">
+    android:paddingTop="16dp"
+    android:paddingBottom="12dp">
 
-    <ScrollView
+    <!-- The picture takes whatever height the rest of the column does not need. minHeight stops it
+         being squeezed out of existence when the system font is scaled up. CornerExtraLarge = 28dp. -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/pause_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        android:minHeight="160dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null"
+        android:visibility="gone"
+        app:shapeAppearanceOverlay="@style/PausePointImageShape" />
+
+    <TextView
+        android:id="@+id/pause_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textColor="#EDE6F5"
+        android:textSize="22sp"
+        android:lineSpacingMultiplier="1.2"
+        android:fontFamily="sans-serif" />
+
+    <TextView
+        android:id="@+id/pause_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:textColor="#B3AAC4"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/pause_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="One line: what are you opening it for?"
+        android:textColor="#EDE6F5"
+        android:textColorHint="#B3AAC4"
+        android:textSize="16sp"
+        android:inputType="textCapSentences"
+        android:maxLines="3"
+        android:backgroundTint="#453E58"
+        android:visibility="gone" />
+
+    <!-- The countdown. Drawn by CountdownRing so the ring is centred on its view by construction:
+         Material's CircularProgressIndicator put its arc about 2dp off-centre with the track
+         touching the view edge, which reads as misaligned and clipped. Digits sit in the middle
+         because the ring exists to frame them, and tabular figures keep the number from shifting
+         sideways as it counts. The 7dp translation drops the block so the *number* lands on the
+         ring's centre with the unit hanging below it, instead of the pair being centred as a block
+         and the number riding high. -->
+    <FrameLayout
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp">
+
+        <io.timelimit.android.ui.pause.CountdownRing
+            android:id="@+id/pause_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="vertical"
-            android:gravity="center_vertical">
+            android:gravity="center"
+            android:translationY="7dp">
 
             <TextView
+                android:id="@+id/pause_countdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pause Point"
-                android:textColor="#9C8DAE"
-                android:textSize="11sp"
-                android:letterSpacing="0.12"
+                android:layout_gravity="center_horizontal"
+                android:includeFontPadding="false"
+                android:textColor="#EDE6F5"
+                android:textSize="36sp"
                 android:fontFamily="sans-serif-medium"
-                android:textAllCaps="true" />
+                android:fontFeatureSettings="tnum" />
 
             <TextView
-                android:id="@+id/pause_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:textColor="#5CE0E6"
-                android:textSize="15sp"
+                android:layout_gravity="center_horizontal"
+                android:includeFontPadding="false"
+                android:text="sec"
+                android:textColor="#B3AAC4"
+                android:textSize="12sp"
                 android:fontFamily="sans-serif-medium" />
-
-            <!-- The photo is the check-in, not decoration behind one: a shaped frame, sized so
-                 the rest of the screen — text, timer, both exits — still fits without scrolling. -->
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/pause_image"
-                android:layout_width="match_parent"
-                android:layout_height="210dp"
-                android:layout_marginTop="16dp"
-                android:scaleType="centerCrop"
-                android:contentDescription="@null"
-                android:visibility="gone"
-                app:shapeAppearanceOverlay="@style/PausePointImageShape" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#170C24"
-                app:cardElevation="0dp"
-                app:strokeColor="#2E2140"
-                app:strokeWidth="1dp"
-                app:shapeAppearanceOverlay="@style/PausePointCardShape">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:id="@+id/pause_body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:lineSpacingMultiplier="1.25"
-                        android:textColor="#F2ECFA"
-                        android:textSize="20sp"
-                        android:fontFamily="sans-serif-medium" />
-
-                    <TextView
-                        android:id="@+id/pause_author"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:textColor="#9C8DAE"
-                        android:textSize="13sp"
-                        android:visibility="gone" />
-
-                    <EditText
-                        android:id="@+id/pause_note"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="One line: what are you opening it for?"
-                        android:textColor="#F2ECFA"
-                        android:textColorHint="#6E627E"
-                        android:textSize="17sp"
-                        android:inputType="textCapSentences"
-                        android:maxLines="3"
-                        android:backgroundTint="#5A4B6E"
-                        android:visibility="gone" />
-
-                    <!-- A real M3 progress indicator doing its actual job — the time left — not a
-                         dashboard ring borrowed for the look of one. -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/pause_countdown"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="#E3D6F7"
-                            android:textSize="32sp"
-                            android:fontFamily="sans-serif-black" />
-
-                        <com.google.android.material.progressindicator.LinearProgressIndicator
-                            android:id="@+id/pause_progress"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="16dp"
-                            android:max="100"
-                            app:indicatorColor="#C7A6F2"
-                            app:trackColor="#2A1E38"
-                            app:trackThickness="8dp"
-                            app:trackCornerRadius="4dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/pause_timer_row"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <Button
-                            android:id="@+id/pause_timer_5"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="5 min"
-                            android:textSize="14sp"
-                            android:backgroundTint="#2A1E38"
-                            android:textColor="#D8C9EC"
-                            app:cornerRadius="14dp" />
-
-                        <Button
-                            android:id="@+id/pause_timer_15"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="8dp"
-                            android:text="15 min"
-                            android:textSize="14sp"
-                            android:backgroundTint="#2A1E38"
-                            android:textColor="#D8C9EC"
-                            app:cornerRadius="14dp" />
-
-                        <Button
-                            android:id="@+id/pause_timer_30"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="8dp"
-                            android:text="30 min"
-                            android:textSize="14sp"
-                            android:backgroundTint="#2A1E38"
-                            android:textColor="#D8C9EC"
-                            app:cornerRadius="14dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-    </ScrollView>
+    </FrameLayout>
 
-    <!-- Close is the loud exit: full width, filled, sitting directly on top of Continue.
-         From M3 (m3-expressive skill, component-tokens.md): ButtonMedium.ContainerHeight = 56dp,
-         ButtonMedium.ContainerShapeRound = CornerFull (= height/2 = 28dp).
-         My design decision (not in M3): a static 4dp elevation, since FilledButton's resting
-         elevation is Level0 (flat) and this sits on an otherwise flat black background with
-         nothing else to separate it from. -->
+    <!-- Timer check-in: ButtonSmall (40dp) tonal buttons on CornerFull. -->
+    <LinearLayout
+        android:id="@+id/pause_timer_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/pause_timer_5"
+            style="?attr/materialButtonTonalStyle"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="5 min"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:textColor="#E9DDFF"
+            android:backgroundTint="#453E58"
+            app:cornerRadius="20dp" />
+
+        <Button
+            android:id="@+id/pause_timer_15"
+            style="?attr/materialButtonTonalStyle"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="15 min"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:textColor="#E9DDFF"
+            android:backgroundTint="#453E58"
+            app:cornerRadius="20dp" />
+
+        <Button
+            android:id="@+id/pause_timer_30"
+            style="?attr/materialButtonTonalStyle"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="30 min"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:textColor="#E9DDFF"
+            android:backgroundTint="#453E58"
+            app:cornerRadius="20dp" />
+    </LinearLayout>
+
+    <!-- Close: ButtonMedium, 56dp, CornerFull, Primary / on Primary. -->
     <Button
         android:id="@+id/pause_close"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="12dp"
         android:text="Close"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textAllCaps="false"
-        android:fontFamily="sans-serif-black"
-        android:textColor="#12061C"
-        android:backgroundTint="#C7A6F2"
-        android:elevation="4dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="#38007A"
+        android:backgroundTint="#CFBCFF"
         app:cornerRadius="28dp" />
 
-    <!-- Continue is the quiet one: text only, small, muted, directly underneath.
-         From M3: ButtonSmall.ContainerHeight = 40dp. -->
+    <!-- Continue: ButtonSmall, 40dp, text only. Quiet through size and the absence of a container,
+         not through contrast — #B3AAC4 on this surface still clears 4.5:1. -->
     <Button
         android:id="@+id/pause_continue"
-        style="?attr/materialButtonOutlinedStyle"
+        style="?attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:minWidth="0dp"
         android:paddingHorizontal="20dp"
         android:text="Continue anyway"
         android:textAllCaps="false"
         android:textSize="14sp"
-        android:textColor="#6E627E"
-        android:backgroundTint="#00000000"
-        android:visibility="invisible"
-        app:strokeWidth="0dp" />
+        android:textColor="#B3AAC4"
+        android:background="@null"
+        android:visibility="invisible" />
 </LinearLayout>

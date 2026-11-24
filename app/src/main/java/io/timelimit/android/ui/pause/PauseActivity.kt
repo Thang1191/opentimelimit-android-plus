@@ -26,6 +26,7 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.animation.PathInterpolator
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -40,8 +41,9 @@ import io.timelimit.android.logic.DefaultAppLogic
 /**
  * The pause itself.
  *
- * Two acts. First the wait: a ring that empties, the check-in content, and no button. Then the
- * button appears, and pressing it is the only thing that lets the app through.
+ * Two acts. First the wait: a circular countdown emptying in the middle of the screen, the
+ * check-in content above it, and no button. Then the button appears, and pressing it is the only
+ * thing that lets the app through.
  *
  * Leaving does not help. Back and the Close button both go home without marking anything, and the
  * gate stays armed in [PausePoint], so opening the app again lands here with the countdown already
@@ -65,6 +67,28 @@ class PauseActivity : AppCompatActivity() {
 
         /** The picture shown last, so two pauses in a row do not land on the same one. */
         private var lastPickedImage: Uri? = null
+
+        /** The line under the picture last time, so the same prompt does not repeat back to back. */
+        private var lastPicturePrompt: String? = null
+
+        /**
+         * What the picture check-in says under the photo, one line at a time.
+         *
+         * These are the pause's whole voice. The countdown alone is a delay; a sentence about the
+         * thing you are about to scroll past is the reason the delay is long enough to matter.
+         * Kept short enough to sit in two or three lines at 22sp on a phone.
+         */
+        private val picturePrompts = listOf(
+            "Remember this?",
+            "Remember this? You were happy here. Nothing about that has changed.",
+            "This was worth the day it took. The feed is not.",
+            "Whoever is in this picture would rather you came back to them.",
+            "Look at it for ten seconds. That is the whole ask.",
+            "You kept this on purpose. Keep it a moment longer.",
+            "The good part of today already happened, and it is in here.",
+            "Nothing you are about to open will be better than this.",
+            "You will not remember what you were about to look at."
+        )
 
         /** True while a pause is on screen; the loop uses it so it never re-launches over itself. */
         val isShowing: Boolean get() = synchronized(currentInstances) { currentInstances.isNotEmpty() }
@@ -103,8 +127,7 @@ class PauseActivity : AppCompatActivity() {
         override fun run() {
             val remaining = remainingMillis()
 
-            binding.pauseProgress.progress =
-                (100 - (remaining * 100 / (waitSeconds * 1000L).coerceAtLeast(1))).toInt()
+            binding.pauseProgress.fraction = 1f - (remaining.toFloat() / (waitSeconds * 1000f).coerceAtLeast(1f))
 
             binding.pauseCountdown.text = ((remaining + 999) / 1000).toString()
 
@@ -132,8 +155,6 @@ class PauseActivity : AppCompatActivity() {
             .coerceIn(CategoryPauseConfig.MIN_WAIT_SECONDS, CategoryPauseConfig.MAX_WAIT_SECONDS)
         checkInType = intent.getIntExtra(EXTRA_CHECK_IN_TYPE, CategoryPauseConfig.CHECK_IN_BREATH)
         startedAt = intent.getLongExtra(EXTRA_STARTED_AT, uptimeNow())
-
-        binding.pauseCategory.text = intent.getStringExtra(EXTRA_CATEGORY_TITLE) ?: ""
 
         showContent()
 
@@ -182,7 +203,7 @@ class PauseActivity : AppCompatActivity() {
 
     private fun revealContinue() {
         binding.pauseCountdown.text = "0"
-        binding.pauseProgress.progress = 100
+        binding.pauseProgress.fraction = 1f
 
         if (checkInType == CategoryPauseConfig.CHECK_IN_TIMER) {
             binding.pauseTimerRow.visibility = View.VISIBLE
@@ -190,7 +211,18 @@ class PauseActivity : AppCompatActivity() {
             return
         }
 
+        // The button arrives rather than blinking on: a fade with a small rise, on M3's
+        // expressive-default effects spring (200ms, cubic-bezier(0.34, 0.80, 0.34, 1.00)) —
+        // an opacity-led change, so it must not overshoot.
+        binding.pauseContinue.alpha = 0f
+        binding.pauseContinue.translationY = 8 * resources.displayMetrics.density
         binding.pauseContinue.visibility = View.VISIBLE
+        binding.pauseContinue.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(200)
+            .setInterpolator(PathInterpolator(0.34f, 0.80f, 0.34f, 1.00f))
+            .start()
 
         // A line that has to be typed is a check-in only if it must be typed before the way opens.
         if (checkInType == CategoryPauseConfig.CHECK_IN_WRITE) {
@@ -214,7 +246,7 @@ class PauseActivity : AppCompatActivity() {
         when (checkInType) {
             CategoryPauseConfig.CHECK_IN_IMAGES -> {
                 binding.pauseImage.visibility = View.VISIBLE
-                binding.pauseBody.text = copy ?: ""
+                binding.pauseBody.text = copy?.takeIf { it.isNotBlank() } ?: nextPicturePrompt()
                 loadImage(intent.getStringExtra(EXTRA_FOLDER_URI))
             }
 
@@ -265,7 +297,22 @@ class PauseActivity : AppCompatActivity() {
 
     private fun showImageMissing(message: String) {
         binding.pauseImage.visibility = View.GONE
-        binding.pauseBody.text = intent.getStringExtra(EXTRA_COPY) ?: message
+        binding.pauseBody.text = intent.getStringExtra(EXTRA_COPY)?.takeIf { it.isNotBlank() } ?: message
+    }
+
+    /**
+     * One prompt per pause, never the same one twice running: with nine lines a plain random draw
+     * repeats often enough for the screen to feel like it is not paying attention.
+     */
+    private fun nextPicturePrompt(): String {
+        val picked = picturePrompts
+            .filter { it != lastPicturePrompt }
+            .ifEmpty { picturePrompts }
+            .random()
+
+        lastPicturePrompt = picked
+
+        return picked
     }
 
     private fun readImageFromFolder(folderUri: String): Bitmap? {

@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One-off asymmetric shapes for the pause screen — the signature M3 Expressive move of corners
-     that are deliberately not all the same size, so elements read as shaped rather than just
-     "rounded rectangle". -->
-<resources>
-    <style name="PausePointCardShape" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">44dp</item>
-        <item name="cornerSizeTopRight">16dp</item>
-        <item name="cornerSizeBottomLeft">16dp</item>
-        <item name="cornerSizeBottomRight">44dp</item>
-    </style>
+<!-- Shape for the pause screen's picture.
 
+     From M3 (m3-expressive, references/tokens.md): the corner scale's Extra large step is 28dp
+     (CornerExtraLarge). All four corners, uniformly.
+
+     My design decision (not in M3): the picture is the only rounded rectangle on the screen. The
+     countdown next to it is a full circle, and that square-vs-circle contrast is the expressive
+     gesture. Giving the picture asymmetric corners as well would be a second gesture on the same
+     screen pulling the eye the other way, so it stays even. -->
+<resources>
     <style name="PausePointImageShape" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">16dp</item>
-        <item name="cornerSizeTopRight">44dp</item>
-        <item name="cornerSizeBottomLeft">44dp</item>
-        <item name="cornerSizeBottomRight">16dp</item>
+        <item name="cornerSize">28dp</item>
     </style>
 </resources>
