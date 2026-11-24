@@ -64,8 +64,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp" />
 
-            <SeekBar
-                android:max="10"
+            <com.google.android.material.slider.Slider
+                android:valueFrom="0"
+                android:valueTo="10"
+                android:stepSize="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -80,9 +82,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp" />
 
-            <SeekBar
-                android:nextFocusDown="@id/confirm_btn"
-                android:max="10"
+            <com.google.android.material.slider.Slider
+                android:valueFrom="0"
+                android:valueTo="10"
+                android:stepSize="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"

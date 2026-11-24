@@ -51,6 +51,11 @@
         <item name="colorOnErrorContainer">@color/md_on_error_container</item>
 
         <item name="android:colorBackground">@color/md_background</item>
+        <!-- The status and nav bars are part of the surface, not a banner: before this they fell
+             back to an old deprecated-attr default and rendered as a flat violet strip that had
+             nothing to do with the rest of the screen. -->
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
         <item name="colorOnBackground">@color/md_on_background</item>
         <item name="colorSurface">@color/md_surface</item>
         <item name="colorOnSurface">@color/md_on_surface</item>

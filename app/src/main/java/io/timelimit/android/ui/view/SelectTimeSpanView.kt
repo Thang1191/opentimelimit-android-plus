@@ -20,6 +20,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import com.google.android.material.slider.Slider
 import io.timelimit.android.R
 import io.timelimit.android.util.TimeTextUtil
 import kotlin.properties.Delegates
@@ -38,15 +39,15 @@ class SelectTimeSpanView(context: Context, attributeSet: AttributeSet? = null): 
     private val daysText = findViewById<TextView>(R.id.days_text)
     private val dayPickerContainer = findViewById<View>(R.id.day_picker_container)
     private val dayPicker = findViewById<NumberPicker>(R.id.day_picker)
-    private val daySeekbar = findViewById<SeekBar>(R.id.days_seek)
+    private val daySeekbar = findViewById<Slider>(R.id.days_seek)
 
     private val hoursText = findViewById<TextView>(R.id.hours_text)
     private val hourPicker = findViewById<NumberPicker>(R.id.hour_picker)
-    private val hourSeekbar = findViewById<SeekBar>(R.id.hours_seek)
+    private val hourSeekbar = findViewById<Slider>(R.id.hours_seek)
 
     private val minutesText = findViewById<TextView>(R.id.minutes_text)
     private val minutePicker = findViewById<NumberPicker>(R.id.minute_picker)
-    private val minuteSeekbar = findViewById<SeekBar>(R.id.minutes_seek)
+    private val minuteSeekbar = findViewById<Slider>(R.id.minutes_seek)
 
     var listener: SelectTimeSpanViewListener? = null
 
@@ -75,7 +76,13 @@ class SelectTimeSpanView(context: Context, attributeSet: AttributeSet? = null): 
         val vis = if (multipleDays) View.VISIBLE else View.GONE
 
         dayPicker.maxValue = newValue
-        daySeekbar.max = newValue
+
+        // A Slider cannot exist with valueFrom == valueTo, so the floor is 1 even while the control
+        // is hidden (newValue == 0); and the current value must never sit above the new ceiling, or
+        // setting valueTo throws before the value catches up.
+        val sliderMax = newValue.coerceAtLeast(1).toFloat()
+        if (daySeekbar.value > sliderMax) daySeekbar.value = 0f
+        daySeekbar.valueTo = sliderMax
 
         dayPickerContainer.visibility = vis
         daysText.visibility = vis
@@ -91,13 +98,13 @@ class SelectTimeSpanView(context: Context, attributeSet: AttributeSet? = null): 
         hoursText.text = TimeTextUtil.hours(duration.hours, context)
 
         minutePicker.value = duration.minutes
-        minuteSeekbar.progress = duration.minutes
+        minuteSeekbar.value = duration.minutes.toFloat()
 
         hourPicker.value = duration.hours
-        hourSeekbar.progress = duration.hours
+        hourSeekbar.value = duration.hours.toFloat()
 
         dayPicker.value = duration.days
-        daySeekbar.progress = duration.days
+        daySeekbar.value = duration.days.toFloat().coerceIn(daySeekbar.valueFrom, daySeekbar.valueTo)
     }
 
     fun clearNumberPickerFocus() {
@@ -134,47 +141,17 @@ class SelectTimeSpanView(context: Context, attributeSet: AttributeSet? = null): 
             timeInMillis = Duration.decode(timeInMillis).copy(days = newValue).timeInMillis
         }
 
-        daySeekbar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                timeInMillis = Duration.decode(timeInMillis).copy(days = progress).timeInMillis
-            }
+        daySeekbar.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) timeInMillis = Duration.decode(timeInMillis).copy(days = value.toInt()).timeInMillis
+        }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // ignore
-            }
+        hourSeekbar.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) timeInMillis = Duration.decode(timeInMillis).copy(hours = value.toInt()).timeInMillis
+        }
 
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // ignore
-            }
-        })
-
-        hourSeekbar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                timeInMillis = Duration.decode(timeInMillis).copy(hours = progress).timeInMillis
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // ignore
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // ignore
-            }
-        })
-
-        minuteSeekbar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                timeInMillis = Duration.decode(timeInMillis).copy(minutes = progress).timeInMillis
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // ignore
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // ignore
-            }
-        })
+        minuteSeekbar.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) timeInMillis = Duration.decode(timeInMillis).copy(minutes = value.toInt()).timeInMillis
+        }
 
         pickerContainer.visibility = GONE
 

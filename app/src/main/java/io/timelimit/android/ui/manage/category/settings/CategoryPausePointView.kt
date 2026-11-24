@@ -18,9 +18,9 @@ package io.timelimit.android.ui.manage.category.settings
 import android.net.Uri
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.SeekBar
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import com.google.android.material.slider.Slider
 import io.timelimit.android.async.Threads
 import io.timelimit.android.data.Database
 import io.timelimit.android.data.model.CategoryPauseConfig
@@ -45,8 +45,8 @@ object CategoryPausePointView {
         var current = CategoryPauseConfig.default(categoryId)
         var rendering = false
 
-        binding.pauseWait.max = CategoryPauseConfig.MAX_WAIT_SECONDS - CategoryPauseConfig.MIN_WAIT_SECONDS
-        binding.pauseCooldown.max = CategoryPauseConfig.MAX_COOLDOWN_MINUTES
+        binding.pauseWait.valueTo = (CategoryPauseConfig.MAX_WAIT_SECONDS - CategoryPauseConfig.MIN_WAIT_SECONDS).toFloat()
+        binding.pauseCooldown.valueTo = CategoryPauseConfig.MAX_COOLDOWN_MINUTES.toFloat()
 
         binding.pauseCheckIn.adapter = ArrayAdapter(
             binding.root.context,
@@ -67,10 +67,10 @@ object CategoryPausePointView {
             rendering = true
 
             binding.pauseEnabled.isChecked = config.enabled
-            binding.pauseWait.progress = (config.waitSeconds - CategoryPauseConfig.MIN_WAIT_SECONDS)
-                .coerceIn(0, binding.pauseWait.max)
-            binding.pauseCooldown.progress = config.cooldownMinutes
-                .coerceIn(0, CategoryPauseConfig.MAX_COOLDOWN_MINUTES)
+            binding.pauseWait.value = (config.waitSeconds - CategoryPauseConfig.MIN_WAIT_SECONDS)
+                .coerceIn(0, binding.pauseWait.valueTo.toInt()).toFloat()
+            binding.pauseCooldown.value = config.cooldownMinutes
+                .coerceIn(0, CategoryPauseConfig.MAX_COOLDOWN_MINUTES).toFloat()
             binding.pauseCheckIn.setSelection(config.checkInType.coerceIn(0, CategoryPauseConfig.CHECK_IN_NAMES.size - 1))
 
             binding.pauseWaitValue.text = "${config.waitSeconds}s"
@@ -93,30 +93,30 @@ object CategoryPausePointView {
             if (!rendering) save { it.copy(enabled = checked) }
         }
 
-        binding.pauseWait.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(bar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (!rendering) binding.pauseWaitValue.text =
-                    "${progress + CategoryPauseConfig.MIN_WAIT_SECONDS}s"
-            }
+        binding.pauseWait.addOnChangeListener(Slider.OnChangeListener { _, value, _ ->
+            if (!rendering) binding.pauseWaitValue.text =
+                "${value.toInt() + CategoryPauseConfig.MIN_WAIT_SECONDS}s"
+        })
 
-            override fun onStartTrackingTouch(bar: SeekBar?) = Unit
+        binding.pauseWait.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) = Unit
 
-            override fun onStopTrackingTouch(bar: SeekBar?) {
-                val seconds = (bar?.progress ?: 0) + CategoryPauseConfig.MIN_WAIT_SECONDS
+            override fun onStopTrackingTouch(slider: Slider) {
+                val seconds = slider.value.toInt() + CategoryPauseConfig.MIN_WAIT_SECONDS
 
                 save { it.copy(waitSeconds = seconds) }
             }
         })
 
-        binding.pauseCooldown.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(bar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (!rendering) binding.pauseCooldownValue.text = if (progress == 0) "off" else "${progress}m"
-            }
+        binding.pauseCooldown.addOnChangeListener(Slider.OnChangeListener { _, value, _ ->
+            if (!rendering) binding.pauseCooldownValue.text = if (value.toInt() == 0) "off" else "${value.toInt()}m"
+        })
 
-            override fun onStartTrackingTouch(bar: SeekBar?) = Unit
+        binding.pauseCooldown.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) = Unit
 
-            override fun onStopTrackingTouch(bar: SeekBar?) {
-                val minutes = bar?.progress ?: 0
+            override fun onStopTrackingTouch(slider: Slider) {
+                val minutes = slider.value.toInt()
 
                 save { it.copy(cooldownMinutes = minutes) }
             }

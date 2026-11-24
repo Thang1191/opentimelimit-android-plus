@@ -16,12 +16,12 @@
 package io.timelimit.android.ui.manage.category.settings
 
 import android.view.View
-import android.widget.SeekBar
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.map
+import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.Snackbar
 import io.timelimit.android.R
 import io.timelimit.android.data.model.Category
@@ -54,26 +54,16 @@ object CategoryBatteryLimitView {
             binding.confirmBtn.visibility = if (modified) View.VISIBLE else View.GONE
         }
 
-        binding.seekbarCharging.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(p0: SeekBar?) = Unit
-            override fun onStopTrackingTouch(p0: SeekBar?) = Unit
+        binding.seekbarCharging.addOnChangeListener(Slider.OnChangeListener { _, value, _ ->
+            binding.minLevelCharging = value.toInt() * 10
 
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                binding.minLevelCharging = p1 * 10
-
-                updateButtonVisibility()
-            }
+            updateButtonVisibility()
         })
 
-        binding.seekbarMobile.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(p0: SeekBar?) = Unit
-            override fun onStopTrackingTouch(p0: SeekBar?) = Unit
+        binding.seekbarMobile.addOnChangeListener(Slider.OnChangeListener { _, value, _ ->
+            binding.minLevelMobile = value.toInt() * 10
 
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                binding.minLevelMobile = p1 * 10
-
-                updateButtonVisibility()
-            }
+            updateButtonVisibility()
         })
 
         category.map {
@@ -82,8 +72,8 @@ object CategoryBatteryLimitView {
             if (it != null) {
                 val (mobile, charging) = it
 
-                binding.seekbarMobile.progress = mobile
-                binding.seekbarCharging.progress = charging
+                binding.seekbarMobile.value = mobile.toFloat()
+                binding.seekbarCharging.value = charging.toFloat()
 
                 updateButtonVisibility()
             }
@@ -94,8 +84,8 @@ object CategoryBatteryLimitView {
                     auth.tryDispatchParentAction(
                             UpdateCategoryBatteryLimit(
                                     categoryId = categoryId,
-                                    mobileLimit = binding.seekbarMobile.progress * 10,
-                                    chargingLimit = binding.seekbarCharging.progress * 10
+                                    mobileLimit = binding.seekbarMobile.value.toInt() * 10,
+                                    chargingLimit = binding.seekbarCharging.value.toInt() * 10
                             )
                     )
             ) {
