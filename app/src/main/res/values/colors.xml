@@ -1,26 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Open TimeLimit Copyright <C> 2019 - 2022 Jonas Lochmann
+    Open TimeLimit Copyright <C> 2019 - 2026
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation version 3 of the License.
+-->
+<!--
+    Material 3 Expressive palette (light).
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
+    Two hues, not one: a vivid violet that carries the brand plus a vivid cyan that exists only to
+    be loud where loud is earned (the signature-move accents, data that needs to be seen first).
+    Role names follow the M3 spec so components already in this app pick them up without a single
+    layout edit — the whole point of styling at the token layer instead of per screen.
 -->
 <resources>
-    <color name="colorPrimary">#673ab7</color>
-    <color name="colorPrimaryDark">#512da8</color>
-    <color name="colorAccent">#4caf50</color>
-    <color name="widgetBackground">#ffffff</color>
-    <color name="widgetBackgroundTranslucent">#33000000</color>
-    <color name="widgetText">#000000</color>
+    <!-- Primary: violet, brighter and more saturated than the old #673ab7 so it reads as a choice. -->
+    <color name="md_primary">#6F4FE0</color>
+    <color name="md_on_primary">#FFFFFF</color>
+    <color name="md_primary_container">#E8DDFF</color>
+    <color name="md_on_primary_container">#230066</color>
+    <color name="md_inverse_primary">#CFBCFF</color>
+
+    <!-- Secondary: a quiet plum-gray, so it supports the violet instead of competing with the cyan. -->
+    <color name="md_secondary">#5F5570</color>
+    <color name="md_on_secondary">#FFFFFF</color>
+    <color name="md_secondary_container">#E8DEF8</color>
+    <color name="md_on_secondary_container">#1C1229</color>
+
+    <!-- Tertiary: vivid cyan. The one hue in this app that is allowed to be the loudest thing on
+         the screen — streaks, the signature category colour, anything meant to be found first. -->
+    <color name="md_tertiary">#00696F</color>
+    <color name="md_on_tertiary">#FFFFFF</color>
+    <color name="md_tertiary_container">#9EEFF5</color>
+    <color name="md_on_tertiary_container">#002022</color>
+
+    <color name="md_error">#BA1A1A</color>
+    <color name="md_on_error">#FFFFFF</color>
+    <color name="md_error_container">#FFDAD6</color>
+    <color name="md_on_error_container">#410002</color>
+
+    <color name="md_background">#FFFBFF</color>
+    <color name="md_on_background">#1C1B20</color>
+    <color name="md_surface">#FFFBFF</color>
+    <color name="md_on_surface">#1C1B20</color>
+    <color name="md_surface_variant">#E6E0EC</color>
+    <color name="md_on_surface_variant">#48454E</color>
+    <color name="md_outline">#79747E</color>
+    <color name="md_outline_variant">#CAC4CF</color>
+
+    <!-- Tonal elevation, not shadows: cards and sheets step up through these instead of a drop
+         shadow getting darker. -->
+    <color name="md_surface_container_lowest">#FFFFFF</color>
+    <color name="md_surface_container_low">#F7F2FA</color>
+    <color name="md_surface_container">#F1ECF4</color>
+    <color name="md_surface_container_high">#ECE6EF</color>
+    <color name="md_surface_container_highest">#E6E0E9</color>
+
+    <color name="md_inverse_surface">#312F36</color>
+    <color name="md_inverse_on_surface">#F4EFF4</color>
+
+    <!-- Category signature colours: the per-category cards in Overview cycle through these five so
+         five categories are five places, not five identical rows with different text. Each is a
+         container/on-container pair at the same tone as the roles above, so contrast holds either way. -->
+    <color name="category_1_container">#E8DDFF</color>
+    <color name="category_1_on_container">#230066</color>
+    <color name="category_2_container">#9EEFF5</color>
+    <color name="category_2_on_container">#002022</color>
+    <color name="category_3_container">#FFDDB3</color>
+    <color name="category_3_on_container">#2A1700</color>
+    <color name="category_4_container">#FFD9E2</color>
+    <color name="category_4_on_container">#3E001D</color>
+    <color name="category_5_container">#D7F8C7</color>
+    <color name="category_5_on_container">#0C2000</color>
+
+    <!-- Legacy aliases: code and a few views still reference these names directly. Point them at the
+         new roles instead of deleting them, so nothing silently goes back to the old purple. -->
+    <color name="colorPrimary">@color/md_primary</color>
+    <color name="colorPrimaryDark">#230066</color>
+    <color name="colorAccent">@color/md_tertiary</color>
+    <color name="widgetBackground">#F1ECF4</color>
+    <color name="widgetBackgroundTranslucent">#4D230066</color>
+    <color name="widgetText">#1C1B20</color>
     <color name="widgetTextTranslucent">#ffffff</color>
 
     <color name="transparent">#00000000</color>

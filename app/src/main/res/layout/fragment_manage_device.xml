@@ -81,7 +81,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    app:cardCornerRadius="16dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
@@ -126,7 +125,6 @@
                     android:layout_marginBottom="12dp"
                     android:visibility="@{safeUnbox(didAppDowngrade) ? View.VISIBLE : View.GONE}"
                     app:cardBackgroundColor="?attr/colorError"
-                    app:cardCornerRadius="16dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
@@ -160,8 +158,7 @@
                     android:layout_marginBottom="12dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="@{() -> handlers.showUserScreen()}"
-                    app:cardCornerRadius="16dp">
+                    android:onClick="@{() -> handlers.showUserScreen()}">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -195,8 +192,7 @@
                     android:layout_marginBottom="12dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="@{() -> handlers.showPermissionsScreen()}"
-                    app:cardCornerRadius="16dp">
+                    android:onClick="@{() -> handlers.showPermissionsScreen()}">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -230,8 +226,7 @@
                     android:layout_marginBottom="12dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="@{() -> handlers.showFeaturesScreen()}"
-                    app:cardCornerRadius="16dp">
+                    android:onClick="@{() -> handlers.showFeaturesScreen()}">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -264,8 +259,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="@{() -> handlers.showManageScreen()}"
-                    app:cardCornerRadius="16dp">
+                    android:onClick="@{() -> handlers.showManageScreen()}">
 
                     <LinearLayout
                         android:layout_width="match_parent"

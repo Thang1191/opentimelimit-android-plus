@@ -37,8 +37,7 @@
                 <com.google.android.material.card.MaterialCardView
                     style="?attr/materialCardViewElevatedStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="24dp">
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:padding="24dp"
@@ -105,7 +104,6 @@
                             android:layout_height="wrap_content"
                             android:visibility="@{isCreatingChildUser ? View.VISIBLE : View.GONE}"
                             app:cardBackgroundColor="?attr/colorSecondaryContainer"
-                            app:cardCornerRadius="12dp"
                             app:strokeWidth="0dp"
                             android:layout_marginBottom="16dp">
 

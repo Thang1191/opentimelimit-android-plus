@@ -65,7 +65,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                app:cardCornerRadius="16dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -143,7 +142,6 @@
                 style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout

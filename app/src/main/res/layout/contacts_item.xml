@@ -24,8 +24,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="4dp"
         android:clickable="true"
-        android:focusable="true"
-        app:cardCornerRadius="12dp">
+        android:focusable="true">
 
         <LinearLayout
             android:layout_width="match_parent"
