@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One-off asymmetric shapes for the pause screen — the signature M3 Expressive move of corners
+     that are deliberately not all the same size, so elements read as shaped rather than just
+     "rounded rectangle". -->
+<resources>
+    <style name="PausePointCardShape" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">44dp</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeBottomLeft">16dp</item>
+        <item name="cornerSizeBottomRight">44dp</item>
+    </style>
+
+    <style name="PausePointImageShape" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeTopRight">44dp</item>
+        <item name="cornerSizeBottomLeft">44dp</item>
+        <item name="cornerSizeBottomRight">16dp</item>
+    </style>
+</resources>

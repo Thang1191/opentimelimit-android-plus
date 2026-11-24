@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Two exits, stacked at the bottom, deliberately unequal.
+  Pause Point, rebuilt again. The first redesign reached for a kicker pill, a decorative glow
+  blob and a circular progress ring as the "hero" — three generic AI-dashboard moves the design
+  floor refuses outright (kicker above content, a ring standing in for content). It also never
+  fit on a real screen: a 300dp image plus a 132dp ring plus two cards plus the button stack
+  overflowed a normal phone's height, so the ring content sat partly below the fold.
 
-  Close is the loud one: full width, filled, sitting directly above Continue. Continue is a small
-  unadorned line underneath it. Neither sits inside the scrolling area, so neither can be pushed
-  below the fold by a tall picture — which is what made Close unreachable on the image check-in.
+  What stayed: the asymmetric shaped card and image corners (the real identity move, not
+  decoration-for-decoration), and the two-exit rule below. What's gone: the pill, the glow, the
+  ring. The timer is a real M3 LinearProgressIndicator doing its actual job, not a dashboard
+  widget borrowed for looks.
 
-  The text/countdown block lives in a card: on the short check-ins (breath, timer) the scroll
-  content was shorter than the screen, and since the ScrollView fills the remaining space, the
-  content sat pinned to the top with a dead black gap above the buttons. The fillViewport trick
-  below centers it instead, and the card gives the block a floor and walls instead of floating
-  text on a void.
+  The exits are stacked at the bottom, Close directly above Continue, neither inside the scroll
+  so a tall picture can't push them off screen. Close is loud — full width, filled, tall.
+  Continue is quiet — small, text-only, muted.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,7 +22,7 @@
     android:orientation="vertical"
     android:background="#050208"
     android:paddingHorizontal="20dp"
-    android:paddingTop="24dp"
+    android:paddingTop="20dp"
     android:paddingBottom="16dp">
 
     <ScrollView
@@ -33,63 +36,64 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center_vertical">
 
-            <!-- When the check-in is Pictures the photo is the check-in: it gets the room, and the
-                 words underneath are a caption. As a faint background it was decoration, and
-                 decoration is the one thing a speed bump cannot afford to be. -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pause Point"
+                android:textColor="#9C8DAE"
+                android:textSize="11sp"
+                android:letterSpacing="0.12"
+                android:fontFamily="sans-serif-medium"
+                android:textAllCaps="true" />
+
+            <TextView
+                android:id="@+id/pause_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="#5CE0E6"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium" />
+
+            <!-- The photo is the check-in, not decoration behind one: a shaped frame, sized so
+                 the rest of the screen — text, timer, both exits — still fits without scrolling. -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/pause_image"
                 android:layout_width="match_parent"
-                android:layout_height="320dp"
-                android:layout_marginBottom="24dp"
+                android:layout_height="210dp"
+                android:layout_marginTop="16dp"
                 android:scaleType="centerCrop"
                 android:contentDescription="@null"
                 android:visibility="gone"
-                app:shapeAppearanceOverlay="@style/PauseImageShape" />
+                app:shapeAppearanceOverlay="@style/PausePointImageShape" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#150C20"
-                app:cardCornerRadius="28dp"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#170C24"
                 app:cardElevation="0dp"
-                app:strokeWidth="0dp">
+                app:strokeColor="#2E2140"
+                app:strokeWidth="1dp"
+                app:shapeAppearanceOverlay="@style/PausePointCardShape">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:gravity="center_horizontal"
-                    android:padding="24dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pause Point"
-                        android:textColor="#9C8DAE"
-                        android:textSize="12sp"
-                        android:letterSpacing="0.18"
-                        android:fontFamily="sans-serif-medium"
-                        android:textAllCaps="true" />
-
-                    <TextView
-                        android:id="@+id/pause_category"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:textColor="#6E627E"
-                        android:textSize="12sp" />
+                    android:padding="20dp">
 
                     <TextView
                         android:id="@+id/pause_body"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:gravity="center"
-                        android:lineSpacingMultiplier="1.3"
+                        android:gravity="start"
+                        android:lineSpacingMultiplier="1.25"
                         android:textColor="#F2ECFA"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:fontFamily="sans-serif-medium" />
 
                     <TextView
                         android:id="@+id/pause_author"
@@ -104,7 +108,7 @@
                         android:id="@+id/pause_note"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="16dp"
                         android:hint="One line: what are you opening it for?"
                         android:textColor="#F2ECFA"
                         android:textColorHint="#6E627E"
@@ -114,29 +118,41 @@
                         android:backgroundTint="#5A4B6E"
                         android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/pause_countdown"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="22dp"
-                        android:textColor="#E3D6F7"
-                        android:textSize="48sp"
-                        android:fontFamily="sans-serif-black" />
-
-                    <ProgressBar
-                        android:id="@+id/pause_progress"
-                        style="?android:attr/progressBarStyleHorizontal"
+                    <!-- A real M3 progress indicator doing its actual job — the time left — not a
+                         dashboard ring borrowed for the look of one. -->
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="6dp"
-                        android:layout_marginTop="12dp"
-                        android:max="100"
-                        android:progressDrawable="@drawable/pause_progress_track" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/pause_countdown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#E3D6F7"
+                            android:textSize="32sp"
+                            android:fontFamily="sans-serif-black" />
+
+                        <com.google.android.material.progressindicator.LinearProgressIndicator
+                            android:id="@+id/pause_progress"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:max="100"
+                            app:indicatorColor="#C7A6F2"
+                            app:trackColor="#2A1E38"
+                            app:trackThickness="8dp"
+                            app:trackCornerRadius="4dp" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/pause_timer_row"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="22dp"
+                        android:layout_marginTop="18dp"
                         android:orientation="horizontal"
                         android:visibility="gone">
 
@@ -180,31 +196,35 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- The loud exit sits on top of the quiet one: Close above, Continue below. -->
+    <!-- Close is the loud exit: full width, filled, tall, sitting directly on top of Continue. -->
     <Button
         android:id="@+id/pause_close"
         android:layout_width="match_parent"
         android:layout_height="58dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="14dp"
         android:text="Close"
         android:textSize="18sp"
+        android:textAllCaps="false"
+        android:fontFamily="sans-serif-black"
         android:textColor="#12061C"
         android:backgroundTint="#C7A6F2"
-        app:cornerRadius="18dp" />
+        android:elevation="6dp"
+        app:cornerRadius="29dp" />
 
-    <!-- The way in: quiet, small, and underneath the way out. -->
+    <!-- Continue is the quiet one: text only, small, muted, directly underneath. -->
     <Button
         android:id="@+id/pause_continue"
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
-        android:layout_height="42dp"
+        android:layout_height="38dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="4dp"
         android:minWidth="0dp"
         android:paddingHorizontal="20dp"
         android:text="Continue anyway"
+        android:textAllCaps="false"
         android:textSize="14sp"
-        android:textColor="#8A7C99"
+        android:textColor="#6E627E"
         android:backgroundTint="#00000000"
         android:visibility="invisible"
         app:strokeWidth="0dp" />

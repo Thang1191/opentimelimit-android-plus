@@ -172,11 +172,8 @@
         <item name="android:navigationBarColor">#050208</item>
         <item name="colorPrimary">#C7A6F2</item>
         <item name="colorOnPrimary">#12061C</item>
-    </style>
-
-    <style name="PauseImageShape">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">20dp</item>
+        <item name="colorTertiary">#5CE0E6</item>
+        <item name="colorOnTertiary">#06292B</item>
     </style>
 
     <style name="DangerButton" parent="Widget.App.Button">
