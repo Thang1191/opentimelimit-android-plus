@@ -19,6 +19,7 @@ import io.timelimit.android.data.model.CategoryFlags
 import io.timelimit.android.data.model.isHardLock
 import io.timelimit.android.date.DateInTimezone
 import io.timelimit.android.logic.DefaultAppLogic
+import io.timelimit.android.sync.actions.AddCategoryAppsAction
 import io.timelimit.android.sync.actions.IncrementCategoryExtraTimeAction
 import io.timelimit.android.sync.actions.SetCategoryExtraTimeAction
 import io.timelimit.android.sync.actions.UpdateCategoryFlagsAction
@@ -37,14 +38,15 @@ import org.json.JSONObject
  * The agent's levers, phone side.
  *
  * Reads what is pending for this phone, applies it, and says what actually happened. The server half
- * (`server/commands.go`) is a queue of `allowance | release | time | harden` with a closed
- * vocabulary: nothing here can create or edit a rule, only act on the ones the user already wrote.
+ * (`server/commands.go`) is a queue of `allowance | release | time | harden | attach` with a closed
+ * vocabulary: the only rule a command may write is `attach`, which moves one app under a category and
+ * cannot move it back out.
  *
  * Deliberately not a second network channel. The loop parks on `/v1/watch`, the same change feed the
  * rest of the sync uses, so a command lands within a round trip instead of within a poll interval,
  * and the cost of a phone that has nothing to do is one parked request every ~55 s.
  *
- * All four verbs are wired in this build. An unknown kind is acked `failed` with a straight answer,
+ * All five verbs are wired in this build. An unknown kind is acked `failed` with a straight answer,
  * because a queue that silently swallows a command the agent asked for is worse than a queue that
  * admits the phone cannot do it yet -- and a command that throws is acked the same way instead of
  * being retried forever, since a deterministic failure would otherwise sit in the pending list until
@@ -187,12 +189,16 @@ object AgentCommands {
             )
             "time" -> setTime(context, id, key, minutes, note, command.optString("target"))
             "harden" -> harden(context, id, key, note, command.optString("target"))
+            "attach" -> attach(
+                context, id, key, note,
+                command.optString("target"), command.optString("app")
+            )
             else -> ack(
                 context,
                 id,
                 "failed",
                 "$kind is not a lever on build ${BuildConfig.VERSION_NAME} " +
-                    "(allowance, release, time, harden)"
+                    "(allowance, release, time, harden, attach)"
             )
         }
     }
@@ -532,6 +538,53 @@ object AgentCommands {
             resolveCategory(context, DefaultAppLogic.with(context).database, target).id
         }
         val result = HardLock.harden(context, categoryId)
+        markSeen(context, key)
+        val reason = if (note.isEmpty()) "" else " ($note)"
+        ack(context, id, "applied", "$result$reason")
+    }
+
+    /**
+     * Puts one app into one category, and only that direction.
+     *
+     * There is deliberately no `detach`: adding an app can only tighten what a category does to it,
+     * while pulling one back out is the escape the hard lock exists to prevent, so the phone simply
+     * has no verb for it. The dispatcher also removes the package from the child's other categories
+     * in the same transaction, which is what makes "move" honest rather than "belongs to both, and
+     * the loosest one wins".
+     */
+    private suspend fun attach(
+        context: Context,
+        id: String,
+        key: String,
+        note: String,
+        target: String,
+        app: String
+    ) {
+        if (target.isEmpty() || app.isEmpty()) {
+            ack(context, id, "failed", "attach needs a category in target and a package in app")
+            return
+        }
+
+        val result = Threads.database.executeAndWait {
+            val database = DefaultAppLogic.with(context).database
+            val category = resolveCategory(context, database, target)
+            val parentId = database.user().getParentUsersSync().firstOrNull()?.id
+
+            database.runInTransaction {
+                LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
+                    AddCategoryAppsAction(
+                        categoryId = category.id,
+                        packageNames = listOf(app)
+                    ),
+                    database = database,
+                    fromChildSelfLimitAddChildUserId = null,
+                    parentUserId = parentId
+                )
+            }
+
+            "'$app' is now in '${category.title}'"
+        }
+
         markSeen(context, key)
         val reason = if (note.isEmpty()) "" else " ($note)"
         ack(context, id, "applied", "$result$reason")
