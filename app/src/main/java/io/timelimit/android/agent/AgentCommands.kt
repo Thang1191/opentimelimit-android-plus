@@ -548,9 +548,10 @@ object AgentCommands {
      *
      * There is deliberately no `detach`: adding an app can only tighten what a category does to it,
      * while pulling one back out is the escape the hard lock exists to prevent, so the phone simply
-     * has no verb for it. The dispatcher also removes the package from the child's other categories
-     * in the same transaction, which is what makes "move" honest rather than "belongs to both, and
-     * the loosest one wins".
+     * The dispatcher also removes the package from the child's other categories in the same
+     * transaction, which is what makes "move" honest rather than "belongs to both, and the loosest
+     * one wins" -- and it is why moving an app into a *looser* category has to be refused here:
+     * that is a detach performed in one step, and detaching is the escape the split exists to stop.
      */
     private suspend fun attach(
         context: Context,
@@ -570,6 +571,29 @@ object AgentCommands {
             val category = resolveCategory(context, database, target)
             val parentId = database.user().getParentUsersSync().firstOrNull()?.id
 
+            // `AddCategoryAppsAction` deletes the package from *every* category of this child before
+            // inserting it into the target, so attach is a move, not an addition. That makes a move
+            // into a looser category a detach wearing attach's clothes -- which is the exploit the
+            // hard split exists to stop, one step instead of a release window. So a package that
+            // currently sits in a hard category may not be moved out of it by this verb at all.
+            val deviceId = database.config().getOwnDeviceIdSync().orEmpty()
+            val childId = database.device().getDeviceByIdSync(deviceId)?.currentUserId.orEmpty()
+            val childCategories = database.category().getCategoriesByChildIdSync(childId)
+            val current = database.categoryApp()
+                .getCategoryAppSync(childCategories.map { it.id }, app)
+
+            if (current?.categoryId == category.id) {
+                return@executeAndWait "'$app' is already in '${category.title}'"
+            }
+
+            val source = current?.let { database.category().getCategoryByIdSync(it.categoryId) }
+            if (source != null && source.isHardLock) {
+                throw IllegalStateException(
+                    "'$app' is in '${source.title}', which is hard locked; attach moves rather than " +
+                        "adds, so it cannot pull an app out of a hard category -- use release first"
+                )
+            }
+
             database.runInTransaction {
                 LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
                     AddCategoryAppsAction(
@@ -582,7 +606,8 @@ object AgentCommands {
                 )
             }
 
-            "'$app' is now in '${category.title}'"
+            if (source == null) "'$app' is now in '${category.title}'"
+            else "'$app' moved from '${source.title}' into '${category.title}'"
         }
 
         markSeen(context, key)
