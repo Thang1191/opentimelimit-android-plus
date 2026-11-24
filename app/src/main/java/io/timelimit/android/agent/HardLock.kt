@@ -30,8 +30,9 @@ import io.timelimit.android.sync.actions.dispatch.LocalDatabaseParentActionDispa
  * giving in costs a visible round trip through the server, not that the tap fails. What keeps it from
  * being a trap:
  *
- *  - a grant (`release` with a `target`) opens the category for its window and the wall stays down
- *    for exactly that long, so anything the server authorised is left alone;
+ *  - a grant (`release` with a `target`) takes the flag off, so the category is soft for its window
+ *    and [reassert] puts it back -- which is also what keeps the wall from being the only thing that
+ *    distinguishes hard from soft;
  *  - the wall only ever touches `temporarily_blocked` on the marked category. It never writes the
  *    user-level override or `disable_limits_until`, so a granted release of the whole device still
  *    holds;
@@ -42,7 +43,6 @@ import io.timelimit.android.sync.actions.dispatch.LocalDatabaseParentActionDispa
 object HardLock {
     private const val TAG = "limited-sync"
     private const val PREFS = "limited_agent"
-    private const val KEY_GRANTS = "hard_grants"
     private const val KEY_SOFTENED = "hard_softened"
 
     /**
@@ -72,7 +72,6 @@ object HardLock {
         if (childId.isEmpty()) return@executeAndWait emptyList()
 
         val parentId = database.user().getParentUsersSync().firstOrNull()?.id
-        val grants = grants(context)
         val now = System.currentTimeMillis()
         val changed = mutableListOf<String>()
 
@@ -109,29 +108,6 @@ object HardLock {
             .filter { it.isHardLock }
 
         for (category in hardCategories) {
-            val grantedUntil = grants[category.id] ?: 0L
-
-            if (grantedUntil > now) {
-                // The server opened this one; make sure the wall is actually down for the window and
-                // leave it alone until it expires.
-                if (category.temporarilyBlocked) {
-                    database.runInTransaction {
-                        LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
-                            UpdateCategoryTemporarilyBlockedAction(
-                                categoryId = category.id,
-                                blocked = false,
-                                endTime = null
-                            ),
-                            database = database,
-                            fromChildSelfLimitAddChildUserId = null,
-                            parentUserId = parentId
-                        )
-                    }
-                    changed += "opened '${category.title}' until ${stamp(grantedUntil)}"
-                }
-                continue
-            }
-
             val wallHolds = category.temporarilyBlocked &&
                 category.temporarilyBlockedEndTime - now > WALL_REFRESH_MS
             if (wallHolds) continue
@@ -172,10 +148,15 @@ object HardLock {
             val category = database.category().getCategoryByIdSync(categoryId)
                 ?: throw IllegalStateException("category $categoryId is not in the database")
 
+            // Whether the flag is ours to put back. A release aimed at a soft category is only a
+            // wall being cleared -- and remembering it as "softened" would make [reassert] harden a
+            // category the user never marked, minutes later, out of nowhere.
+            val wasHard = category.isHardLock
+
             val parentId = database.user().getParentUsersSync().firstOrNull()?.id
             database.runInTransaction {
-                // Drop the wall first: leaving a 60-second temporary block behind would keep the app
-                // shut for a minute after the user was told it was open.
+                // Drop the wall first: leaving a temporary block behind would keep the app shut
+                // after the user was told it was open.
                 LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
                     UpdateCategoryTemporarilyBlockedAction(
                         categoryId = categoryId, blocked = false, endTime = null
@@ -184,7 +165,7 @@ object HardLock {
                     fromChildSelfLimitAddChildUserId = null,
                     parentUserId = parentId
                 )
-                if (category.isHardLock) {
+                if (wasHard) {
                     LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
                         UpdateCategoryFlagsAction(
                             categoryId = categoryId,
@@ -198,13 +179,19 @@ object HardLock {
                 }
             }
 
+            if (!wasHard) {
+                return@executeAndWait "'${category.title}' was already soft; wall cleared, " +
+                    "use allowance or time to move its budget"
+            }
+
             val until = if (permanent) 0L else System.currentTimeMillis() + minutes * 60_000L
             val current = softened(context).toMutableMap()
             current[categoryId] = until
             writeSoftened(context, current)
 
             if (permanent) "turned '${category.title}' into a soft lock permanently"
-            else "turned '${category.title}' into a soft lock for ${minutes}m"
+            else "turned '${category.title}' into a soft lock for ${minutes}m " +
+                "(hard again at ${stamp(until)})"
         }
 
     /**
@@ -266,39 +253,6 @@ object HardLock {
             .apply()
     }
 
-    /** Opens one category for `minutes`. Called when a `release` carries a target. */
-    fun grant(context: Context, categoryId: String, minutes: Int) {
-        val until = System.currentTimeMillis() + minutes.toLong() * 60_000L
-        val current = grants(context).toMutableMap()
-        current[categoryId] = until
-        writeGrants(context, current)
-    }
-
     private fun stamp(millis: Long): String =
         java.text.SimpleDateFormat("HH:mm", java.util.Locale.US).format(java.util.Date(millis))
-
-    private fun grants(context: Context): Map<String, Long> {
-        val raw = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .getString(KEY_GRANTS, "")
-            .orEmpty()
-        if (raw.isEmpty()) return emptyMap()
-
-        val now = System.currentTimeMillis()
-        return raw.split(',')
-            .mapNotNull { entry ->
-                val id = entry.substringBefore(':')
-                val until = entry.substringAfter(':', "").toLongOrNull()
-                // Drop what has expired while reading, so the pref cannot grow forever.
-                if (id.isEmpty() || until == null || until <= now) null else id to until
-            }
-            .toMap()
-    }
-
-    private fun writeGrants(context: Context, grants: Map<String, Long>) {
-        val value = grants.entries.joinToString(",") { "${it.key}:${it.value}" }
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .edit()
-            .putString(KEY_GRANTS, value)
-            .apply()
-    }
 }

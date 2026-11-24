@@ -12,9 +12,14 @@ import android.util.Log
 import io.timelimit.android.BuildConfig
 import io.timelimit.android.async.Threads
 import io.timelimit.android.coroutines.executeAndWait
+import io.timelimit.android.data.Database
+import io.timelimit.android.data.extensions.getTimezone
+import io.timelimit.android.data.model.Category
 import io.timelimit.android.data.model.CategoryFlags
 import io.timelimit.android.data.model.isHardLock
+import io.timelimit.android.date.DateInTimezone
 import io.timelimit.android.logic.DefaultAppLogic
+import io.timelimit.android.sync.actions.IncrementCategoryExtraTimeAction
 import io.timelimit.android.sync.actions.SetCategoryExtraTimeAction
 import io.timelimit.android.sync.actions.UpdateCategoryFlagsAction
 import io.timelimit.android.sync.actions.dispatch.LocalDatabaseParentActionDispatcher
@@ -27,24 +32,23 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.time.LocalDate
-import java.util.TimeZone
 
 /**
  * The agent's levers, phone side.
  *
  * Reads what is pending for this phone, applies it, and says what actually happened. The server half
- * (`server/commands.go`) is a queue of `lock | allowance | pause | resume | release` with a closed
+ * (`server/commands.go`) is a queue of `allowance | release | time | harden` with a closed
  * vocabulary: nothing here can create or edit a rule, only act on the ones the user already wrote.
  *
  * Deliberately not a second network channel. The loop parks on `/v1/watch`, the same change feed the
  * rest of the sync uses, so a command lands within a round trip instead of within a poll interval,
  * and the cost of a phone that has nothing to do is one parked request every ~55 s.
  *
- * **Only `release` is wired up in this build.** Everything else is acked as `failed` with a straight
- * answer, because a queue that silently swallows a lock the agent asked for is worse than a queue
- * that admits the phone cannot do it yet. Each lever gets enabled one at a time, and this one first:
- * releasing is the lever whose worst case is "the user gets their phone back".
+ * All four verbs are wired in this build. An unknown kind is acked `failed` with a straight answer,
+ * because a queue that silently swallows a command the agent asked for is worse than a queue that
+ * admits the phone cannot do it yet -- and a command that throws is acked the same way instead of
+ * being retried forever, since a deterministic failure would otherwise sit in the pending list until
+ * its TTL and crowd out the next twelve.
  *
  * Every failure here is logged and dropped. This runs inside the process that enforces, and no
  * remote instruction is worth taking enforcement down for.
@@ -126,7 +130,18 @@ object AgentCommands {
         for (i in 0 until commands.length()) {
             val command = commands.optJSONObject(i) ?: continue
             runCatching { applyOne(context, command) }
-                .onFailure { Log.d(TAG, "agent: apply failed for ${command.optString("id")}: $it") }
+                .onFailure { failure ->
+                    Log.d(TAG, "agent: apply failed for ${command.optString("id")}: $failure")
+                    // Say so instead of leaving it pending. A deterministic failure (a category the
+                    // phone does not have) would otherwise be retried every drain until its TTL and
+                    // hold a slot against the server's pending cap.
+                    ack(
+                        context,
+                        command.optString("id"),
+                        "failed",
+                        "phone error: ${failure.message ?: failure.javaClass.simpleName}"
+                    )
+                }
         }
 
         // The kill switch rides the same response as the commands, so there is exactly one thing to
@@ -165,6 +180,7 @@ object AgentCommands {
         val note = command.optString("note")
 
         when (kind) {
+            "allowance" -> allowance(context, id, key, minutes, note, command.optString("target"))
             "release" -> release(
                 context, id, key, minutes, note,
                 command.optString("target"), command.optBoolean("permanent", false)
@@ -175,9 +191,119 @@ object AgentCommands {
                 context,
                 id,
                 "failed",
-                "$kind is not wired up on build ${BuildConfig.VERSION_NAME}, only release is"
+                "$kind is not a lever on build ${BuildConfig.VERSION_NAME} " +
+                    "(allowance, release, time, harden)"
             )
         }
+    }
+
+    /**
+     * Adds [minutes] to a category's budget for today. The target is a category id, a category title
+     * or a package id, and a package is resolved to whatever category the app lives in -- the app's
+     * model has no per-app budget, only per-category, so "20 more minutes of TikTok" is really "20
+     * more minutes for the category TikTok is in", and the ack names the category so that is never a
+     * surprise.
+     *
+     * An increment, not a set: [setTime] is the absolute form and exists to take a grant back.
+     * The expiry is the app's own -- extra time is stored against a day and stops counting when the
+     * day rolls over -- so this cannot leave a budget behind that keeps growing tomorrow.
+     */
+    private suspend fun allowance(
+        context: Context,
+        id: String,
+        key: String,
+        minutes: Int,
+        note: String,
+        target: String
+    ) {
+        if (target.isEmpty()) {
+            ack(context, id, "failed", "allowance needs a target: a category id, title or package")
+            return
+        }
+
+        val add = minutes.coerceIn(1, 1440)
+
+        val result = Threads.database.executeAndWait {
+            val database = DefaultAppLogic.with(context).database
+            val category = resolveCategory(context, database, target)
+            val day = today(context, database)
+
+            val parentId = database.user().getParentUsersSync().firstOrNull()?.id
+
+            database.runInTransaction {
+                LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
+                    IncrementCategoryExtraTimeAction(
+                        categoryId = category.id,
+                        addedExtraTime = add * 60_000L,
+                        extraTimeDay = day
+                    ),
+                    database = database,
+                    fromChildSelfLimitAddChildUserId = null,
+                    parentUserId = parentId
+                )
+            }
+
+            val total = category.getExtraTime(day) + add * 60_000L
+
+            "'${category.title}' +${add}m -> ${total / 60_000L}m extra today (resets at midnight)"
+        }
+
+        markSeen(context, key)
+        val reason = if (note.isEmpty()) "" else " ($note)"
+        ack(context, id, "applied", "$result$reason")
+    }
+
+    /**
+     * A category id, or the category a package id lives in.
+     *
+     * Called on the database thread. Order: id, then title (case-insensitive), then package. The
+     * title matters because that is what telemetry and the interruption log report -- an agent
+     * reading `Addiction` out of a digest must be able to name it -- and the package is the other
+     * thing it sees. Throws when nothing matches, which the drain turns into a `failed` ack carrying
+     * the message: a wrong identifier is worth saying out loud.
+     */
+    private fun resolveCategory(
+        context: Context,
+        database: Database,
+        target: String
+    ): Category {
+        database.category().getCategoryByIdSync(target)?.let { return it }
+
+        val deviceId = database.config().getOwnDeviceIdSync()
+            ?: throw IllegalStateException("this phone has no own device id")
+        val childId = database.device().getDeviceByIdSync(deviceId)?.currentUserId.orEmpty()
+        if (childId.isEmpty()) {
+            throw IllegalStateException("no user is active on this device")
+        }
+
+        val categories = database.category().getCategoriesByChildIdSync(childId)
+        categories.firstOrNull { it.title.equals(target, ignoreCase = true) }?.let { return it }
+
+        val row = database.categoryApp().getCategoryAppSync(categories.map { it.id }, target)
+            ?: throw IllegalStateException(
+                "'$target' is not a category id, a category title or an installed app"
+            )
+
+        return database.category().getCategoryByIdSync(row.categoryId)
+            ?: throw IllegalStateException("category ${row.categoryId} is not in the database")
+    }
+
+    /**
+     * The day the app itself thinks it is, for a user in their own timezone.
+     *
+     * The budget rows are keyed on this number, so computing it from the *device* timezone (what a
+     * plain `LocalDate.now()` does) writes a grant that the blocking logic never sees whenever the
+     * child user's timezone is not the system one.
+     */
+    private fun today(
+        context: Context,
+        database: Database
+    ): Int {
+        val deviceId = database.config().getOwnDeviceIdSync()
+        val childId = deviceId?.let { database.device().getDeviceByIdSync(it)?.currentUserId }.orEmpty()
+        val child = if (childId.isEmpty()) null else database.user().getUserByIdSync(childId)
+        val now = DefaultAppLogic.with(context).timeApi.getCurrentTimeInMillis()
+        return DateInTimezone.newInstance(now, child.getTimezone()).dayOfEpoch
     }
 
     /**
@@ -338,16 +464,15 @@ object AgentCommands {
 
         val result = Threads.database.executeAndWait {
             val database = DefaultAppLogic.with(context).database
-            val category = database.category().getCategoryByIdSync(target)
-                ?: throw IllegalStateException("category $target is not in the database")
+            val category = resolveCategory(context, database, target)
 
             val parentId = database.user().getParentUsersSync().firstOrNull()?.id
-            val day = LocalDate.now(TimeZone.getDefault().toZoneId()).toEpochDay().toInt()
+            val day = today(context, database)
 
             database.runInTransaction {
                 LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
                     SetCategoryExtraTimeAction(
-                        categoryId = target,
+                        categoryId = category.id,
                         newExtraTime = minutes.coerceAtLeast(0) * 60_000L,
                         extraTimeDay = day
                     ),
