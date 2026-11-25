@@ -11,9 +11,12 @@ import android.content.Context
 import android.util.Log
 import io.timelimit.android.async.Threads
 import io.timelimit.android.coroutines.executeAndWait
+import io.timelimit.android.data.Database
+import io.timelimit.android.data.extensions.getTimezone
 import io.timelimit.android.data.model.isHardLock
 import io.timelimit.android.logic.DefaultAppLogic
 import io.timelimit.android.data.model.CategoryFlags
+import io.timelimit.android.date.DateInTimezone
 import io.timelimit.android.sync.actions.UpdateCategoryFlagsAction
 import io.timelimit.android.sync.actions.UpdateCategoryTemporarilyBlockedAction
 import io.timelimit.android.sync.actions.dispatch.LocalDatabaseParentActionDispatcher
@@ -107,7 +110,36 @@ object HardLock {
         val hardCategories = database.category().getCategoriesByChildIdSync(childId)
             .filter { it.isHardLock }
 
+        // A grant is access. While a category still has extra time for today, walling it would shut
+        // the very minutes it was just given: the user reads "17 minutes left today" and watches the
+        // app refuse to open, which is the report that produced this branch. So the budget is the
+        // limit while any of it remains, and the wall only comes back once the day's extra time is
+        // spent -- at which point the rule blocks on its own and the wall is the belt to that brace.
+        val day = todayKey(context, database)
+
         for (category in hardCategories) {
+            val grantedLeft = if (day >= 0) category.getExtraTime(day) else 0L
+
+            if (grantedLeft > 0) {
+                val walled = category.temporarilyBlocked && category.temporarilyBlockedEndTime > now
+                if (walled) {
+                    database.runInTransaction {
+                        LocalDatabaseParentActionDispatcher.dispatchParentActionSync(
+                            UpdateCategoryTemporarilyBlockedAction(
+                                categoryId = category.id,
+                                blocked = false,
+                                endTime = null
+                            ),
+                            database = database,
+                            fromChildSelfLimitAddChildUserId = null,
+                            parentUserId = parentId
+                        )
+                    }
+                    changed += "opened '${category.title}' (${grantedLeft / 60_000L}m extra left today)"
+                }
+                continue
+            }
+
             val wallHolds = category.temporarilyBlocked &&
                 category.temporarilyBlockedEndTime - now > WALL_REFRESH_MS
             if (wallHolds) continue
@@ -131,6 +163,21 @@ object HardLock {
             Log.d(TAG, "agent: hard lock ${changed.joinToString("; ")}")
         }
         changed
+    }
+
+    /**
+     * The user's own calendar day, so "extra time today" means the same day the phone shows -- the
+     * budget is keyed on it, and a mismatch would silently read as "no grant left".
+     */
+    private fun todayKey(context: Context, database: Database): Int {
+        val deviceId = database.config().getOwnDeviceIdSync() ?: return -1
+        val childId = database.device().getDeviceByIdSync(deviceId)?.currentUserId.orEmpty()
+        if (childId.isEmpty()) return -1
+
+        val child = database.user().getUserByIdSync(childId)
+        val now = DefaultAppLogic.with(context).timeApi.getCurrentTimeInMillis()
+
+        return DateInTimezone.newInstance(now, child.getTimezone()).dayOfEpoch
     }
 
     /**
